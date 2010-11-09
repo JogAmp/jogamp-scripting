@@ -42,3 +42,27 @@ for j in $jnlpdir/*.jnlp ; do
 done
 
 }
+
+function remove_security_tag_jnlps() {
+
+wsdir=$1
+shift 
+
+if [ -z "$wsdir" ] ; then
+    echo usage $0 webstartdir
+    exit 1
+fi
+
+if [ ! -e $wsdir ] ; then
+    echo $wsdir does not exist
+    exit 1
+fi
+
+cd $wsdir
+
+for i in *.jnlp ; do
+    sed -i -e 's/<security>//g' -e 's/<\/security>//g' -e 's/<all-permissions\/>//g' $i
+done
+
+}
+
