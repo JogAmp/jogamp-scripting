@@ -1,5 +1,9 @@
 #! /bin/bash
 
+sdir=`dirname $0`
+
+. $sdir/../deployment/funcs_jnlp_relocate.sh
+
 archivedir=/srv/www/jogamp.org/deployment/archive
 rootdir=/srv/www/jogamp.org/deployment/autobuilds
 
@@ -78,7 +82,8 @@ function promote_files() {
         dname=`find . -name $name*$i`
         cp -av $dname/jar/*-natives-*.jar .
     done
-    bname=`basename *$masterpick`
+    fname=`find . -name $name*$masterpick.zip`
+    bname=`basename $fname .zip`
     cp -av $bname/jar/*.jar .
     cp -av $bname/jnlp-files/* ./jnlp-files/
     cd $rootdir
@@ -229,14 +234,18 @@ integrity_check
 
 cleanup
 
-rm -rf $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-mv $dest $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+uri=gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+url=http://jogamp.org/deployment/archive/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+
+rm -rf $wsdir
+mv $dest $wsdir
 
 echo
-echo Aggregation folder $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+echo Aggregation folder $wsdir for URL $url
 echo
 
-cd $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+cd $wsdir
 
 echo
 echo aggregation.properties
@@ -245,4 +254,5 @@ cat jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > jo
 sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
 diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
 
+copy_relocate_jnlps $url $wsdir
 
