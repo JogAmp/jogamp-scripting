@@ -20,4 +20,5 @@ make_git_bare() {
 #make_git_bare jocl-demos
 #make_git_bare jogl-utils
 #make_git_bare jogamp.org
-make_git_bare jogamp.org-SocialCoding
+#make_git_bare jogamp.org-SocialCoding
+#make_git_bare jogamp-scripting
