@@ -1,5 +1,12 @@
 #! /bin/bash
 
+##
+#
+# Will end up with an aggregated folder, webstart enabled,
+# but not pack200 compressed and not signed.
+#
+##
+
 sdir=`dirname $0`
 
 . $sdir/../deployment/funcs_jnlp_relocate.sh
@@ -255,4 +262,6 @@ sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
 diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
 
 copy_relocate_jnlps $url $wsdir
+
+remove_security_tag_jnlps $wsdir
 
