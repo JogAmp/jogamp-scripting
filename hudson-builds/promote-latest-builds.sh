@@ -15,6 +15,8 @@ dest=tmp-archive
 rm -rf $dest
 mkdir $dest
 mkdir $dest/javadoc
+mkdir $dest/www
+mkdir $dest/jnlp-files
 
 function lslatest() {
     pattern=$1
@@ -40,6 +42,68 @@ function buildnumber_4() {
     echo $folder | awk -F '-' ' { print substr($4, 2); } '
 }
 
+function verify_artifacts() {
+    name=$1
+    shift
+    artia=$1
+    shift
+    artib=$1
+    shift
+
+    OK=0
+    diff -w $artia $artib && OK=1
+    if [ $OK -eq 0 ] ; then
+        echo "ERROR: $name artifacts differ $artia and $artib"
+    fi
+}
+
+function promote_files() {
+    name=$1
+    shift
+    sourcedir=$1
+    shift
+
+    cp -a $sourcedir/$name*.zip $dest/
+    cp -a $sourcedir/artifact.properties $dest/$name.artifact.properties
+    cd $dest
+    for i in $os_and_archs ; do
+        fname=`find . -name $name*$i.zip`
+        bname=`basename $fname .zip`
+        echo "INFO: $name unpacking $bname"
+        unzip -q $fname
+        verify_artifacts $name $name.artifact.properties $bname/artifact.properties
+    done
+    echo "INFO: $name promoting files"
+    for i in $os_and_archs_minus_one ; do
+        dname=`find . -name $name*$i`
+        cp -av $dname/jar/*-natives-*.jar .
+    done
+    bname=`basename *$masterpick`
+    cp -av $bname/jar/*.jar .
+    cp -av $bname/jnlp-files/* ./jnlp-files/
+    cd $rootdir
+}
+
+function integrity_check() {
+    cd $dest
+    mkdir dump
+    cd dump
+    for i in ../*.jar ; do
+        bname=`basename $i`
+        echo -n "INFO: integrity check - $bname - "
+        OK=0
+        jar xvf $i >& $bname.log && OK=1
+        if [ $OK -eq 0 ] ; then
+            echo ERROR
+            cat $bname.log
+        else
+            echo OK
+        fi
+    done
+    echo
+    cd $rootdir
+}
+
 gluegenslave=`lslatest gluegen-b`
 bgluegenslave=`buildnumber_2 $gluegenslave`
 gluegenmaster=`lslatest gluegen-master-b`
@@ -52,12 +116,11 @@ echo master build $bgluegenmaster - $gluegenmaster
 echo
 echo "gluegen.build.number=$bgluegenslave" >> $dest/aggregated.artifact.properties
 
-cp -a $gluegenslave/build/gluegen*jar $dest/
-cp -a $gluegenslave/build/artifact.properties $dest/gluegen.artifact.properties
+promote_files gluegen $gluegenslave
 
-cp -a $gluegenmaster/build/artifact.properties $dest/javadoc/gluegen-master.artifact.properties
+cp -a $gluegenmaster/artifact.properties $dest/javadoc/gluegen-master.artifact.properties
 mkdir $dest/javadoc/gluegen
-cp -a $gluegenmaster/build/javadoc.zip $dest/javadoc/gluegen
+cp -a $gluegenmaster/javadoc.zip $dest/javadoc/gluegen
 cd $dest/javadoc/gluegen
 unzip -q javadoc.zip
 cd $rootdir
@@ -74,18 +137,11 @@ echo master build $bjoglmaster - $joglmaster
 echo
 echo "jogl.build.number=$bjoglslave" >> $dest/aggregated.artifact.properties
 
-cp -a $joglslave/build/jogl*zip $dest/
-cd $dest
-for i in *"$os_and_archs_minus_one".zip ; do
-    unzip -q $i
-done
-unzip -q *"$masterpick".zip
-cd $rootdir
-cp -a $joglslave/build/artifact.properties $dest/jogl.artifact.properties
+promote_files jogl $joglslave
 
-cp -a $joglmaster/build/artifact.properties $dest/javadoc/jogl-master.artifact.properties
+cp -a $joglmaster/artifact.properties $dest/javadoc/jogl-master.artifact.properties
 mkdir $dest/javadoc/jogl
-cp -a $joglmaster/build/javadoc*.zip $dest/javadoc/jogl
+cp -a $joglmaster/javadoc*.zip $dest/javadoc/jogl
 cd $dest/javadoc/jogl
 for i in *.zip ; do 
     unzip -q $i
@@ -101,10 +157,23 @@ echo master  build $bjogldemosmaster - $jogldemosmaster
 echo
 echo "jogl-demos.build.number=$bjogldemosmaster" >> $dest/aggregated.artifact.properties
 
-cp -a $jogldemosmaster/build/jogl-demos*jar $dest/
-cp -a $jogldemosmaster/build/artifact.properties $dest/jogl-demos.artifact.properties
-cd dest
+cp -a $jogldemosmaster/jogl-demos*.zip $dest/
+cp -a $jogldemosmaster/artifact.properties $dest/jogl-demos.artifact.properties
+cd $dest
 
+fname=`find . -name jogl-demos*.zip`
+bname=`basename $fname .zip`
+unzip -q $bname.zip
+verify_artifacts jogl-demos jogl-demos.artifact.properties $bname/artifact.properties
+cp -a $bname/jar/*.jar .
+cp -a $bname/jnlp-files/* ./jnlp-files/
+cp -a $bname/www/* ./www/
+
+cd $rootdir
+
+#########################################################
+####### FIXME : JOCL, adapt to the new archive structure 
+#########################################################
 
 joclslave=`lslatest jocl-b`
 bjoclslave=`buildnumber_2 $joclslave`
@@ -140,6 +209,8 @@ echo "jocl-demos.build.number=$bjocldemosslave" >> $dest/aggregated.artifact.pro
 cp -a $jocldemosslave/jocl-demos*jar $dest/
 cp -a $jocldemosslave/artifact.properties $dest/jocl-demos.artifact.properties
 
+integrity_check
+
 rm -rf $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
 mv $dest $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
 
@@ -154,5 +225,6 @@ echo aggregation.properties
 echo
 cat jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > jocl-demos-jogl-demos.artifact.properties.sorted
 sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
-diff -Nurb aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
+diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
+
 
