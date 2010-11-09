@@ -84,6 +84,20 @@ function promote_files() {
     cd $rootdir
 }
 
+function cleanup() {
+    cd $dest
+    for i in $os_and_archs ; do
+        for j in *$i.zip ; do
+            bname=`basename $j .zip`
+            if [ -d $bname ] ; then
+                echo "INFO: delete folder $bname"
+                rm -rf $bname
+            fi
+        done
+    done
+    cd $rootdir
+}
+
 function integrity_check() {
     cd $dest
     mkdir dump
@@ -101,6 +115,8 @@ function integrity_check() {
         fi
     done
     echo
+    cd ..
+    rm -rf dump
     cd $rootdir
 }
 
@@ -210,6 +226,8 @@ cp -a $jocldemosslave/jocl-demos*jar $dest/
 cp -a $jocldemosslave/artifact.properties $dest/jocl-demos.artifact.properties
 
 integrity_check
+
+cleanup
 
 rm -rf $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
 mv $dest $archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
