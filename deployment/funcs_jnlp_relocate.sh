@@ -1,0 +1,41 @@
+#! /bin/bash
+
+function copy_relocate_jnlps() {
+
+url=$1
+shift
+
+wsdir=$1
+shift 
+
+if [ -z "$url" -o -z "$wsdir" ] ; then
+    echo usage $0 codebase-url webstartdir
+    echo Examples
+    echo    sh $0 file:////usr/local/projects/JOGL/webstart ../../webstart
+    echo    sh $0 http://domain.org/jogl/webstart /srv/www/webstart-next
+    exit 1
+fi
+
+if [ ! -e $wsdir ] ; then
+    echo $wsdir does not exist
+    exit 1
+fi
+
+jnlpdir=$wsdir/jnlp-files
+
+if [ ! -e $jnlpdir ] ; then
+    echo $jnlpdir does not exist
+    exit 1
+fi
+
+cp -v $jnlpdir/*.html $wsdir
+
+uri_esc=`echo $url | sed 's/\//\\\\\//g'`
+for j in $jnlpdir/*.jnlp ; do
+    jb=`basename $j`
+    echo "processing $j to $wsdir/$jb"
+    sed "s/CODEBASE_TAG/$uri_esc/g" \
+        $j > $wsdir/$jb
+done
+
+}
