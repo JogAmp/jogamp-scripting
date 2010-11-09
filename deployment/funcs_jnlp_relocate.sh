@@ -34,7 +34,10 @@ uri_esc=`echo $url | sed 's/\//\\\\\//g'`
 for j in $jnlpdir/*.jnlp ; do
     jb=`basename $j`
     echo "processing $j to $wsdir/$jb"
-    sed "s/CODEBASE_TAG/$uri_esc/g" \
+
+    sed -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/DEMO_CODEBASE_TAG/$uri_esc/g" \
         $j > $wsdir/$jb
 done
 
