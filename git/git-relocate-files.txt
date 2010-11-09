@@ -1,0 +1,117 @@
+1 Generic Manual
+2 JogAmp Example 'Relocation: GlueGen GL Parts to Jogl'
+
+1 Generic Manual
+-------------------
+
+http://superuser.com/questions/164362/git-keep-changelog-for-file-when-moving-to-a-different-repository
+
+Assume you want to transfer the history of filename.conf from one source repository to another receiving repository. I think the strategy you want to follow is:
+
+   1. In the source repository, create a branch of commits which are re-written to contain only filename.conf.
+   2. Fetch the commits into the receiving repository.
+   3. Merge the independent line of commits into a normal branch in the receiving repository.
+
+Definitely make backups of your repositories before you do any of this!
+
+In the source repository:
+
+<---
+
+git checkout -b filtered-commits
+git filter-branch -f --prune-empty --tree-filter 'find . -not -name filename.conf -exec rm {} \;' filtered-commits
+
+--->
+
+Then, in the receiving repository:
+
+<---
+
+git remote add source path/to/source/repo
+git fetch source filtered-commits
+GIT_INDEX_FILE=.git/tmp-index git read-tree FETCH_HEAD
+GIT_INDEX_FILE=.git/tmp-index git checkout-index -a -u
+git update-index --add -- filename.conf
+cp .git/FETCH_HEAD .git/MERGE_HEAD
+git commit
+
+--->
+
++++++++++++
++++++++++++
++++++++++++
+
+2 JogAmp Example 'Relocation: GlueGen GL Parts to Jogl'
+---------------------------------------------------------
+
+Relocation: GlueGen GL Parts to Jogl
+commit: 12c0248c77b3481eb16f6cd80de427f2fc49aa6d
+
+2.1) In gluegen (source)
+
+  - git checkout -b pre_reloc (branch holding the pre relocation index)
+  - git checkout -b filter    (temp branch)
+  - bash filter.sh            (see below)
+  
+2.2) In jogl (destination)
+
+  - git remote add gluegen ../gluegen
+  - git fetch gluegen filter
+  - GIT_INDEX_FILE=.git/tmp-index git read-tree FETCH_HEAD
+  - GIT_INDEX_FILE=.git/tmp-index git checkout-index -a -u
+  - git update-index --add -- `cat ../gluegen/file.list`
+  - cp .git/FETCH_HEAD .git/MERGE_HEAD
+  - git status .
+  - git commit -m "Relocation: GlueGen GL Parts to Jogl"
+  - git remote rm gluegen
+
+  .. now package renames etc followed up ..
+
+2.3) Cleanup in Gluegen
+
+  - git checkout pre_reloc
+  - git branch -D filter
+  - git show-ref ( check for 'filter' ref )
+  - git update-ref -d refs/original/refs/heads/filter
+
+  - git checkout -b post_reloc  
+  - git rm `cat file.list`
+  - git commit -m "Relocation: GlueGen GL Parts to Jogl"
+
+done
+
+++++
+
+gluegen/filter.sh:
+<---
+git filter-branch -f --prune-empty --tree-filter \
+    'find . -not -name GLExtensionNames.java \
+        -a -not -name GLProcAddressResolver.java \
+        -a -not -name BuildComposablePipeline.java \
+        -a -not -name BuildStaticGLInfo.java \
+        -a -not -name GLConfiguration.java \
+        -a -not -name GLEmitter.java \
+        -a -not -name GLJavaMethodBindingEmitter.java \
+        -a -not -name StaticGLGenTask.java \
+        -a -not -name NativeSignatureEmitter.java \
+        -a -not -name NativeSignatureJavaMethodBindingEmitter.java \
+        -a -type f \
+        -exec rm {} \;' \
+    filter
+--->
+
+gluegen/file.list:
+<---
+src/java/com/jogamp/gluegen/runtime/opengl/GLExtensionNames.java
+src/java/com/jogamp/gluegen/runtime/opengl/GLProcAddressResolver.java
+src/java/com/jogamp/gluegen/ant/StaticGLGenTask.java
+src/java/com/jogamp/gluegen/nativesig/NativeSignatureEmitter.java
+src/java/com/jogamp/gluegen/nativesig/NativeSignatureJavaMethodBindingEmitter.java
+src/java/com/sun/gluegen/opengl/BuildComposablePipeline.java
+src/java/com/sun/gluegen/opengl/BuildStaticGLInfo.java
+src/java/com/sun/gluegen/opengl/GLConfiguration.java
+src/java/com/sun/gluegen/opengl/GLEmitter.java
+src/java/com/sun/gluegen/opengl/GLJavaMethodBindingEmitter.java
+--->
+
+
