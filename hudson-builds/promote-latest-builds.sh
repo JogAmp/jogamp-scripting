@@ -34,6 +34,8 @@ function promote-latest-builds() {
     echo
     prom_setup $rootdir $dest
 
+    mkdir $dest/javadoc
+
     gluegenslave=`prom_lslatest gluegen-b`
     bgluegenslave=`prom_buildnumber_2 $gluegenslave`
     gluegenmaster=`prom_lslatest gluegen-master-b`
@@ -49,11 +51,10 @@ function promote-latest-builds() {
     prom_promote_files gluegen $gluegenslave $dest gluegen
 
     cp -a $gluegenmaster/artifact.properties $dest/javadoc/gluegen-master.artifact.properties
-    mkdir $dest/javadoc/gluegen
-    cp -a $gluegenmaster/javadoc.zip $dest/javadoc/gluegen
-    cd $dest/javadoc/gluegen
-    echo "INFO: gluegen master javadoc zip"
-    unzip -q javadoc.zip
+    cp -a $gluegenmaster/javadoc.zip $dest/javadoc/gluegen-javadoc.zip
+    cd $dest/javadoc
+    echo "INFO: gluegen master gluegen-javadoc zip"
+    unzip -q gluegen-javadoc.zip
     cd $rootdir
 
     joglslave=`prom_lslatest jogl-b`
@@ -71,13 +72,9 @@ function promote-latest-builds() {
     prom_promote_files jogl $joglslave $dest nativewindow jogl newt
 
     cp -a $joglmaster/artifact.properties $dest/javadoc/jogl-master.artifact.properties
-    mkdir $dest/javadoc/jogl
-    cp -a $joglmaster/javadoc*.zip $dest/javadoc/jogl
-    cd $dest/javadoc/jogl
-    for i in *.zip ; do 
-        echo "INFO: unzip $i"
-        unzip -q $i
-    done
+    cp -a $joglmaster/javadoc.zip $dest/javadoc/jogl-javadoc.zip
+    cd $dest/javadoc
+    unzip -q jogl-javadoc.zip
     cd $rootdir
 
     jogldemosmaster=`prom_lslatest jogl-demos-master-b`
