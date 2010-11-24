@@ -37,6 +37,7 @@ for j in $jnlpdir/*.jnlp ; do
 
     sed -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/DEMO_CODEBASE_TAG/$uri_esc/g" \
         $j > $wsdir/$jb
 done
