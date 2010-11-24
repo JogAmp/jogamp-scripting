@@ -174,11 +174,11 @@ function promote-latest-builds() {
     prom_cleanup $dest
 
 #    uri=gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-#    url=http://jogamp.org/deployment/archive/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+#    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
 #    wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
 
     uri=gluegen_$bgluegenslave-jogl_$bjoglslave
-    url=http://jogamp.org/deployment/archive/gluegen_$bgluegenslave-jogl_$bjoglslave
+    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-jogl_$bjoglslave
     wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave
 
     rm -rf $wsdir
