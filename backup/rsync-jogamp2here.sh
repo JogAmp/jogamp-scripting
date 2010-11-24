@@ -37,6 +37,9 @@ function do_rsync()
     my_rsync var/lib/mysql      $DEST2/var/lib/
     my_rsync var/spool/mail     $DEST2/var/spool/
     my_rsync var/log            $DEST2/var/
+
+    my_rsync var/lib/awstats    $DEST2/var/lib/
+    my_rsync usr/local/awstats  $DEST2/usr/local/
 }
 
 do_rsync >& rsync-jogamp2here.log &
