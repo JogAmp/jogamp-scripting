@@ -33,8 +33,8 @@ if [ ! -e $abuild ] ; then
     exit 1
 fi
 
-if [ ! -e $wsdir ] ; then
-    echo $wsdir does not exist
+if [ -e $wsdir ] ; then
+    echo $wsdir already exist
     exit 1
 fi
 
