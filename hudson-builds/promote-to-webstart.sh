@@ -15,7 +15,8 @@
 #                          /srv/www/deployment/webstart-b3 \
 #                          http://lala.lu/webstart-b3 \
 #                          secret.p12 \
-#                          PassWord "something"
+#                          PassWord \
+#                          "something"
 #
 ##
 
@@ -34,8 +35,7 @@ shift
 storepass=$1
 shift
 
-signarg=$1
-shift
+signarg="$*"
 
 if [ -z "$abuild" -o -z "$wsdir" -o -z "$url" -o -z "$keystore" -o -z "$storepass" ] ; then
     echo "usage $0 abuilddir webstartdir url pkcs12-keystore storepass [signarg]"
@@ -47,8 +47,8 @@ if [ ! -e $abuild ] ; then
     exit 1
 fi
 
-if [ ! -e $wsdir ] ; then
-    echo $wsdir does not exist
+if [ -e $wsdir ] ; then
+    echo $wsdir already exist
     exit 1
 fi
 
@@ -66,17 +66,18 @@ logfile=$thisdir/`basename $0 .sh`.log
 . $sdir/../deployment/funcs_jnlp_relocate.sh
 . $sdir/../deployment/funcs_jars_pack_sign.sh
 
-function promote-webstart-jars() {
+function echo_info() {
     echo
-    echo "Promotion of latest files"
+    echo "Promotion webstart jars"
     echo
-    echo "  branch: $branch"
-    echo "  option: $option"
-    echo "    secure: $secure"
+    echo "  $abuild -> $wsdir"
+    echo "  $url"
     echo
     echo `date`
     echo
-    prom_setup $rootdir $dest
+}
+
+function promote-webstart-jars() {
 
 #
 # repack it .. so the signed jars can be pack200'ed
@@ -98,9 +99,11 @@ cp -av $logfile $wsdir
 
 }
 
+echo_info 2>&1 | tee $logfile
+
 cp -a $abuild $wsdir 2>&1 | tee $logfile
 
 copy_relocate_jnlps $url $wsdir 2>&1 | tee $logfile
 
-promote-webstart-next 2>&1 | tee $logfile
+promote-webstart-jars 2>&1 | tee $logfile
 

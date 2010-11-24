@@ -81,8 +81,7 @@ shift
 storepass=$1
 shift 
 
-signarg=$1
-shift 
+signarg="$*"
 
 if [ -z "$wsdir" -o -z "$keystore" -o -z "$storepass" ] ; then
     echo "usage $0 webstartdir pkcs12-keystore storepass [signarg]"
