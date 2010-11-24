@@ -118,6 +118,8 @@ function promote-latest-builds() {
     cp -a $bname/jar/*.jar .
     cp -a $bname/jnlp-files/* ./jnlp-files/
     cp -a $bname/www/* ./www/
+    echo "INFO: delete folder $bname"
+    rm -rf $bname
 
     cd $rootdir
 
