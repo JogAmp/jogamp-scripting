@@ -25,11 +25,7 @@ THISDIR=`pwd`
 
 cd $wsdir
 
-rm -rf orig-jars
-mkdir -p orig-jars
-
 for i in *.jar ; do
-    cp -a $i orig-jars
     echo pack200 --repack $i
     pack200 --repack $i
 done
@@ -113,7 +109,7 @@ mv jogl.test.jar jogl-demos*jar jocl-demos.jar demo-jars/
 
 for i in *.jar ; do
     echo jarsigner -storetype pkcs12 -keystore $keystore $i \"$signarg\"
-    jarsigner -storetype pkcs12 -keystore $THISDIR/$keystore -storepass $storepass $i "$signarg"
+    jarsigner -storetype pkcs12 -keystore $keystore -storepass $storepass $i "$signarg"
 done
 
 mv demo-jars/* .
