@@ -1,0 +1,6 @@
+tar xjf git-1.7.3.2.tar.bz2 
+cd git-1.7.3.2
+# important options, otherwise no http support
+./configure --prefix=/opt-linux-x86_64 --with-curl=/usr --with-expat=/usr 
+make all
+# make install as root

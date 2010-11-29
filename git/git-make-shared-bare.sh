@@ -1,11 +1,15 @@
 #! /bin/sh
 
+gitinstall=/opt-linux-x86_64
+
 make_git_bare() {
   name=$1
   shift
   mkdir $name.git 
   cd $name.git 
   git init --bare --shared=0664 
+  cp -av $gitinstall/share/git-core/templates/hooks/post-update.sample hooks/post-update
+  git update-server-info
   cd ..
 }
 
@@ -21,4 +25,4 @@ make_git_bare() {
 #make_git_bare jogl-utils
 #make_git_bare jogamp.org
 #make_git_bare jogamp.org-SocialCoding
-#make_git_bare jogamp-scripting
+make_git_bare jogamp-scripting
