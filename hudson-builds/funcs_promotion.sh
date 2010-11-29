@@ -13,7 +13,6 @@ function prom_setup() {
     rm -rf $ldest
     mkdir $ldest
     mkdir $ldest/javadoc
-    mkdir $ldest/www
     mkdir $ldest/jnlp-files
 
     cd $lthisdir
