@@ -181,6 +181,8 @@ function promote-latest-builds() {
     #########################################################
 
     prom_integrity_check $dest
+    prom_integrity_check $dest/jogl-demos
+    prom_integrity_check $dest/jocl-demos
 
     prom_cleanup $dest
 
@@ -196,6 +198,9 @@ function promote-latest-builds() {
     echo
     echo aggregation.properties
     echo
+    dos2unix jocl-demos.artifact.properties
+    dos2unix jogl-demos.artifact.properties
+    dos2unix aggregated.artifact.properties
     cat jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > jocl-demos-jogl-demos.artifact.properties.sorted
     sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
     diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
