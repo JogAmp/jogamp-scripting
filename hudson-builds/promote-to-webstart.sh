@@ -83,6 +83,8 @@ function promote-webstart-jars() {
 # repack it .. so the signed jars can be pack200'ed
 #
 wsdir_jars_repack  $wsdir
+wsdir_jars_repack  $wsdir/jogl-demos
+wsdir_jars_repack  $wsdir/jocl-demos
 
 
 #
@@ -94,6 +96,8 @@ wsdir_jars_sign    $wsdir $keystore $storepass $signarg
 # pack200
 #
 wsdir_jars_pack200 $wsdir
+wsdir_jars_pack200 $wsdir/jogl-demos
+wsdir_jars_pack200 $wsdir/jocl-demos
 
 cp -av $logfile $wsdir
 
@@ -103,7 +107,9 @@ echo_info 2>&1 | tee $logfile
 
 cp -a $abuild $wsdir 2>&1 | tee $logfile
 
-copy_relocate_jnlps $url $wsdir 2>&1 | tee $logfile
+copy_relocate_jnlps_base $url $wsdir 2>&1 | tee $logfile
+copy_relocate_jnlps_demos $url $wsdir jogl-demos 2>&1 | tee $logfile
+copy_relocate_jnlps_demos $url $wsdir jocl-demos 2>&1 | tee $logfile
 
 promote-webstart-jars 2>&1 | tee $logfile
 

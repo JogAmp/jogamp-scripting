@@ -44,5 +44,7 @@ sdir=`dirname $0`
 
 cp -a $abuild $wsdir
 
-copy_relocate_jnlps $url $wsdir
+copy_relocate_jnlps_base $url $wsdir
+copy_relocate_jnlps_demos $url $wsdir jogl-demos
+copy_relocate_jnlps_demos $url $wsdir jocl-demos
 

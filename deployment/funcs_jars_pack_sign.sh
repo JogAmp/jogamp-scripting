@@ -104,7 +104,7 @@ cd $wsdir
 
 rm -rf demo-jars
 mkdir -p demo-jars
-mv jogl.test.jar jogl-demos*jar jocl-demos.jar demo-jars/
+mv jogl.test.jar demo-jars/
 
 for i in *.jar ; do
     echo jarsigner -storetype pkcs12 -keystore $keystore $i \"$signarg\"

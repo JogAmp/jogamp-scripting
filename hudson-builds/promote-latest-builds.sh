@@ -112,60 +112,69 @@ function promote-latest-builds() {
 
     fname=`find . -name jogl-demos*.zip`
     bname=`basename $fname .zip`
+    mkdir jogl-demos
+    cd jogl-demos
     echo "INFO: unzip $fname -> $bname"
-    unzip -q $bname.zip
-    prom_verify_artifacts jogl-demos jogl-demos-master.artifact.properties $bname/artifact.properties
-    cp -a $bname/jar/*.jar .
-    cp -a $bname/jnlp-files/* ./jnlp-files/
-    cp -a $bname/www/* ./www/
+    unzip -q ../$bname.zip
+    prom_verify_artifacts jogl-demos ../jogl-demos-master.artifact.properties $bname/artifact.properties
+    mv $bname/jar .
+    mv $bname/jnlp-files .
+    mv $bname/www .
     echo "INFO: delete folder $bname"
     rm -rf $bname
-
     cd $rootdir
 
-    #########################################################
-    ####### FIXME : JOCL, adapt to the new archive structure 
-    #########################################################
+    joclslave=`prom_lslatest jocl-b`
+    bjoclslave=`prom_buildnumber_2 $joclslave`
+    joclmaster=`prom_lslatest jocl-master-b`
+    bjoclmaster=`prom_buildnumber_3 $joclmaster`
+    echo
+    echo JOCL
+    echo
+    echo slave  build $bjoclslave - $joclslave
+    echo master build $bjoclmaster - $joclmaster
+    echo
+    echo "jocl.build.number=$bjoclslave" >> $dest/aggregated.artifact.properties
 
-##    joclslave=`prom_lslatest jocl-b`
-##    bjoclslave=`prom_buildnumber_2 $joclslave`
-##    joclmaster=`prom_lslatest jocl-master-b`
-##    bjoclmaster=`prom_buildnumber_3 $joclmaster`
-##    echo
-##    echo JOCL
-##    echo
-##    echo slave  build $bjoclslave - $joclslave
-##    echo master build $bjoclmaster - $joclmaster
-##    echo
-##    echo "jocl.build.number=$bjoclslave" >> $dest/aggregated.artifact.properties
-##
-##    #
-##    #prom_promote_files jocl $joglslave $dest jocl
-##    #
-##
-##    cp -a $joclslave/jocl*jar $dest/
-##    cp -a $joclslave/artifact.properties $dest/jocl.artifact.properties
-##
-##    cp -a $joclmaster/artifact.properties $dest/javadoc/jocl-master.artifact.properties
-##    mkdir $dest/javadoc/jocl
-##    cp -a $joclmaster/jocl-javadoc.zip $dest/
-##    cd $dest/javadoc/jocl
-##    echo "INFO: unzip jocl-javadoc zip"
-##    unzip -q ../../jocl-javadoc.zip
-##    cd $rootdir
-##
-##    jocldemosslave=`prom_lslatest jocl-demos-b`
-##    bjocldemosslave=`prom_buildnumber_3 $jocldemosslave`
-##    echo
-##    echo JOCL DEMOS
-##    echo
-##    echo slave  build $bjocldemosslave - $jocldemosslave
-##    echo
-##    echo "jocl-demos.build.number=$bjocldemosslave" >> $dest/aggregated.artifact.properties
-##
-##    cp -a $jocldemosslave/jocl-demos*jar $dest/
-##    cp -a $jocldemosslave/artifact.properties $dest/jocl-demos.artifact.properties
-##
+    prom_promote_files jocl $joclslave $dest jocl
+    
+    cp -a $joclmaster/artifact.properties $dest/javadoc/jocl-master.artifact.properties
+    cp -a $joclmaster/jocl-javadoc.zip $dest/jocl-javadoc.zip
+    cd $dest/javadoc
+    unzip -q ../jocl-javadoc.zip
+    cd $rootdir
+
+    jocldemosslave=`prom_lslatest jocl-demos-b`
+    bjocldemosslave=`prom_buildnumber_3 $jocldemosslave`
+    jocldemosmaster=`prom_lslatest jocl-demos-master-b`
+    bjocldemosmaster=`prom_buildnumber_4 $jocldemosmaster`
+    echo
+    echo JOCL DEMOS
+    echo
+    echo slave  build $bjocldemosslave - $jocldemosslave
+    echo master  build $bjocldemosmaster - $jocldemosmaster
+    echo
+    echo "jocl-demos.build.number=$bjocldemosslave" >> $dest/aggregated.artifact.properties
+
+    cp -a $jocldemosmaster/jocl-demos*zip $dest/
+    cp -a $jocldemosmaster/artifact.properties $dest/jocl-demos-master.artifact.properties
+    cp -a $jocldemosslave/artifact.properties $dest/jocl-demos.artifact.properties
+    cd $dest
+
+    fname=`find . -name jocl-demos*.zip`
+    bname=`basename $fname .zip`
+    mkdir jocl-demos
+    cd jocl-demos
+    echo "INFO: unzip $fname -> $bname"
+    unzip -q ../$bname.zip
+    prom_verify_artifacts jocl-demos ../jocl-demos-master.artifact.properties $bname/artifact.properties
+    mv $bname/jar .
+    mv $bname/jnlp-files .
+    mv $bname/www .
+    echo "INFO: delete folder $bname"
+    rm -rf $bname
+    cd $rootdir
+
 
     #########################################################
     ## Integrity Check, Cleanup, aggregation.properties
@@ -175,13 +184,9 @@ function promote-latest-builds() {
 
     prom_cleanup $dest
 
-#    uri=gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-#    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-#    wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-
-    uri=gluegen_$bgluegenslave-jogl_$bjoglslave
-    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-jogl_$bjoglslave
-    wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave
+    uri=gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+    wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
 
     rm -rf $wsdir
     mv $dest $wsdir
@@ -191,14 +196,13 @@ function promote-latest-builds() {
     echo
     echo aggregation.properties
     echo
-    #cat jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > jocl-demos-jogl-demos.artifact.properties.sorted
-    #sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
-    #diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
-    cat jogl-demos.artifact.properties | sort -u > jogl-demos.artifact.properties.sorted
+    cat jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > jocl-demos-jogl-demos.artifact.properties.sorted
     sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
-    diff -Nurbw aggregated.artifact.properties.sorted jogl-demos.artifact.properties.sorted
+    diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
 
-    copy_relocate_jnlps $url $wsdir
+    copy_relocate_jnlps_base $url $wsdir
+    copy_relocate_jnlps_demos $url $wsdir jogl-demos
+    copy_relocate_jnlps_demos $url $wsdir jocl-demos
 
     if [ $secure -ne 1 ] ; then
         remove_security_tag_jnlps $wsdir
