@@ -57,6 +57,8 @@ mkdir -p DLLS
 mv *natives*.jar DLLS/
 
 for i in *.jar ; do
+    echo gzip -9 $i to $i.gz
+    gzip -9 -c $1 > $1.gz
     echo pack200 -E9 $i.pack.gz $i
     pack200 -E9 $i.pack.gz $i
 done
