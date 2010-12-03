@@ -27,7 +27,7 @@ cd $wsdir
 
 for i in *.jar ; do
     echo pack200 --repack $i
-    pack200 -v --repack $i
+    pack200 --repack $i
 done
 
 cd $THISDIR
@@ -60,7 +60,7 @@ for i in *.jar ; do
     echo gzip -9 $i to $i.gz
     gzip -9 -cv $i > $i.gz
     echo pack200 -E9 $i.pack.gz $i
-    pack200 -v -E9 $i.pack.gz $i
+    pack200 -E9 $i.pack.gz $i
 done
 
 mv DLLS/* .
