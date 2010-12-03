@@ -117,7 +117,7 @@ function promote-latest-builds() {
     echo "INFO: unzip $fname -> $bname"
     unzip -q ../$bname.zip
     prom_verify_artifacts jogl-demos ../jogl-demos-master.artifact.properties $bname/artifact.properties
-    mv $bname/jar .
+    mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
     echo "INFO: delete folder $bname"
@@ -168,7 +168,7 @@ function promote-latest-builds() {
     echo "INFO: unzip $fname -> $bname"
     unzip -q ../$bname.zip
     prom_verify_artifacts jocl-demos ../jocl-demos-master.artifact.properties $bname/artifact.properties
-    mv $bname/jar .
+    mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
     echo "INFO: delete folder $bname"

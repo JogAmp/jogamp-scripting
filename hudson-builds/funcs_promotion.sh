@@ -14,6 +14,7 @@ function prom_setup() {
     mkdir $ldest
     mkdir $ldest/javadoc
     mkdir $ldest/jnlp-files
+    mkdir $ldest/archive
 
     cd $lthisdir
 }
@@ -151,6 +152,7 @@ function prom_cleanup() {
             fi
         done
     done
+    mv *.zip archive/
     cd $lthisdir
 }
 
