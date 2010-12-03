@@ -2,10 +2,10 @@
 
 function copy_relocate_jnlps_base() {
 
-url=$1
+local url=$1
 shift
 
-wsdir=$1
+local wsdir=$1
 shift 
 
 if [ -z "$url" -o -z "$wsdir" ] ; then
@@ -21,7 +21,7 @@ if [ ! -e $wsdir ] ; then
     exit 1
 fi
 
-jnlpdir=$wsdir/jnlp-files
+local jnlpdir=$wsdir/jnlp-files
 
 if [ ! -e $jnlpdir ] ; then
     echo $jnlpdir does not exist
@@ -30,9 +30,9 @@ fi
 
 cp -v $jnlpdir/*.html $wsdir
 
-uri_esc=`echo $url | sed 's/\//\\\\\//g'`
+local uri_esc=`echo $url | sed 's/\//\\\\\//g'`
 for j in $jnlpdir/*.jnlp ; do
-    jb=`basename $j`
+    local jb=`basename $j`
     echo "processing $j to $wsdir/$jb"
 
     sed -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
@@ -45,13 +45,13 @@ done
 
 function copy_relocate_jnlps_demos() {
 
-url=$1
+local url=$1
 shift
 
-wsdir=$1
+local wsdir=$1
 shift 
 
-demos_rel=$1
+local demos_rel=$1
 shift
 
 if [ -z "$url" -o -z "$wsdir" -o -z "$demos_rel" ] ; then
@@ -67,15 +67,15 @@ if [ ! -e $wsdir ] ; then
     exit 1
 fi
 
-demos=$wsdir/$demos_rel
+local demos=$wsdir/$demos_rel
 
 if [ ! -e $demos ] ; then
     echo $demos does not exist
     exit 1
 fi
 
-url_demos=$url/$demos_rel
-jnlpdir=$demos/jnlp-files
+local url_demos=$url/$demos_rel
+local jnlpdir=$demos/jnlp-files
 
 if [ ! -e $jnlpdir ] ; then
     echo $jnlpdir does not exist
@@ -84,10 +84,10 @@ fi
 
 cp -v $jnlpdir/*.html $demos
 
-uri_esc=`echo $url | sed 's/\//\\\\\//g'`
-uri_demos_esc=`echo $url_demos | sed 's/\//\\\\\//g'`
+local uri_esc=`echo $url | sed 's/\//\\\\\//g'`
+local uri_demos_esc=`echo $url_demos | sed 's/\//\\\\\//g'`
 for j in $jnlpdir/*.jnlp ; do
-    jb=`basename $j`
+    local jb=`basename $j`
     echo "processing $j to $demos/$jb"
 
     sed -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
@@ -101,7 +101,7 @@ done
 
 function remove_security_tag_jnlps() {
 
-wsdir=$1
+local wsdir=$1
 shift 
 
 if [ -z "$wsdir" ] ; then

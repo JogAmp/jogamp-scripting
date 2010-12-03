@@ -8,7 +8,7 @@
 
 function wsdir_jars_repack() {
 
-wsdir=$1
+local wsdir=$1
 shift 
 
 if [ -z "$wsdir" ] ; then
@@ -21,7 +21,7 @@ if [ ! -e $wsdir ] ; then
     exit 1
 fi
 
-THISDIR=`pwd`
+local THISDIR=`pwd`
 
 cd $wsdir
 
@@ -36,7 +36,7 @@ cd $THISDIR
 
 function wsdir_jars_pack200() {
 
-wsdir=$1
+local wsdir=$1
 shift 
 
 if [ -z "$wsdir" ] ; then
@@ -49,7 +49,7 @@ if [ ! -e $wsdir ] ; then
     exit 1
 fi
 
-THISDIR=`pwd`
+local THISDIR=`pwd`
 
 cd $wsdir
 
@@ -74,16 +74,16 @@ cd $THISDIR
 
 function wsdir_jars_sign() {
 
-wsdir=$1
+local wsdir=$1
 shift 
 
-keystore=$1
+local keystore=$1
 shift 
 
-storepass=$1
+local storepass=$1
 shift 
 
-signarg="$*"
+local signarg="$*"
 
 if [ -z "$wsdir" -o -z "$keystore" -o -z "$storepass" ] ; then
     echo "usage $0 webstartdir pkcs12-keystore storepass [signarg]"
@@ -100,7 +100,7 @@ if [ ! -e $keystore ] ; then
     exit 1
 fi
 
-THISDIR=`pwd`
+local THISDIR=`pwd`
 
 cd $wsdir
 

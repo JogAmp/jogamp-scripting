@@ -2,12 +2,12 @@
 
 
 function prom_setup() {
-    lrootdir=$1
+    local lrootdir=$1
     shift
-    ldest=$1
+    local ldest=$1
     shift
 
-    lthisdir=`pwd`
+    local lthisdir=`pwd`
     cd $lrootdir
 
     rm -rf $ldest
@@ -20,38 +20,38 @@ function prom_setup() {
 }
 
 function prom_lslatest() {
-    pattern=$1
+    local pattern=$1
     shift
     ls -rt  | grep $pattern | tail -1
 }
 
 function prom_buildnumber_2() {
-    folder=$1
+    local folder=$1
     shift
     echo $folder | awk -F '-' ' { print substr($2, 2); } '
 }
 
 function prom_buildnumber_3() {
-    folder=$1
+    local folder=$1
     shift
     echo $folder | awk -F '-' ' { print substr($3, 2); } '
 }
 
 function prom_buildnumber_4() {
-    folder=$1
+    local folder=$1
     shift
     echo $folder | awk -F '-' ' { print substr($4, 2); } '
 }
 
 function prom_verify_artifacts() {
-    name=$1
+    local name=$1
     shift
-    artia=$1
+    local artia=$1
     shift
-    artib=$1
+    local artib=$1
     shift
 
-    OK=0
+    local OK=0
     diff -w $artia $artib && OK=1
     if [ $OK -eq 0 ] ; then
         echo "ERROR: $name artifacts differ $artia and $artib"
@@ -69,15 +69,15 @@ function prom_verify_artifacts() {
 # promote_files jogl    /builds/jogl-b211   tmp-archive nativewindow jogl newt
 #
 function prom_promote_files() {
-    module=$1
+    local module=$1
     shift
-    sourcedir=$1
+    local sourcedir=$1
     shift
-    destdir=$1
+    local destdir=$1
     shift
-    submodules=$*
+    local submodules=$*
 
-    lthisdir=`pwd`
+    local lthisdir=`pwd`
 
     echo "INFO: Promoting files: $module, submodules <$submodules>, from $sourcedir"
     # copy the platform zip files
@@ -86,12 +86,12 @@ function prom_promote_files() {
     cd $destdir
     # unpack the platform zip files
     for i in $os_and_archs ; do
-        zfile=`find . -name $module\*$i.zip`
+        local zfile=`find . -name $module\*$i.zip`
         if [ -z "$zfile" ] ; then
             echo "ERROR: No platform ZIP file for module $module, sub $sub, platform $i, sdir $sourcedir"
             exit 1
         fi
-        zfolder=`basename $zfile .zip`
+        local zfolder=`basename $zfile .zip`
         echo "INFO: unzip $module $i - $zfile -> $zfolder"
         unzip -q $zfile
         prom_verify_artifacts $module $module.artifact.properties $zfolder/artifact.properties
@@ -99,8 +99,8 @@ function prom_promote_files() {
     # copy the platform JAR files from each platform zip folder
     for i in $os_and_archs_minus_one ; do
         # zip folder verfified above already
-        zfile=`find . -name $module\*$i.zip`
-        zfolder=`basename $zfile .zip`
+        local zfile=`find . -name $module\*$i.zip`
+        local zfolder=`basename $zfile .zip`
         for sub in $submodules ; do
             jars=`find $zfolder -name $sub\*$i\*.jar`
             if [ -z "$jars" ] ; then
@@ -114,15 +114,15 @@ function prom_promote_files() {
     done
     # copy the master pic JAR files
     # zip folder verfified above already
-    zfile=`find . -name $module\*$masterpick.zip`
-    zfolder=`basename $zfile .zip`
+    local zfile=`find . -name $module\*$masterpick.zip`
+    local zfolder=`basename $zfile .zip`
     for sub in $submodules ; do
-        jars=`find $zfolder -name $sub\*$masterpick\*.jar`
+        local jars=`find $zfolder -name $sub\*$masterpick\*.jar`
         if [ -z "$jars" ] ; then
             echo "ERROR: No platform JAR file for module $module, sub $sub, masterpick platform $masterpick, sdir $sourcedir"
             exit 1
         fi
-        jars=`find $zfolder -name $sub\*.jar`
+        local jars=`find $zfolder -name $sub\*.jar`
         if [ -z "$jars" ] ; then
             echo "ERROR: No JAR files for module $module, sub $sub, masterpick $masterpick, sdir $sourcedir"
             exit 1
@@ -137,15 +137,15 @@ function prom_promote_files() {
 }
 
 function prom_cleanup() {
-    destdir=$1
+    local destdir=$1
     shift
 
-    lthisdir=`pwd`
+    local lthisdir=`pwd`
     cd $destdir
 
     for i in $os_and_archs ; do
         for j in *$i.zip ; do
-            bname=`basename $j .zip`
+            local bname=`basename $j .zip`
             if [ -d $bname ] ; then
                 echo "INFO: delete folder $bname"
                 rm -rf $bname
@@ -157,18 +157,18 @@ function prom_cleanup() {
 }
 
 function prom_integrity_check() {
-    destdir=$1
+    local destdir=$1
     shift
 
-    lthisdir=`pwd`
+    local lthisdir=`pwd`
     cd $destdir
 
     mkdir dump
     cd dump
     for i in ../*.jar ; do
-        bname=`basename $i`
+        local bname=`basename $i`
         echo -n "INFO: integrity check - $bname - "
-        OK=0
+        local OK=0
         jar xvf $i >& $bname.log && OK=1
         if [ $OK -eq 0 ] ; then
             echo ERROR
