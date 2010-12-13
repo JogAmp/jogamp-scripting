@@ -73,6 +73,22 @@ function promote-latest-builds() {
     unzip -q ../gluegen-javadoc.zip
     cd $rootdir
 
+    joalslave=`prom_lslatest joal-b`
+    bjoalslave=`prom_buildnumber_2 $joalslave`
+    echo
+    echo JOAL
+    echo
+    echo slave  build $bjoalslave - $joalslave
+    echo
+    echo "joal.build.number=$bjoalslave" >> $dest/aggregated.artifact.properties
+
+    prom_promote_files joal $joalslave $dest joal
+    
+    cp -a $joalslave/javadoc.zip $dest/joal-javadoc.zip
+    cd $dest/javadoc
+    unzip -q ../joal-javadoc.zip
+    cd $rootdir
+
     joglslave=`prom_lslatest jogl-b`
     bjoglslave=`prom_buildnumber_2 $joglslave`
     joglmaster=`prom_lslatest jogl-master-b`

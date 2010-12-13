@@ -35,8 +35,10 @@ for j in $jnlpdir/*.jnlp ; do
     local jb=`basename $j`
     echo "processing $j to $wsdir/$jb"
 
-    sed -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
+    sed \
         -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
         $j > $wsdir/$jb
 done
@@ -90,8 +92,10 @@ for j in $jnlpdir/*.jnlp ; do
     local jb=`basename $j`
     echo "processing $j to $demos/$jb"
 
-    sed -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
+    sed \
         -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
+        -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/DEMO_CODEBASE_TAG/$uri_demos_esc/g" \
         $j > $demos/$jb
