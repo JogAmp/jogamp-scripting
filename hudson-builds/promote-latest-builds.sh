@@ -202,9 +202,9 @@ function promote-latest-builds() {
 
     prom_cleanup $dest
 
-    uri=gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
-    wsdir=$archivedir/gluegen_$bgluegenslave-jogl_$bjoglslave-jocl_$bjoclslave
+    uri=gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
+    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
+    wsdir=$archivedir/gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
 
     rm -rf $wsdir
     mv $dest $wsdir
@@ -214,14 +214,15 @@ function promote-latest-builds() {
     echo
     echo aggregation.properties
     echo
+    dos2unix joal.artifact.properties
     dos2unix jocl-demos.artifact.properties
     dos2unix jogl-demos.artifact.properties
     dos2unix aggregated.artifact.properties
-    cat jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > jocl-demos-jogl-demos.artifact.properties.sorted
+    cat joal.artifact.properties jocl-demos.artifact.properties jogl-demos.artifact.properties | sort -u > all.artifact.properties.sorted
     sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
-    diff -Nurbw aggregated.artifact.properties.sorted jocl-demos-jogl-demos.artifact.properties.sorted
+    diff -Nurbw aggregated.artifact.properties.sorted all.artifact.properties.sorted
 
-    copy_relocate_jnlps_base $url $wsdir
+    copy_relocate_jnlps_base  $url $wsdir
     copy_relocate_jnlps_demos $url $wsdir jogl-demos
     copy_relocate_jnlps_demos $url $wsdir jocl-demos
 
