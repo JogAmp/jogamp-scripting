@@ -20,6 +20,8 @@ if [ "$option" == "secure" ] ; then
     let secure=1
 fi
 
+version=autobuild
+
 sdir=`dirname $0`
 
 thisdir=`pwd`
@@ -213,6 +215,7 @@ function promote-latest-builds() {
     #########################################################
 
     prom_integrity_check $dest
+    prom_integrity_check $dest/joal-demos
     prom_integrity_check $dest/jogl-demos
     prom_integrity_check $dest/jocl-demos
 
@@ -251,10 +254,10 @@ function promote-latest-builds() {
 
     diff -Nurbw aggregated.artifact.properties.sorted all.artifact.properties.sorted | tee all.artifact.properties.diff
 
-    copy_relocate_jnlps_base  $url $wsdir
-    copy_relocate_jnlps_demos $url $wsdir joal-demos
-    copy_relocate_jnlps_demos $url $wsdir jogl-demos
-    copy_relocate_jnlps_demos $url $wsdir jocl-demos
+    copy_relocate_jnlps_base  $version $url $wsdir
+    copy_relocate_jnlps_demos $version $url $wsdir joal-demos
+    copy_relocate_jnlps_demos $version $url $wsdir jogl-demos
+    copy_relocate_jnlps_demos $version $url $wsdir jocl-demos
 
     if [ $secure -ne 1 ] ; then
         remove_security_tag_jnlps $wsdir

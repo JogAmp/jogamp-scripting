@@ -2,17 +2,20 @@
 
 function copy_relocate_jnlps_base() {
 
+local version=$1
+shift
+
 local url=$1
 shift
 
 local wsdir=$1
 shift 
 
-if [ -z "$url" -o -z "$wsdir" ] ; then
-    echo usage $0 codebase-url webstartdir
+if [ -z "$version" -o -z "$url" -o -z "$wsdir" ] ; then
+    echo usage $0 version codebase-url webstartdir
     echo Examples
-    echo    sh $0 file:////usr/local/projects/JOGL/webstart ../../webstart
-    echo    sh $0 http://domain.org/jogl/webstart /srv/www/webstart-next
+    echo    sh $0 v2.0-rc2 file:////usr/local/projects/JOGL/webstart ../../webstart
+    echo    sh $0 v2.0-rc2 http://domain.org/jogl/webstart /srv/www/webstart-next
     exit 1
 fi
 
@@ -36,6 +39,7 @@ for j in $jnlpdir/*.jnlp ; do
     echo "processing $j to $wsdir/$jb"
 
     sed \
+        -e "s/JOGAMP_VERSION/$version/g" \
         -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
         -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
@@ -47,6 +51,9 @@ done
 
 function copy_relocate_jnlps_demos() {
 
+local version=$1
+shift
+
 local url=$1
 shift
 
@@ -56,11 +63,11 @@ shift
 local demos_rel=$1
 shift
 
-if [ -z "$url" -o -z "$wsdir" -o -z "$demos_rel" ] ; then
-    echo usage $0 codebase-url webstartdir demos_rel
+if [ -z "$version" -o -z "$url" -o -z "$wsdir" -o -z "$demos_rel" ] ; then
+    echo usage $0 version codebase-url webstartdir demos_rel
     echo Examples
-    echo    sh $0 file:////usr/local/projects/JOGL/webstart ../../webstart demos
-    echo    sh $0 http://domain.org/jogl/webstart /srv/www/webstart-next demos
+    echo    sh $0 v2.0-rc2 file:////usr/local/projects/JOGL/webstart ../../webstart demos
+    echo    sh $0 v2.0-rc2 http://domain.org/jogl/webstart /srv/www/webstart-next demos
     exit 1
 fi
 
@@ -93,6 +100,7 @@ for j in $jnlpdir/*.jnlp ; do
     echo "processing $j to $demos/$jb"
 
     sed \
+        -e "s/JOGAMP_VERSION/$version/g" \
         -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
         -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
         -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \

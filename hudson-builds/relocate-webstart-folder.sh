@@ -6,13 +6,17 @@
 #   - copy wsdir1 -> wsdir2
 #   - filters jnlp files (url)
 #
-# relocate-webstart-folder.sh <wsdir1> <wsdir2> <url>
+# relocate-webstart-folder.sh <version> <wsdir1> <wsdir2> <url>
 # eg.
-#   relocate-webstart-folder.sh /srv/www/deployment/webstart-b3 \
+#   relocate-webstart-folder.sh v2.0-rc2 \
+#                               /srv/www/deployment/webstart-b3 \
 #                               /srv/www/deployment/webstart-next \
 #                               http://lala.lu/webstart-next 
 #
 ##
+
+version=$1
+shift
 
 abuild=$1
 shift
@@ -23,8 +27,8 @@ shift
 url=$1
 shift
 
-if [ -z "$abuild" -o -z "$wsdir" -o -z "$url" ] ; then
-    echo "usage $0 abuilddir webstartdir url"
+if [ -z "$version" -o -z "$abuild" -o -z "$wsdir" -o -z "$url" ] ; then
+    echo "usage $0 version abuilddir webstartdir url"
     exit 1
 fi
 
@@ -44,7 +48,8 @@ sdir=`dirname $0`
 
 cp -a $abuild $wsdir
 
-copy_relocate_jnlps_base $url $wsdir
-copy_relocate_jnlps_demos $url $wsdir jogl-demos
-copy_relocate_jnlps_demos $url $wsdir jocl-demos
+copy_relocate_jnlps_base  $version $url $wsdir
+copy_relocate_jnlps_demos $version $url $wsdir joal-demos
+copy_relocate_jnlps_demos $version $url $wsdir jogl-demos
+copy_relocate_jnlps_demos $version $url $wsdir jocl-demos
 
