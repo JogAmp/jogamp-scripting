@@ -72,7 +72,7 @@ function promote-latest-builds() {
     cp -a $gluegenmaster/javadoc.zip $dest/gluegen-javadoc.zip
     cd $dest/javadoc
     echo "INFO: gluegen master gluegen-javadoc zip"
-    unzip -q ../gluegen-javadoc.zip
+    prom_unzip ../gluegen-javadoc.zip
     cd $rootdir
 
     joalslave=`prom_lslatest joal-b`
@@ -88,7 +88,7 @@ function promote-latest-builds() {
     
     cp -a $joalslave/javadoc.zip $dest/joal-javadoc.zip
     cd $dest/javadoc
-    unzip -q ../joal-javadoc.zip
+    prom_unzip ../joal-javadoc.zip
     cd $rootdir
 
     joaldemosslave=`prom_lslatest joal-demos-b`
@@ -104,12 +104,12 @@ function promote-latest-builds() {
     cp -a $joaldemosslave/artifact.properties $dest/joal-demos.artifact.properties
     cd $dest
 
-    fname=`find . -name joal-demos*.zip`
+    fname=`find . -name joal-demos\*$masterpick.zip`
     bname=`basename $fname .zip`
     mkdir joal-demos
     cd joal-demos
     echo "INFO: unzip $fname -> $bname"
-    unzip -q ../$bname.zip
+    prom_unzip ../$bname.zip
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
@@ -134,7 +134,7 @@ function promote-latest-builds() {
     cp -a $joglmaster/artifact.properties $dest/javadoc/jogl-master.artifact.properties
     cp -a $joglmaster/javadoc.zip $dest/jogl-javadoc.zip
     cd $dest/javadoc
-    unzip -q ../jogl-javadoc.zip
+    prom_unzip ../jogl-javadoc.zip
     cd $rootdir
 
     jogldemosslave=`prom_lslatest jogl-demos-b`
@@ -150,12 +150,12 @@ function promote-latest-builds() {
     cp -a $jogldemosslave/artifact.properties $dest/jogl-demos.artifact.properties
     cd $dest
 
-    fname=`find . -name jogl-demos*.zip`
+    fname=`find . -name jogl-demos\*$masterpick.zip`
     bname=`basename $fname .zip`
     mkdir jogl-demos
     cd jogl-demos
     echo "INFO: unzip $fname -> $bname"
-    unzip -q ../$bname.zip
+    prom_unzip ../$bname.zip
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
@@ -180,7 +180,7 @@ function promote-latest-builds() {
     cp -a $joclmaster/artifact.properties $dest/javadoc/jocl-master.artifact.properties
     cp -a $joclmaster/jocl-javadoc.zip $dest/jocl-javadoc.zip
     cd $dest/javadoc
-    unzip -q ../jocl-javadoc.zip
+    prom_unzip ../jocl-javadoc.zip
     cd $rootdir
 
     jocldemosslave=`prom_lslatest jocl-demos-b`
@@ -196,12 +196,12 @@ function promote-latest-builds() {
     cp -a $jocldemosslave/artifact.properties $dest/jocl-demos.artifact.properties
     cd $dest
 
-    fname=`find . -name jocl-demos*.zip`
+    fname=`find . -name jocl-demos\*$masterpick.zip`
     bname=`basename $fname .zip`
     mkdir jocl-demos
     cd jocl-demos
     echo "INFO: unzip $fname -> $bname"
-    unzip -q ../$bname.zip
+    prom_unzip ../$bname.zip
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
@@ -266,6 +266,14 @@ function promote-latest-builds() {
     echo
     echo Aggregation folder $wsdir for URL $url
     echo
+
+    local OK=1
+    grep ERROR $logfile && OK=0
+    if [ $OK -eq 0 ] ; then
+        echo ERRORS occured - please check $logfile for ERROR
+    else
+        echo NO ERRORS detected
+    fi
 
     cp -av $logfile $wsdir
 }

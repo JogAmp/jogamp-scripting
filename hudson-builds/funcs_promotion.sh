@@ -93,7 +93,7 @@ function prom_promote_files() {
         fi
         local zfolder=`basename $zfile .zip`
         echo "INFO: unzip $module $i - $zfile -> $zfolder"
-        unzip -q $zfile
+        prom_unzip $zfile
         prom_verify_artifacts $module $module.artifact.properties $zfolder/artifact.properties
     done
     # copy the platform JAR files from each platform zip folder
@@ -134,6 +134,19 @@ function prom_promote_files() {
     cp -av $zfolder/jnlp-files/* ./jnlp-files/
 
     cd $lthisdir
+}
+
+function prom_unzip() {
+    local zfile=$1
+    shift
+
+    local OK=0
+    unzip -q $zfile && OK=1
+    if [ $OK -eq 0 ] ; then
+        echo ERROR in ZIP file $zfile
+    else
+        echo OK ZIP file $zfile
+    fi
 }
 
 function prom_cleanup() {
