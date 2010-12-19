@@ -31,10 +31,8 @@ if [ ! -e $jnlpdir ] ; then
     exit 1
 fi
 
-cp -v $jnlpdir/*.html $wsdir
-
 local uri_esc=`echo $url | sed 's/\//\\\\\//g'`
-for j in $jnlpdir/*.jnlp ; do
+for j in $jnlpdir/*.jnlp $jnlpdir/*.html ; do
     local jb=`basename $j`
     echo "processing $j to $wsdir/$jb"
 
@@ -91,11 +89,9 @@ if [ ! -e $jnlpdir ] ; then
     exit 1
 fi
 
-cp -v $jnlpdir/*.html $demos
-
 local uri_esc=`echo $url | sed 's/\//\\\\\//g'`
 local uri_demos_esc=`echo $url_demos | sed 's/\//\\\\\//g'`
-for j in $jnlpdir/*.jnlp ; do
+for j in $jnlpdir/*.jnlp $jnlpdir/*.html ; do
     local jb=`basename $j`
     echo "processing $j to $demos/$jb"
 

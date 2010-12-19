@@ -25,10 +25,12 @@ local THISDIR=`pwd`
 
 cd $wsdir
 
-for i in *.jar ; do
+if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+  for i in *.jar ; do
     echo pack200 --repack $i
     pack200 --repack $i
-done
+  done
+fi
 
 cd $THISDIR
 
@@ -56,12 +58,14 @@ cd $wsdir
 mkdir -p DLLS
 mv *natives*.jar DLLS/
 
-for i in *.jar ; do
+if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+  for i in *.jar ; do
     echo gzip -9 $i to $i.gz
     gzip -9 -cv $i > $i.gz
     echo pack200 -E9 $i.pack.gz $i
     pack200 -E9 $i.pack.gz $i
-done
+  done
+fi
 
 mv DLLS/* .
 
