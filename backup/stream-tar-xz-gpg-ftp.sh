@@ -6,6 +6,16 @@ destproto=ftp
 destserver=backup-server.net
 destuid=user
 destpwd=password
+
+#
+# gpg keys to encrypt to
+# you need to import and sign those
+# import:
+#   gpg --import <file> 
+#   gpg --recv-key 0x8ED60127
+# sign:
+#   gpg --sign-key 0x8ED60127
+#
 destencr1=0xB848A4B4
 destencr2=0x8ED60127
 destencr3=0x43681400
