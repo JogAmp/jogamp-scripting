@@ -151,7 +151,9 @@ function promote-latest-builds() {
     echo "jogl-demos.build.number=$bjogldemosmaster" >> $dest/aggregated.artifact.properties
 
     cp -a $jogldemosmaster/jogl-demos*.7z $dest/
-    cp -a $jogldemosmaster/artifact.properties $dest/jogl-demos.artifact.properties
+    cp -a $jogldemosslave/artifact.properties $dest/jogl-demos.artifact.properties
+    grep jogl-demos.build.branch $jogldemosmaster/artifact.properties >> jogl-demos.artifact.properties
+    grep jogl-demos.build.commit $jogldemosmaster/artifact.properties >> jogl-demos.artifact.properties
     cd $dest
 
     fname=`find . -name jogl-demos\*$masterpick.7z`
