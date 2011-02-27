@@ -62,7 +62,7 @@ function prom_verify_artifacts() {
 # #1 module name, IE gluegen, jogl, jocl or joal
 # #2 source folder of artifacts
 # #3 destination folder of artifacts
-# #4-n submodule name within the ZIP files
+# #4-n submodule name within the 7z files
 #
 # Example:
 # promote_files gluegen /builds/gluegen-b33 tmp-archive gluegen
@@ -80,27 +80,27 @@ function prom_promote_files() {
     local lthisdir=`pwd`
 
     echo "INFO: Promoting files: $module, submodules <$submodules>, from $sourcedir"
-    # copy the platform zip files
-    cp -a $sourcedir/$module*.zip $destdir/
+    # copy the platform 7z files
+    cp -a $sourcedir/$module*.7z $destdir/
     cp -a $sourcedir/artifact.properties $destdir/$module.artifact.properties
     cd $destdir
-    # unpack the platform zip files
+    # unpack the platform 7z files
     for i in $os_and_archs ; do
-        local zfile=`find . -name $module\*$i.zip`
+        local zfile=`find . -name $module\*$i.7z`
         if [ -z "$zfile" ] ; then
-            echo "ERROR: No platform ZIP file for module $module, sub $sub, platform $i, sdir $sourcedir"
+            echo "ERROR: No platform 7z file for module $module, sub $sub, platform $i, sdir $sourcedir"
             exit 1
         fi
-        local zfolder=`basename $zfile .zip`
-        echo "INFO: unzip $module $i - $zfile -> $zfolder"
-        prom_unzip $zfile
+        local zfolder=`basename $zfile .7z`
+        echo "INFO: extract $module $i - $zfile -> $zfolder"
+        prom_extract $zfile
         prom_verify_artifacts $module $module.artifact.properties $zfolder/artifact.properties
     done
-    # copy the platform JAR files from each platform zip folder
+    # copy the platform JAR files from each platform 7z folder
     for i in $os_and_archs_minus_one ; do
-        # zip folder verfified above already
-        local zfile=`find . -name $module\*$i.zip`
-        local zfolder=`basename $zfile .zip`
+        # 7z folder verfified above already
+        local zfile=`find . -name $module\*$i.7z`
+        local zfolder=`basename $zfile .7z`
         for sub in $submodules ; do
             jars=`find $zfolder -name $sub\*$i\*.jar`
             if [ -z "$jars" ] ; then
@@ -113,9 +113,9 @@ function prom_promote_files() {
         done
     done
     # copy the master pic JAR files
-    # zip folder verfified above already
-    local zfile=`find . -name $module\*$masterpick.zip`
-    local zfolder=`basename $zfile .zip`
+    # 7z folder verfified above already
+    local zfile=`find . -name $module\*$masterpick.7z`
+    local zfolder=`basename $zfile .7z`
     for sub in $submodules ; do
         local jars=`find $zfolder -name $sub\*$masterpick\*.jar`
         if [ -z "$jars" ] ; then
@@ -136,16 +136,16 @@ function prom_promote_files() {
     cd $lthisdir
 }
 
-function prom_unzip() {
+function prom_extract() {
     local zfile=$1
     shift
 
     local OK=0
-    unzip -q $zfile && OK=1
+    7z x $zfile && OK=1
     if [ $OK -eq 0 ] ; then
-        echo ERROR in ZIP file $zfile
+        echo ERROR in 7z file $zfile
     else
-        echo OK ZIP file $zfile
+        echo OK 7z file $zfile
     fi
 }
 
@@ -157,15 +157,15 @@ function prom_cleanup() {
     cd $destdir
 
     for i in $os_and_archs ; do
-        for j in *$i.zip ; do
-            local bname=`basename $j .zip`
+        for j in *$i.7z ; do
+            local bname=`basename $j .7z`
             if [ -d $bname ] ; then
                 echo "INFO: delete folder $bname"
                 rm -rf $bname
             fi
         done
     done
-    mv *.zip archive/
+    mv *.7z archive/
     cd $lthisdir
 }
 
