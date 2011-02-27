@@ -72,7 +72,7 @@ function promote-latest-builds() {
     cp -a $gluegenmaster/javadoc.7z $dest/gluegen-javadoc.7z
     cd $dest/javadoc
     echo "INFO: gluegen master gluegen-javadoc 7z"
-    prom_extract ../gluegen-javadoc.7z
+    prom_extract ../gluegen-javadoc.7z gluegen
     cd $rootdir
 
     joalslave=`prom_lslatest joal-b`
@@ -88,7 +88,7 @@ function promote-latest-builds() {
     
     cp -a $joalslave/javadoc.7z $dest/joal-javadoc.7z
     cd $dest/javadoc
-    prom_extract ../joal-javadoc.7z
+    prom_extract ../joal-javadoc.7z joal
     cd $rootdir
 
     joaldemosslave=`prom_lslatest joal-demos-b`
@@ -134,7 +134,7 @@ function promote-latest-builds() {
     cp -a $joglmaster/artifact.properties $dest/javadoc/jogl-master.artifact.properties
     cp -a $joglmaster/javadoc.7z $dest/jogl-javadoc.7z
     cd $dest/javadoc
-    prom_extract ../jogl-javadoc.7z
+    prom_extract ../jogl-javadoc.7z jogl
     cd $rootdir
 
     jogldemosslave=`prom_lslatest jogl-demos-b`
@@ -184,7 +184,7 @@ function promote-latest-builds() {
     cp -a $joclmaster/artifact.properties $dest/javadoc/jocl-master.artifact.properties
     cp -a $joclmaster/jocl-javadoc.7z $dest/jocl-javadoc.7z
     cd $dest/javadoc
-    prom_extract ../jocl-javadoc.7z
+    prom_extract ../jocl-javadoc.7z jocl
     cd $rootdir
 
     jocldemosslave=`prom_lslatest jocl-demos-b`

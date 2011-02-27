@@ -141,11 +141,11 @@ function prom_extract() {
     shift
 
     local OK=0
-    7z x $zfile && OK=1
+    7z x $zfile $* && OK=1
     if [ $OK -eq 0 ] ; then
-        echo ERROR in 7z file $zfile
+        echo ERROR in 7z file $zfile $*
     else
-        echo OK 7z file $zfile
+        echo OK 7z file $zfile $*
     fi
 }
 
