@@ -109,7 +109,7 @@ function promote-latest-builds() {
     mkdir joal-demos
     cd joal-demos
     echo "INFO: extract $fname -> $bname"
-    prom_extract ../$bname.7z
+    prom_extract ../$bname.7z $bname
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
@@ -161,7 +161,7 @@ function promote-latest-builds() {
     mkdir jogl-demos
     cd jogl-demos
     echo "INFO: extract $fname -> $bname"
-    prom_extract ../$bname.7z
+    prom_extract ../$bname.7z $bname
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
@@ -207,7 +207,7 @@ function promote-latest-builds() {
     mkdir jocl-demos
     cd jocl-demos
     echo "INFO: extract $fname -> $bname"
-    prom_extract ../$bname.7z
+    prom_extract ../$bname.7z $bname
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .

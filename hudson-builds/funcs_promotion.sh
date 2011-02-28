@@ -93,7 +93,7 @@ function prom_promote_files() {
         fi
         local zfolder=`basename $zfile .7z`
         echo "INFO: extract $module $i - $zfile -> $zfolder"
-        prom_extract $zfile
+        prom_extract $zfile $zfolder
         prom_verify_artifacts $module $module.artifact.properties $zfolder/artifact.properties
     done
     # copy the platform JAR files from each platform 7z folder
@@ -146,6 +146,9 @@ function prom_extract() {
         echo ERROR in 7z file $zfile $*
     else
         echo OK 7z file $zfile $*
+        if [ ! -z "$*" ] ; then
+            chmod 755 $*
+        fi
     fi
 }
 
