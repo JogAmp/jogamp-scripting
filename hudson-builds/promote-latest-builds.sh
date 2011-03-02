@@ -77,16 +77,20 @@ function promote-latest-builds() {
 
     joalslave=`prom_lslatest joal-b`
     bjoalslave=`prom_buildnumber_2 $joalslave`
+    joalmaster=`prom_lslatest joal-master-b`
+    bjoalmaster=`prom_buildnumber_3 $joalmaster`
     echo
     echo JOAL
     echo
     echo slave  build $bjoalslave - $joalslave
+    echo master build $bjoalmaster - $joalmaster
     echo
     echo "joal.build.number=$bjoalslave" >> $dest/aggregated.artifact.properties
 
     prom_promote_files joal $joalslave $dest joal
     
-    cp -a $joalslave/javadoc.7z $dest/joal-javadoc.7z
+    cp -a $joalmaster/artifact.properties $dest/javadoc/joal-master.artifact.properties
+    cp -a $joalmaster/javadoc.7z $dest/joal-javadoc.7z
     cd $dest/javadoc
     prom_extract ../joal-javadoc.7z joal
     cd $rootdir
