@@ -1,0 +1,6 @@
+[user]
+    name = JogAmp Build User\n
+    email = mediastream@jogamp.org\n
+
+[core]
+    autocrlf = false

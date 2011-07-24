@@ -1,0 +1,87 @@
+cygwin_sshd_win7_init.txt
+=========================
+
+I have read the following 2 howtos ..
+    [1] http://cygwin.com/faq/faq-nochunks.html#faq.using.sshd-in-domain
+    [2] http://www.kgx.net.nz/2010/03/cygwin-sshd-and-windows-7/
+where [2] was really helpfull.
+
+The following is based on [2] and we should be able to config it easily.
+
+Install Cygwin / OpenSSH - ssh daemon/service
+==============================================
+
+In the following writing we will use single quotes
+to quote names, ie 'sshd', or 'jogamp'.
+The quotes are not part of the name, 
+but are ment to seperate the name from this text, 
+i.e. don't enter the quotes.
+
+1) Create accounts: 
+
+- cmd.exe: 'lusrmgr' 
+    - Users
+        - New User.. (right click)
+            - User Name: 'jogamp'
+            - Enter a password
+            - Uncheck: User must change password
+            - Check: Password never exires
+        - Right click on 'jogamp' -> properties (optional)
+            - MemberOf
+                - Add: 'Administrators'
+
+    - Repeat this for account: 'cyg_server' ! (only for win7 service)
+        - Same options
+
+    - Repeat this for account: 'sshd' ! (only for win7 service)
+        - Same options, _BUT_ don't add MemberOf 'Administrators'
+
+2) Enable account: Administrator (or use powershell)
+
+- cmd.exe: 'lusrmgr' 
+    - enable Administrator
+    - set password for Administrator
+
+3) We need all these passwords, incl. Administrator !!
+Please put them in a text file (user:password), ie c:\admin.txt
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+If you are not already run as user 'jogamp', 
+please:
+    - LOGOUT OF WINDOWS
+    - LOGIN TO WINDOWS AS USER 'jogamp'
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+4) Install latest cygwin 1.7.5-1 as user 'jogamp'
+    - http://www.cygwin.com/
+    - Answer: For All users
+    - Default location C:\cygwin
+    - Add:
+        - git
+        - openssh
+        - vim
+        - ..
+        - maybe: EVERYTHING but sources !
+
+5) Update cygwin user mappings:
+    - Start cygwin shell as user 'jogamp'
+    - Run:
+        mkpasswd -l > /etc/passwd
+        mkgroup -l > /etc/group
+        
+6) Add public keys to each users (Administrator, jogamp, ..) cygwin home ~/.ssh/authorized_keys:
+    - Start cygwin shell as user 'jogamp'
+    ++++++++++
+    - mkdir /home/jogamp/.ssh
+    - cp authorized_keys /home/jogamp/.ssh
+    - chown -R jogamp /home/jogamp/.ssh
+    - chmod 0700 /home/jogamp/.ssh
+    - chmod 0600 /home/jogamp/.ssh/*
+    ++++++++++
+    Repeat the above for account 'Administrator' as well!
+
+Now continue with either:
+    - cygwin_sshd_win7_service.txt
+    - cygwin_sshd_win7_usr_process.txt
+

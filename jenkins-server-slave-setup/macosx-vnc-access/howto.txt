@@ -1,0 +1,113 @@
+General Enable:
+
+$ echo -n enabled > /Library/Preferences/com.apple.ScreenSharing.launchd
+$ echo -n enabled > /private/etc/ScreenSharing.launchd
+
+To disable screen sharing:
+
+$ cd /Library/Preferences
+$ rm com.apple.ScreenSharing.launchd
+
+++++++++++++++
+++++++++++++++
+
+Detailed RDP Enable with Password etc:
+
+Attention: Switch from RDP to ScreenSharing afterwards, since Auto Login seems not to be working with RDP ? - FIXME
+
+Hi all,
+
+I actually registered on this forum just to post this solution. I hope it will make many others happy!
+
+Motivation for going through these hoops:
+I needed to access the desktop of an old OSX machine every now and then from a windows VNC client. Details of that machine are:
+Dual G5 OSX 10.4 without monitor/keyboard.
+
+Important:
+
+- Remote Desktop had never been enabled before on that machine.
+- SSH access however was available.
+
+So how do you turn on Apple Remote Desktop / VNC Server on a machine where it never ran before? That part was easy to find on the net: SSH as an admin user onto the OSX machine. Then execute this command:
+
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -users admin -privs -all -restart -agent
+
+Try to connect with your VNC client now. If it works, good, you're done. The above command takes care even of restarting the Remote Desktop Service when the computer is rebooted.
+
+But if you're not so lucky (like I was) and the connection fails with a message like:
+- "Server did not offer supported security type" (tightVNC)
+- "No matching security types" (realVNC)
+- "Incompatible Version" (UltraVNC)
+
+you're stuck. What happened in this case is that the VNC password has never been setup properly. Follow these simple steps while still logged in as admin user to set up a default password ("pass" in our case):
+
+- Switch off RDP:
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -stop
+
+- Go to the Preferences directory:
+cd /Library/Preferences
+
+- edit the following files using vi (if you're not familiar with vi, be very careful to follow the instructions to the iota!):
+sudo vi com.apple.RemoteManagement.plist
+
+Put the following lines into this file (hint: copy them from here rather than typing them). Instruction for vi newbies:
+- copy the text below into your clipboard
+- set focus to the ssh window
+- press the 'i' key. This puts vi into text insert mode
+- paste the text. If you're on windows/cygwin, click to top left of the cygwin ssh window -> Edit -> Paste
+- press the 'Esc' key
+- enter the keystrokes ':wq', colon tells vi you are about to enter a command, w is the command for write, q for quit.
+
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0">
+<dict>
+<key>ARD_AllLocalUsers</key>
+<false/>
+<key>LoadRemoteManagementMenuExtra</key>
+<true/>
+<key>ScreenSharingReqPermEnabled</key>
+<true/>
+<key>VNCLegacyConnectionsEnabled</key>
+<true/>
+</dict>
+</plist>
+
+- edit the file sudo vi com.apple.ScreenSharing.launchd
+press the 'i' key and type enabled, hit return, 'Esc' and ':wq'
+
+- set the default VNC password to 'pass' by editing this file:
+sudo vi com.apple.VNCSettings.txt
+and copy/paste this string (the encoded password) into that file: 6755221D8BA8C5E2FF1C39567390ADCA
+
+- Now the files need to have their ownerships and access rights configured properly. Do this by executing the following commands after each other:
+
+sudo chmod 644 com.apple.RemoteManagement.plist
+sudo chown root:admin com.apple.RemoteManagement.plist
+
+sudo chmod 644 com.apple.ScreenSharing.launchd
+sudo chown root:admin com.apple.ScreenSharing.launchd
+
+sudo chmod 400 com.apple.VNCSettings.txt
+sudo chown root:wheel com.apple.VNCSettings.txt
+
+
+Now stop and start the Remote Desktop Server, or reboot the machine:
+
+To just restart the Remote Desktop first stop it:
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -stop
+
+Then restart it:
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -users admin -privs -all -restart -agent
+
+or, alternatively, reboot the server:
+
+sudo shutdown -r now
+
+Connect to the server and enter your password we set to "pass" above. Set the password to something else by opening the System Preferences -> Sharing -> Apple Remote Desktop -> Access Privileges and set the password in the "VNC viewers may control the screen with password:" to something else.
+
+:apple:ED
+
+Hope this helped!
+
+Cheers
+
+Balt Indermuehle <balt@inside.net>

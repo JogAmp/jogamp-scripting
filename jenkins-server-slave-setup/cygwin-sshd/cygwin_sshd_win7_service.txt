@@ -1,0 +1,49 @@
+cygwin_sshd_win7_service.txt
+==============================
+
+Please read cygwin_sshd_win7_init.txt first!
+
+7) Modify account settings for account 'cyg_server' _and_
+configure the ssh deamon, sshd:
+    - Start cygwin shell as Administrator:
+        - start cmd.exe
+            - runas /user:Administrator c:\cygwin\Cygwin.bat
+
+                - 7.1) to configure account 'cyg_server' run the following commands
+                  you might want to put it in a shell script, e.g. setup-cyg_server.sh
+                  +++++++++
+                    editrights.exe -a SeAssignPrimaryTokenPrivilege -u cyg_server
+                    editrights.exe -a SeCreateTokenPrivilege -u cyg_server
+                    editrights.exe -a SeTcbPrivilege -u cyg_server
+                    editrights.exe -a SeServiceLogonRight -u cyg_server
+                    editrights.exe -l -u cyg_server
+                  +++++++++
+
+                - 7.2) to configure sshd, run the following command:
+                    ssh-host-config
+
+                    - Answer the followup questions as follows:
+                        - Any 'overwrite file': yes (happens if you retry configuration)
+                        - Should privilige seperation be used: yes
+                        - Do you want to install sshd as a service: yes
+                        - Enter the value of CYGWIN for the daemon: [] (nothing, just press return)
+                        - Do you want to use a different user: no (using account: cyg_server)
+                            - Enter the password for account cyg_server
+
+                - 7.3) start sshd manually for the very first time:
+
+                    net start sshd
+
+                  sshd will be started automatically after each reboot!
+
+                  You can stop and uninstall the service via:
+                      net stop sshd
+                      cygrunsrv -R sshd
+
+                  To use the windows UI, launch:
+                    - start: cmd.exe
+                        - start: control admintools
+
+                  .. and click on services
+
+

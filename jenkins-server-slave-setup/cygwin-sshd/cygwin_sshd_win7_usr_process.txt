@@ -1,0 +1,73 @@
+cygwin_sshd_win7_usr_process.txt
+=================================
+
+Please read cygwin_sshd_win7_init.txt first!
+
+7) Modify account settings for account 'jogamp' _and_
+configure the ssh deamon, sshd:
+    - Start cygwin shell as Administrator:
+        - start cmd.exe
+            - runas /user:Administrator c:\cygwin\Cygwin.bat
+
+                - 7.1) to configure account 'jogamp' run the following commands
+                  you might want to put it in a shell script, e.g. setup-jogamp.sh
+                  +++++++++
+                    editrights.exe -a SeAssignPrimaryTokenPrivilege -u jogamp
+                    editrights.exe -a SeCreateTokenPrivilege -u jogamp
+                    editrights.exe -a SeTcbPrivilege -u jogamp
+                    editrights.exe -a SeServiceLogonRight -u jogamp
+                    editrights.exe -l -u jogamp
+                  +++++++++
+
+                - 7.2) to configure sshd, run the following command:
+                    ssh-host-config
+
+                    - Answer the followup questions as follows:
+                        - Any 'overwrite file': yes (happens if you retry configuration)
+                        - Should privilige seperation be used: no
+                        - Do you want to install sshd as a service: no
+
+                    chown jogamp /etc/ssh*
+
+8) Autostart user 'jogamp' and user space sshd
+
+   8.1) Autostart sshd for user 'jogamp'
+   Create the sshd startup batch script 'Cygwin-sshd.bat'
+   in 'jogamp' home folder c:\Users\Jogamp
+
+   ++++++++++
+   @echo off
+
+   C:
+   chdir C:\cygwin\bin
+
+   bash --login -c /usr/sbin/sshd
+   ++++++++++
+
+    Create a shortcut to:
+        C:\Users\jogamp\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+    8.2) Automatic logon of 'jogamp' into windows-7 at boot
+
+    http://www.windows7news.com/2009/02/01/automatic-logon-into-windows-7/
+
+    - start: cmd.exe
+        - start: control userpasswords2
+            - Select the user account 'jogamp' in the main table
+            - Uncheck the “Users must enter a user name and password to use this computer. 
+            - Click on the Apply button will open the Automatically Log On window. 
+            - Enter the password and confirm it to add the password to the system 
+
+9) Start sshd manually for the very first time:
+
+- Double-Click on your created (step 8.1) batch file 'Cygwin-sshd.bat'
+
+- You also need to manually connect to the service 
+  to permit port access for this account!
+  A popup will appear.
+  So .. go on a diff machine and try: 'ssh -v jogamp@<IP-Address>'
+    
+10) Restart Windows ..
+
+11) Try to login via SSH as user 'jogamp'
+
