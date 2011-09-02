@@ -9,7 +9,7 @@
 #   - sign
 #   - pack200
 #
-# promote-to-webstart.sh <version> <adir> <wsdir> <url> <pkcs12-keystore> <storepass> [signarg]
+# promote-to-webstart.sh <version> <adir> <wsdir> <url> <pkcs12-keystore> <storepass> <key_alias>
 # eg.
 #   promote-to-webstart.sh v2.0-rc2 \
 #                          /srv/www/deployment/b3 \
@@ -17,7 +17,7 @@
 #                          http://lala.lu/webstart-b3 \
 #                          secret.p12 \
 #                          PassWord \
-#                          "something"
+#                          key_alias
 #
 ##
 

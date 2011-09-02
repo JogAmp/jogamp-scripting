@@ -133,7 +133,8 @@ function promote-latest-builds() {
     echo
     echo "jogl.build.number=$bjoglslave" >> $dest/aggregated.artifact.properties
 
-    prom_promote_files jogl $joglslave $dest nativewindow jogl newt
+    # prom_promote_files jogl $joglslave $dest nativewindow jogl newt
+    prom_promote_files jogl $joglslave $dest jogl
 
     cp -a $joglmaster/artifact.properties $dest/javadoc/jogl-master.artifact.properties
     cp -a $joglmaster/javadoc.7z $dest/jogl-javadoc.7z
