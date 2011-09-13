@@ -2,7 +2,7 @@
 
 THISDIR=`pwd`
 
-./hudson-builds/promote-to-webstart.sh \
+./jenkins-builds/promote-to-webstart.sh \
     v2.0-rc2 \
     /srv/www/jogamp.org/deployment/archive/jau01 \
     /srv/www/jogamp.org/deployment/test/jau01s \

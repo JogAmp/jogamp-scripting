@@ -10,7 +10,7 @@ ssh jogl@jogamp.org "\
     git clone file:///srv/scm/jogamp-scripting.git jogamp-scripting ; \
     cd jogamp-scripting ; \
     ls -la ; \
-    ./hudson-builds/promote-to-webstart.sh \
+    ./jenkins-builds/promote-to-webstart.sh \
         $tag \
         /srv/www/jogamp.org/deployment/archive/$branch/$bname \
         /srv/www/jogamp.org/deployment/archive/$branch/$bname-webstart \

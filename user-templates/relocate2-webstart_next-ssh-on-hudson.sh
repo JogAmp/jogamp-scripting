@@ -10,7 +10,7 @@ ssh jogl@jogamp.org "\
     git clone file:///srv/scm/jogamp-scripting.git jogamp-scripting ; \
     cd jogamp-scripting ; \
     ls -la ; \
-    ./hudson-builds/relocate-webstart-folder.sh \
+    ./jenkins-builds/relocate-webstart-folder.sh \
         $tag \
         /srv/www/jogamp.org/deployment/archive/$branch/$bname-webstart \
         /srv/www/jogamp.org/deployment/webstart-next-new \
