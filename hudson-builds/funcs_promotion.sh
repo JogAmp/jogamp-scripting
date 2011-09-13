@@ -12,9 +12,16 @@ function prom_setup() {
 
     rm -rf $ldest
     mkdir $ldest
+    mkdir $ldest/archive
+    for i in $os_and_archs ; do
+        mkdir $ldest/archive/$i
+        mkdir $ldest/archive/$i/test-results/
+    done
+    mkdir $ldest/jar
     mkdir $ldest/javadoc
     mkdir $ldest/jnlp-files
-    mkdir $ldest/archive
+    mkdir $ldest/log
+    mkdir $ldest/tmp
 
     cd $lthisdir
 }
@@ -81,26 +88,27 @@ function prom_promote_files() {
 
     echo "INFO: Promoting files: $module, submodules <$submodules>, from $sourcedir"
     # copy the platform 7z files
-    cp -a $sourcedir/$module*.7z $destdir/
-    cp -a $sourcedir/artifact.properties $destdir/$module.artifact.properties
+    cp -a $sourcedir/artifact.properties $destdir/log/$module.artifact.properties
     cd $destdir
     # unpack the platform 7z files
     for i in $os_and_archs ; do
-        local zfile=`find . -name $module\*$i.7z`
+        cp -a $sourcedir/$module*$i.7z                archive/$i/
+        cp -a $sourcedir/$module*$i-test-results-*.7z archive/$i/test-results/
+        local zfile=`find . -name archive/$i/$module\*$i.7z`
         if [ -z "$zfile" ] ; then
             echo "ERROR: No platform 7z file for module $module, sub $sub, platform $i, sdir $sourcedir"
             exit 1
         fi
-        local zfolder=`basename $zfile .7z`
+        local zfolder=tmp/`basename $zfile .7z`
         echo "INFO: extract $module $i - $zfile -> $zfolder"
         prom_extract $zfile $zfolder
-        prom_verify_artifacts $module $module.artifact.properties $zfolder/artifact.properties
+        prom_verify_artifacts $module log/$module.artifact.properties $zfolder/artifact.properties
     done
     # copy the platform JAR files from each platform 7z folder
     for i in $os_and_archs_minus_one ; do
         # 7z folder verfified above already
-        local zfile=`find . -name $module\*$i.7z`
-        local zfolder=`basename $zfile .7z`
+        local zfile=`find archive/$i -name $module\*$i.7z`
+        local zfolder=tmp/`basename $zfile .7z`
         for sub in $submodules ; do
             jars=`find $zfolder -name $sub\*$i\*.jar`
             if [ -z "$jars" ] ; then
@@ -108,14 +116,14 @@ function prom_promote_files() {
                 exit 1
             fi
             for j in $jars ; do 
-                cp -av $j .
+                cp -av $j ./jar/
             done
         done
     done
     # copy the master pic JAR files
     # 7z folder verfified above already
-    local zfile=`find . -name $module\*$masterpick.7z`
-    local zfolder=`basename $zfile .7z`
+    local zfile=`find archive/$masterpick -name $module\*$masterpick.7z`
+    local zfolder=tmp/`basename $zfile .7z`
     for sub in $submodules ; do
         local jars=`find $zfolder -name $sub\*$masterpick\*.jar`
         if [ -z "$jars" ] ; then
@@ -128,7 +136,7 @@ function prom_promote_files() {
             exit 1
         fi
         for j in $jars ; do 
-            cp -av $j .
+            cp -av $j ./jar/
         done
     done
     cp -av $zfolder/jnlp-files/* ./jnlp-files/
@@ -159,29 +167,23 @@ function prom_cleanup() {
     local lthisdir=`pwd`
     cd $destdir
 
-    for i in $os_and_archs ; do
-        for j in *$i.7z ; do
-            local bname=`basename $j .7z`
-            if [ -d $bname ] ; then
-                echo "INFO: delete folder $bname"
-                rm -rf $bname
-            fi
-        done
-    done
-    mv *.7z archive/
+    echo "INFO: delete tmp folder"
+    # rm -rf tmp
     cd $lthisdir
 }
 
 function prom_integrity_check() {
+    local jardir=$1
+    shift
     local destdir=$1
     shift
 
     local lthisdir=`pwd`
     cd $destdir
 
-    mkdir dump
-    cd dump
-    for i in ../*.jar ; do
+    mkdir tmp/dump
+    cd tmp/dump
+    for i in $lthisdir/$jardir/*.jar ; do
         local bname=`basename $i`
         echo -n "INFO: integrity check - $bname - "
         local OK=0
@@ -194,8 +196,6 @@ function prom_integrity_check() {
         fi
     done
     echo
-    cd ..
-    rm -rf dump
     cd $lthisdir
 }
 

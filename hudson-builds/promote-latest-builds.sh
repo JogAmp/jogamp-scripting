@@ -64,15 +64,15 @@ function promote-latest-builds() {
     echo slave  build $bgluegenslave - $gluegenslave
     echo master build $bgluegenmaster - $gluegenmaster
     echo
-    echo "gluegen.build.number=$bgluegenslave" >> $dest/aggregated.artifact.properties
+    echo "gluegen.build.number=$bgluegenslave" >> $dest/log/aggregated.artifact.properties
 
     prom_promote_files gluegen $gluegenslave $dest gluegen
 
-    cp -a $gluegenmaster/artifact.properties $dest/javadoc/gluegen-master.artifact.properties
-    cp -a $gluegenmaster/javadoc.7z $dest/gluegen-javadoc.7z
+    cp -a $gluegenmaster/artifact.properties $dest/log/gluegen-master.artifact.properties
+    cp -a $gluegenmaster/javadoc.7z $dest/archive/gluegen-javadoc.7z
     cd $dest/javadoc
     echo "INFO: gluegen master gluegen-javadoc 7z"
-    prom_extract ../gluegen-javadoc.7z gluegen
+    prom_extract ../archive/gluegen-javadoc.7z gluegen
     cd $rootdir
 
     joalslave=`prom_lslatest joal-b`
@@ -85,14 +85,14 @@ function promote-latest-builds() {
     echo slave  build $bjoalslave - $joalslave
     echo master build $bjoalmaster - $joalmaster
     echo
-    echo "joal.build.number=$bjoalslave" >> $dest/aggregated.artifact.properties
+    echo "joal.build.number=$bjoalslave" >> $dest/log/aggregated.artifact.properties
 
     prom_promote_files joal $joalslave $dest joal
     
-    cp -a $joalmaster/artifact.properties $dest/javadoc/joal-master.artifact.properties
-    cp -a $joalmaster/javadoc.7z $dest/joal-javadoc.7z
+    cp -a $joalmaster/artifact.properties $dest/log/joal-master.artifact.properties
+    cp -a $joalmaster/javadoc.7z $dest/archive/joal-javadoc.7z
     cd $dest/javadoc
-    prom_extract ../joal-javadoc.7z joal
+    prom_extract ../archive/joal-javadoc.7z joal
     cd $rootdir
 
     joaldemosslave=`prom_lslatest joal-demos-b`
@@ -102,23 +102,21 @@ function promote-latest-builds() {
     echo
     echo slave   build $bjoaldemosslave - $joaldemosslave
     echo
-    echo "joal-demos.build.number=$bjoaldemosslave" >> $dest/aggregated.artifact.properties
+    echo "joal-demos.build.number=$bjoaldemosslave" >> $dest/log/aggregated.artifact.properties
 
-    cp -a $joaldemosslave/joal-demos*.7z $dest/
-    cp -a $joaldemosslave/artifact.properties $dest/joal-demos.artifact.properties
+    cp -a $joaldemosslave/joal-demos*.7z $dest/archive/
+    cp -a $joaldemosslave/artifact.properties $dest/log/joal-demos.artifact.properties
     cd $dest
 
-    fname=`find . -name joal-demos\*$masterpick.7z`
-    bname=`basename $fname .7z`
+    fname=`find archive -name joal-demos\*$masterpick.7z`
+    bname=tmp/`basename $fname .7z`
     mkdir joal-demos
     cd joal-demos
     echo "INFO: extract $fname -> $bname"
-    prom_extract ../$bname.7z $bname
+    prom_extract $fname $bname
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
-    echo "INFO: delete folder $bname"
-    rm -rf $bname
     cd $rootdir
 
     joglslave=`prom_lslatest jogl-b`
@@ -131,15 +129,15 @@ function promote-latest-builds() {
     echo slave  build $bjoglslave - $joglslave
     echo master build $bjoglmaster - $joglmaster
     echo
-    echo "jogl.build.number=$bjoglslave" >> $dest/aggregated.artifact.properties
+    echo "jogl.build.number=$bjoglslave" >> $dest/log/aggregated.artifact.properties
 
     # prom_promote_files jogl $joglslave $dest nativewindow jogl newt
     prom_promote_files jogl $joglslave $dest jogl
 
-    cp -a $joglmaster/artifact.properties $dest/javadoc/jogl-master.artifact.properties
-    cp -a $joglmaster/javadoc.7z $dest/jogl-javadoc.7z
+    cp -a $joglmaster/artifact.properties $dest/log/jogl-master.artifact.properties
+    cp -a $joglmaster/javadoc.7z $dest/archive/jogl-javadoc.7z
     cd $dest/javadoc
-    prom_extract ../jogl-javadoc.7z jogl
+    prom_extract ../archive/jogl-javadoc.7z jogl
     cd $rootdir
 
     jogldemosslave=`prom_lslatest jogl-demos-b`
@@ -152,26 +150,24 @@ function promote-latest-builds() {
     echo slave   build $bjogldemosslave - $jogldemosslave
     echo master  build $bjogldemosmaster - $jogldemosmaster
     echo
-    echo "jogl-demos.build.number=$bjogldemosslave" >> $dest/aggregated.artifact.properties
-    echo "jogl-demos.build.number=$bjogldemosmaster" >> $dest/aggregated.artifact.properties
+    echo "jogl-demos.build.number=$bjogldemosslave" >> $dest/log/aggregated.artifact.properties
+    echo "jogl-demos.build.number=$bjogldemosmaster" >> $dest/log/aggregated.artifact.properties
 
-    cp -a $jogldemosmaster/jogl-demos*.7z $dest/
-    cp -a $jogldemosslave/artifact.properties $dest/jogl-demos.artifact.properties
-    grep jogl-demos.build.branch $jogldemosmaster/artifact.properties >> jogl-demos.artifact.properties
-    grep jogl-demos.build.commit $jogldemosmaster/artifact.properties >> jogl-demos.artifact.properties
+    cp -a $jogldemosmaster/jogl-demos*.7z $dest/archive/
+    cp -a $jogldemosslave/artifact.properties $dest/log/jogl-demos.artifact.properties
+    grep jogl-demos.build.branch $jogldemosmaster/artifact.properties >> $dest/log/jogl-demos.artifact.properties
+    grep jogl-demos.build.commit $jogldemosmaster/artifact.properties >> $dest/log/jogl-demos.artifact.properties
     cd $dest
 
-    fname=`find . -name jogl-demos\*$masterpick.7z`
-    bname=`basename $fname .7z`
+    fname=`find archive -name jogl-demos\*$masterpick.7z`
+    bname=tmp/`basename $fname .7z`
     mkdir jogl-demos
     cd jogl-demos
     echo "INFO: extract $fname -> $bname"
-    prom_extract ../$bname.7z $bname
+    prom_extract $fname $bname
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
-    echo "INFO: delete folder $bname"
-    rm -rf $bname
     cd $rootdir
 
     joclslave=`prom_lslatest jocl-b`
@@ -184,14 +180,14 @@ function promote-latest-builds() {
     echo slave  build $bjoclslave - $joclslave
     echo master build $bjoclmaster - $joclmaster
     echo
-    echo "jocl.build.number=$bjoclslave" >> $dest/aggregated.artifact.properties
+    echo "jocl.build.number=$bjoclslave" >> $dest/log/aggregated.artifact.properties
 
     prom_promote_files jocl $joclslave $dest jocl
     
-    cp -a $joclmaster/artifact.properties $dest/javadoc/jocl-master.artifact.properties
-    cp -a $joclmaster/jocl-javadoc.7z $dest/jocl-javadoc.7z
+    cp -a $joclmaster/artifact.properties $dest/log/jocl-master.artifact.properties
+    cp -a $joclmaster/jocl-javadoc.7z $dest/archive/jocl-javadoc.7z
     cd $dest/javadoc
-    prom_extract ../jocl-javadoc.7z jocl
+    prom_extract ../archive/jocl-javadoc.7z jocl
     cd $rootdir
 
     jocldemosslave=`prom_lslatest jocl-demos-b`
@@ -201,23 +197,21 @@ function promote-latest-builds() {
     echo
     echo slave  build $bjocldemosslave - $jocldemosslave
     echo
-    echo "jocl-demos.build.number=$bjocldemosslave" >> $dest/aggregated.artifact.properties
+    echo "jocl-demos.build.number=$bjocldemosslave" >> $dest/log/aggregated.artifact.properties
 
-    cp -a $jocldemosslave/jocl-demos*7z $dest/
-    cp -a $jocldemosslave/artifact.properties $dest/jocl-demos.artifact.properties
+    cp -a $jocldemosslave/jocl-demos*7z $dest/archive/
+    cp -a $jocldemosslave/artifact.properties $dest/log/jocl-demos.artifact.properties
     cd $dest
 
-    fname=`find . -name jocl-demos\*$masterpick.7z`
-    bname=`basename $fname .7z`
+    fname=`find archive -name jocl-demos\*$masterpick.7z`
+    bname=tmp/`basename $fname .7z`
     mkdir jocl-demos
     cd jocl-demos
     echo "INFO: extract $fname -> $bname"
-    prom_extract ../$bname.7z $bname
+    prom_extract $fname $bname
     mv $bname/jar/* .
     mv $bname/jnlp-files .
     mv $bname/www .
-    echo "INFO: delete folder $bname"
-    rm -rf $bname
     cd $rootdir
 
 
@@ -225,10 +219,10 @@ function promote-latest-builds() {
     ## Integrity Check, Cleanup, aggregation.properties
     #########################################################
 
-    prom_integrity_check $dest
-    prom_integrity_check $dest/joal-demos
-    prom_integrity_check $dest/jogl-demos
-    prom_integrity_check $dest/jocl-demos
+    prom_integrity_check $dest/jar $dest
+    prom_integrity_check $dest/joal-demos $dest/joal-demos
+    prom_integrity_check $dest/jogl-demos $dest/jogl-demos
+    prom_integrity_check $dest/jocl-demos $dest/jocl-demos
 
     prom_cleanup $dest
 
@@ -244,26 +238,26 @@ function promote-latest-builds() {
     echo
     echo aggregation.properties
     echo
-    dos2unix gluegen.artifact.properties
-    dos2unix joal.artifact.properties
-    dos2unix joal-demos.artifact.properties
-    dos2unix jogl.artifact.properties
-    dos2unix jogl-demos.artifact.properties
-    dos2unix jocl.artifact.properties
-    dos2unix jocl-demos.artifact.properties
-    cat gluegen.artifact.properties    \
-        joal.artifact.properties       \
-        joal-demos.artifact.properties \
-        jogl.artifact.properties       \
-        jogl-demos.artifact.properties \
-        jocl.artifact.properties       \
-        jocl-demos.artifact.properties \
-        | sort -u > all.artifact.properties.sorted
+    dos2unix log/gluegen.artifact.properties
+    dos2unix log/joal.artifact.properties
+    dos2unix log/joal-demos.artifact.properties
+    dos2unix log/jogl.artifact.properties
+    dos2unix log/jogl-demos.artifact.properties
+    dos2unix log/jocl.artifact.properties
+    dos2unix log/jocl-demos.artifact.properties
+    cat log/gluegen.artifact.properties    \
+        log/joal.artifact.properties       \
+        log/joal-demos.artifact.properties \
+        log/jogl.artifact.properties       \
+        log/jogl-demos.artifact.properties \
+        log/jocl.artifact.properties       \
+        log/jocl-demos.artifact.properties \
+        | sort -u > log/all.artifact.properties.sorted
 
-    dos2unix aggregated.artifact.properties
-    sort -u aggregated.artifact.properties > aggregated.artifact.properties.sorted
+    dos2unix log/aggregated.artifact.properties
+    sort -u log/aggregated.artifact.properties > log/aggregated.artifact.properties.sorted
 
-    diff -Nurbw aggregated.artifact.properties.sorted all.artifact.properties.sorted | tee all.artifact.properties.diff
+    diff -Nurbw log/aggregated.artifact.properties.sorted log/all.artifact.properties.sorted | tee log/all.artifact.properties.diff
 
     copy_relocate_jnlps_base  $version $url $wsdir
     copy_relocate_jnlps_demos $version $url $wsdir joal-demos

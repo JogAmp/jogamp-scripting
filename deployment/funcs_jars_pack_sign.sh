@@ -16,14 +16,17 @@ if [ -z "$wsdir" ] ; then
     exit 1
 fi
 
-if [ ! -e $wsdir ] ; then
-    echo $wsdir does not exist
+if [ ! -e $wsdir/jar ] ; then
+    echo $wsdir/jar does not exist
     exit 1
 fi
 
 local THISDIR=`pwd`
 
-cd $wsdir
+cd $wsdir/jar
+
+mkdir orig
+cp -a *jar orig/
 
 if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
   for i in *.jar ; do
@@ -46,14 +49,14 @@ if [ -z "$wsdir" ] ; then
     exit 1
 fi
 
-if [ ! -e $wsdir ] ; then
-    echo $wsdir does not exist
+if [ ! -e $wsdir/jar ] ; then
+    echo $wsdir/jar does not exist
     exit 1
 fi
 
 local THISDIR=`pwd`
 
-cd $wsdir
+cd $wsdir/jar
 
 mkdir -p DLLS
 mv *natives*.jar DLLS/
@@ -68,7 +71,6 @@ if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
 fi
 
 mv DLLS/* .
-
 rm -rf DLLS
 
 cd $THISDIR
@@ -94,8 +96,8 @@ if [ -z "$wsdir" -o -z "$keystore" -o -z "$storepass" ] ; then
     exit 1
 fi
 
-if [ ! -e $wsdir ] ; then
-    echo $wsdir does not exist
+if [ ! -e $wsdir/jar ] ; then
+    echo $wsdir/jar does not exist
     exit 1
 fi
 
@@ -106,7 +108,7 @@ fi
 
 local THISDIR=`pwd`
 
-cd $wsdir
+cd $wsdir/jar
 
 rm -rf demo-jars
 mkdir -p demo-jars

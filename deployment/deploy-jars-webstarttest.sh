@@ -11,13 +11,13 @@ if [ -z "$joglbuilddir" -o -z "$wsdir" ] ; then
     exit 1
 fi
 
-if [ ! -e $joglbuilddir ] ; then
-    echo $joglbuilddir does not exist
+if [ ! -e $joglbuilddir/jar ] ; then
+    echo $joglbuilddir/jar does not exist
     exit 1
 fi
 
-if [ ! -e $wsdir ] ; then
-    echo $wsdir does not exist
+if [ ! -e $wsdir/jar ] ; then
+    echo $wsdir/jar does not exist
     exit 1
 fi
 
@@ -45,6 +45,6 @@ if [ ! -e $jnlpdir_demos ] ; then
     exit 1
 fi
 
-cp -v $joglbuilddir/jar/*.jar $wsdir
-cp -v $demosroot/$builddirbase/*.jar $wsdir
+cp -v $joglbuilddir/jar/*.jar $wsdir/jar/
+cp -v $demosroot/$builddirbase/*.jar $wsdir/jogl-demos/
 
