@@ -32,17 +32,19 @@ if [ ! -e $jnlpdir ] ; then
 fi
 
 local uri_esc=`echo $url | sed 's/\//\\\\\//g'`
-for j in $jnlpdir/*.jnlp $jnlpdir/*.html ; do
-    local jb=`basename $j`
-    echo "processing $j to $wsdir/$jb"
+for j in $jnlpdir/*.jnlp $jnlpdir/atomic/*.jnlp $jnlpdir/*.html ; do
+    if [ -e $j ] ; then
+        local jb=`basename $j`
+        echo "processing $j to $wsdir/$jb"
 
-    sed \
-        -e "s/JOGAMP_VERSION/$version/g" \
-        -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
-        $j > $wsdir/$jb
+        sed \
+            -e "s/JOGAMP_VERSION/$version/g" \
+            -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
+            $j > $wsdir/$jb
+    fi
 done
 
 }
@@ -91,18 +93,20 @@ fi
 
 local uri_esc=`echo $url | sed 's/\//\\\\\//g'`
 local uri_demos_esc=`echo $url_demos | sed 's/\//\\\\\//g'`
-for j in $jnlpdir/*.jnlp $jnlpdir/*.html ; do
-    local jb=`basename $j`
-    echo "processing $j to $demos/$jb"
+for j in $jnlpdir/*.jnlp $jnlpdir/atomic/*.jnlp $jnlpdir/*.html ; do
+    if [ -e $j ] ; then
+        local jb=`basename $j`
+        echo "processing $j to $demos/$jb"
 
-    sed \
-        -e "s/JOGAMP_VERSION/$version/g" \
-        -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
-        -e "s/DEMO_CODEBASE_TAG/$uri_demos_esc/g" \
-        $j > $demos/$jb
+        sed \
+            -e "s/JOGAMP_VERSION/$version/g" \
+            -e "s/GLUEGEN_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/JOAL_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/JOGL_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/JOCL_CODEBASE_TAG/$uri_esc/g" \
+            -e "s/DEMO_CODEBASE_TAG/$uri_demos_esc/g" \
+            $j > $demos/$jb
+    fi
 done
 
 }
@@ -125,7 +129,9 @@ fi
 cd $wsdir
 
 for i in *.jnlp ; do
-    sed -i -e 's/<security>//g' -e 's/<\/security>//g' -e 's/<all-permissions\/>//g' $i
+    if [ -e $i ] ; then
+        sed -i -e 's/<security>//g' -e 's/<\/security>//g' -e 's/<all-permissions\/>//g' $i
+    fi
 done
 
 }

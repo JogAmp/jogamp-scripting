@@ -25,14 +25,28 @@ local THISDIR=`pwd`
 
 cd $wsdir/jar
 
-mkdir orig
-cp -a *jar orig/
-
 if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+  mkdir orig
+  cp -a *jar orig/
+
   for i in *.jar ; do
     echo pack200 --repack $i
     pack200 --repack $i
   done
+fi
+
+if [ -e atomic ] ; then
+    cd atomic
+    if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+      mkdir orig
+      cp -a *jar orig/
+
+      for i in *.jar ; do
+        echo pack200 --repack $i
+        pack200 --repack $i
+      done
+    fi
+
 fi
 
 cd $THISDIR
@@ -58,20 +72,38 @@ local THISDIR=`pwd`
 
 cd $wsdir/jar
 
-mkdir -p DLLS
-mv *natives*.jar DLLS/
-
 if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+  mkdir -p DLLS
+  mv *natives*.jar DLLS/
+
   for i in *.jar ; do
     echo gzip -9 $i to $i.gz
     gzip -9 -cv $i > $i.gz
     echo pack200 -E9 $i.pack.gz $i
     pack200 -E9 $i.pack.gz $i
   done
+
+  mv DLLS/* .
+  rm -rf DLLS
 fi
 
-mv DLLS/* .
-rm -rf DLLS
+if [ -e atomic ] ; then
+    cd atomic
+    if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+      mkdir -p DLLS
+      mv *natives*.jar DLLS/
+
+      for i in *.jar ; do
+        echo gzip -9 $i to $i.gz
+        gzip -9 -cv $i > $i.gz
+        echo pack200 -E9 $i.pack.gz $i
+        pack200 -E9 $i.pack.gz $i
+      done
+
+      mv DLLS/* .
+      rm -rf DLLS
+    fi
+fi
 
 cd $THISDIR
 
@@ -121,6 +153,14 @@ done
 
 mv demo-jars/* .
 rm -rf demo-jars
+
+if [ -e atomic ] ; then
+    cd atomic
+    for i in *.jar ; do
+        echo jarsigner -storetype pkcs12 -keystore $keystore $i \"$signarg\"
+        jarsigner -storetype pkcs12 -keystore $keystore -storepass $storepass $i "$signarg"
+    done
+fi
 
 cd $THISDIR
 
