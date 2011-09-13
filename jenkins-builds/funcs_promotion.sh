@@ -113,7 +113,7 @@ function prom_promote_files() {
         local zfile=`find archive/$i -name $module\*$i.7z`
         local zfolder=tmp/`basename $zfile .7z`
         for sub in $submodules ; do
-            jars=`find $zfolder/jar -maxdepth 1 -name $sub\*$i.jar`
+            local jars=`find $zfolder/jar -maxdepth 1 -name $sub\*$i.jar`
             if [ -z "$jars" ] ; then
                 echo "ERROR: No platform JAR file for module $module, sub $sub, platform $i, sdir $sourcedir"
                 exit 1
@@ -122,7 +122,7 @@ function prom_promote_files() {
                 cp -av $j ./jar/
             done
             if [ -e $zfolder/jar/atomic ] ; then
-                jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*$i.jar`
+                local jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*$i.jar`
                 if [ -z "$jars" ] ; then
                     echo "ERROR: No platform JAR file (atomic) for module $module, sub $sub, platform $i, sdir $sourcedir"
                     exit 1
@@ -144,7 +144,7 @@ function prom_promote_files() {
             exit 1
         fi
         if [ -e $zfolder/jar/atomic ] ; then
-            jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*$masterpick.jar`
+            local jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*$masterpick.jar`
             if [ -z "$jars" ] ; then
                 echo "ERROR: No platform JAR file (atomic) for module $module, sub $sub, platform $i, sdir $sourcedir"
                 exit 1
@@ -156,7 +156,7 @@ function prom_promote_files() {
             exit 1
         fi
         for j in $jars ; do 
-            cp -av $j ./jar/atomic/
+            cp -av $j ./jar/
         done
         if [ -e $zfolder/jar/atomic ] ; then
             local jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*.jar`
