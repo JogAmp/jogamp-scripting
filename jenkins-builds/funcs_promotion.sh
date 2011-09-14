@@ -295,7 +295,7 @@ function prom_cleanup() {
     cd $destdir
 
     echo "INFO: delete tmp folder"
-    # rm -rf tmp
+    rm -rf tmp
     cd $lthisdir
 }
 
