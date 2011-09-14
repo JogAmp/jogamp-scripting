@@ -247,8 +247,8 @@ function promote-latest-builds() {
     echo Aggregation folder $wsdir for URL $url
     echo
 
-    cp -av ../util/applet-launcher.jar jar/
-    cp -av ../util/junit.* jar/
+    cp -av ../util/unsigned/applet-launcher.jar jar/
+    cp -av ../util/unsigned/junit.* jar/
 
     local OK=1
     grep ERROR $logfile && OK=0
