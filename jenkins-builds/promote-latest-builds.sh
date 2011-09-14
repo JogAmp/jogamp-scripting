@@ -66,7 +66,7 @@ function promote-latest-builds() {
     echo
     echo "gluegen.build.number=$bgluegenslave" >> $dest/log/aggregated.artifact.properties
 
-    prom_promote_files gluegen $gluegenslave $dest gluegen
+    prom_promote_module gluegen $gluegenslave $dest gluegen
 
     cp -a $gluegenmaster/artifact.properties $dest/log/gluegen-master.artifact.properties
     cp -a $gluegenmaster/javadoc.7z $dest/archive/gluegen-javadoc.7z
@@ -87,7 +87,7 @@ function promote-latest-builds() {
     echo
     echo "joal.build.number=$bjoalslave" >> $dest/log/aggregated.artifact.properties
 
-    prom_promote_files joal $joalslave $dest joal
+    prom_promote_module joal $joalslave $dest joal
     
     cp -a $joalmaster/artifact.properties $dest/log/joal-master.artifact.properties
     cp -a $joalmaster/javadoc.7z $dest/archive/joal-javadoc.7z
@@ -122,8 +122,8 @@ function promote-latest-builds() {
     echo
     echo "jogl.build.number=$bjoglslave" >> $dest/log/aggregated.artifact.properties
 
-    # prom_promote_files jogl $joglslave $dest nativewindow jogl newt
-    prom_promote_files jogl $joglslave $dest jogl
+    # prom_promote_module jogl $joglslave $dest nativewindow jogl newt
+    prom_promote_module jogl $joglslave $dest jogl
 
     cp -a $joglmaster/artifact.properties $dest/log/jogl-master.artifact.properties
     cp -a $joglmaster/javadoc.7z $dest/archive/jogl-javadoc.7z
@@ -162,7 +162,7 @@ function promote-latest-builds() {
     echo
     echo "jocl.build.number=$bjoclslave" >> $dest/log/aggregated.artifact.properties
 
-    prom_promote_files jocl $joclslave $dest jocl
+    prom_promote_module jocl $joclslave $dest jocl
     
     cp -a $joclmaster/artifact.properties $dest/log/jocl-master.artifact.properties
     cp -a $joclmaster/jocl-javadoc.7z $dest/archive/jocl-javadoc.7z
@@ -193,16 +193,7 @@ function promote-latest-builds() {
     prom_integrity_check $dest jogl-demos/jar tmp/dump
     prom_integrity_check $dest jocl-demos/jar tmp/dump
 
-    prom_cleanup $dest
-
-    uri=gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
-    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
-    wsdir=$archivedir/gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
-
-    rm -rf $wsdir
-    mv $dest $wsdir
-
-    cd $wsdir
+    cd $dest
 
     echo
     echo aggregation.properties
@@ -228,6 +219,21 @@ function promote-latest-builds() {
 
     diff -Nurbw log/aggregated.artifact.properties.sorted log/all.artifact.properties.sorted | tee log/all.artifact.properties.diff
 
+    cd $rootdir
+
+    prom_merge_modules $dest gluegen joal jogl jocl
+
+    prom_cleanup $dest
+
+    uri=gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
+    url=http://jogamp.org/deployment/archive/$branch/gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
+    wsdir=$archivedir/gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
+
+    rm -rf $wsdir
+    mv $dest $wsdir
+
+    cd $wsdir
+
     copy_relocate_jnlps_base  $version $url $wsdir
     copy_relocate_jnlps_demos $version $url $wsdir joal-demos
     copy_relocate_jnlps_demos $version $url $wsdir jogl-demos
@@ -240,6 +246,9 @@ function promote-latest-builds() {
     echo
     echo Aggregation folder $wsdir for URL $url
     echo
+
+    cp -av ../util/applet-launcher.jar jar/
+    cp -av ../util/junit.* jar/
 
     local OK=1
     grep ERROR $logfile && OK=0

@@ -14,8 +14,8 @@ function prom_setup() {
     mkdir $ldest
     mkdir $ldest/archive
     for i in $os_and_archs ; do
-        mkdir $ldest/archive/$i
-        mkdir $ldest/archive/$i/test-results/
+        mkdir $ldest/archive/jogamp-$i
+        mkdir $ldest/archive/jogamp-$i/test-results/
     done
     mkdir $ldest/jar
     mkdir $ldest/jar/atomic
@@ -66,6 +66,54 @@ function prom_verify_artifacts() {
     fi
 }
 
+function prom_merge_modules() {
+    local destdir=$1
+    shift
+    local modules=$*
+
+    local lthisdir=`pwd`
+
+    echo "INFO: Mergin modules <$modules>"
+    cd $destdir
+
+    for i in $os_and_archs ; do
+        local mergefolder=jogamp-$i
+        cd tmp
+        mkdir $mergefolder
+        for j in $modules ; do
+            local modulefolder=`find . -name $j\*$i`
+            if [ -z "$modulefolder" ] ; then
+                echo "ERROR: No module/platform extracted folder module $j, platform $i"
+                exit 1
+            fi
+            cd $modulefolder
+            for k in artifact.properties LICENSE.txt README.txt ; do
+                if [ -e $k ] ; then
+                    mv -v $k ../$mergefolder/$j.$k
+                fi
+            done
+            for k in \*-java-src.zip ; do
+                if [ -e $k ] ; then
+                    mv -v $k ../$mergefolder/
+                fi
+            done
+            for k in etc jar jnlp-files lib ; do
+                if [ -e $k ] ; then
+                    mkdir -p ../$mergefolder/$k
+                    mv -v $k/* ../$mergefolder/$k/
+                fi
+            done
+            cd ..
+        done
+        cp -av ../log/aggregated.artifact.properties.sorted ../log/all.artifact.properties.sorted $mergefolder/
+        echo "INFO: Create merged jogamp archive $mergefolder.7z"
+        7z a -r ../archive/$mergefolder.7z $mergefolder
+        cd ..
+    done
+
+    cd $lthisdir
+}
+
 # 
 # #1 module name, IE gluegen, jogl, jocl or joal
 # #2 source folder of artifacts
@@ -76,7 +124,7 @@ function prom_verify_artifacts() {
 # promote_files gluegen /builds/gluegen-b33 tmp-archive gluegen
 # promote_files jogl    /builds/jogl-b211   tmp-archive nativewindow jogl newt
 #
-function prom_promote_files() {
+function prom_promote_module() {
     local module=$1
     shift
     local sourcedir=$1
@@ -93,24 +141,28 @@ function prom_promote_files() {
     cd $destdir
     # unpack the platform 7z files
     for i in $os_and_archs ; do
-        cp -a $lthisdir/$sourcedir/$module*$i.7z                archive/$i/
-        cp -a $lthisdir/$sourcedir/$module*$i-test-results-*.7z archive/$i/test-results/
-        local zfile=`find archive/$i -name $module\*$i.7z`
-        if [ -z "$zfile" ] ; then
+        local sfile=`find $lthisdir/$sourcedir -name $module\*$i.7z`
+        if [ -z "$sfile" ] ; then
             echo "ERROR: No platform 7z file for module $module, platform $i, sdir $sourcedir"
             exit 1
         fi
+        local zfile=archive/jogamp-$i/$module-$i.7z
+
+        cp -a $sfile $zfile
+        cp -a $lthisdir/$sourcedir/$module*$i-test-results-*.7z archive/jogamp-$i/test-results/
+        local sfolder=`basename $sfile .7z`
         local zfolder=`basename $zfile .7z`
         echo "INFO: extract $module $i - $zfile -> tmp/$zfolder"
         cd tmp
-        prom_extract ../$zfile $zfolder
+        prom_extract ../$zfile $sfolder
+        mv -v $sfolder $zfolder
         cd ..
         prom_verify_artifacts $module log/$module.artifact.properties tmp/$zfolder/artifact.properties
     done
     # copy the platform JAR files from each platform 7z folder
     for i in $os_and_archs_minus_one ; do
         # 7z folder verfified above already
-        local zfile=`find archive/$i -name $module\*$i.7z`
+        local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
         for sub in $submodules ; do
             local jars=`find $zfolder/jar -maxdepth 1 -name $sub\*$i.jar`
@@ -135,7 +187,7 @@ function prom_promote_files() {
     done
     # copy the master pic JAR files
     # 7z folder verfified above already
-    local zfile=`find archive/$masterpick -name $module\*$masterpick.7z`
+    local zfile=archive/jogamp-$masterpick/$module-$masterpick.7z
     local zfolder=tmp/`basename $zfile .7z`
     for sub in $submodules ; do
         local jars=`find $zfolder/jar -maxdepth 1 -name $sub\*$masterpick.jar`
@@ -193,19 +245,18 @@ function prom_promote_demos() {
     cd $destdir
     # unpack the 7z files
     local sfile=`find $lthisdir/$sourcedir -name $module\*$masterpick.7z`
-    local zfile=archive/`basename $sfile -$masterpick.7z`.7z
-    cp -av $sfile $zfile
-    if [ -x "$sfile" -o -z "$zfile" ] ; then
+    local zfile=archive/$module.7z
+    if [ -z "$sfile" ] ; then
         echo "ERROR: No 7z file for module $module, sdir $sourcedir"
         exit 1
     fi
     cp -av $sfile $zfile
-    local zfolder0=`basename $sfile .7z`
+    local sfolder=`basename $sfile .7z`
     local zfolder=`basename $zfile .7z`
     echo "INFO: extract $module - $zfile -> tmp/$zfolder"
     cd tmp
-    prom_extract ../$zfile $zfolder0
-    mv $zfolder0 $zfolder
+    prom_extract ../$zfile $sfolder
+    mv -v $sfolder $zfolder
     cd ..
     if $fromslave ; then
         prom_verify_artifacts $module log/$module.artifact.properties tmp/$zfolder/artifact.properties
