@@ -22,6 +22,7 @@ function prom_setup() {
     mkdir $ldest/javadoc
     mkdir $ldest/jnlp-files
     mkdir $ldest/log
+    mkdir $ldest/resources
     mkdir $ldest/tmp
 
     cd $lthisdir
@@ -222,6 +223,9 @@ function prom_promote_module() {
         fi
     done
     cp -av $zfolder/jnlp-files/* ./jnlp-files/
+    if [ -e $zfolder/resources ] ; then
+        cp -av $zfolder/resources/* ./resources/
+    fi
 
     cd $lthisdir
 }
@@ -267,6 +271,9 @@ function prom_promote_demos() {
     cp -av tmp/$zfolder/jar        ./$module/
     cp -av tmp/$zfolder/jnlp-files ./$module/
     cp -av tmp/$zfolder/www        ./$module/
+    if [ -e tmp/$zfolder/resources ] ; then
+        cp -av tmp/$zfolder/resources ./$module/
+    fi
 
     cd $lthisdir
 }
