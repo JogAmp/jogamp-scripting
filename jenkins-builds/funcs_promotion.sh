@@ -119,11 +119,10 @@ function prom_merge_modules() {
 # #1 module name, IE gluegen, jogl, jocl or joal
 # #2 source folder of artifacts
 # #3 destination folder of artifacts
-# #4-n submodule name within the 7z files
 #
 # Example:
-# promote_files gluegen /builds/gluegen-b33 tmp-archive gluegen
-# promote_files jogl    /builds/jogl-b211   tmp-archive nativewindow jogl newt
+# promote_files gluegen /builds/gluegen-b33 tmp-archive
+# promote_files jogl    /builds/jogl-b211   tmp-archive
 #
 function prom_promote_module() {
     local module=$1
@@ -131,12 +130,10 @@ function prom_promote_module() {
     local sourcedir=$1
     shift
     local destdir=$1
-    shift
-    local submodules=$*
 
     local lthisdir=`pwd`
 
-    echo "INFO: Promoting files: $module, submodules <$submodules>, from $sourcedir"
+    echo "INFO: Promoting files: $module, from $sourcedir"
     # copy the platform 7z files
     cp -a $sourcedir/artifact.properties $destdir/log/$module.artifact.properties
     cd $destdir
@@ -165,59 +162,23 @@ function prom_promote_module() {
         # 7z folder verfified above already
         local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
-        for sub in $submodules ; do
-            local jars=`find $zfolder/jar -maxdepth 1 -name $sub\*$i.jar`
-            if [ -z "$jars" ] ; then
-                echo "ERROR: No platform JAR file for module $module, sub $sub, platform $i, sdir $sourcedir"
-                exit 1
-            fi
-            for j in $jars ; do 
-                cp -av $j ./jar/
-            done
-            if [ -e $zfolder/jar/atomic ] ; then
-                local jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*$i.jar`
-                if [ -z "$jars" ] ; then
-                    echo "ERROR: No platform JAR file (atomic) for module $module, sub $sub, platform $i, sdir $sourcedir"
-                    exit 1
-                fi
-                for j in $jars ; do 
-                    cp -av $j ./jar/atomic/
-                done
-            fi
+        for j in $zfolder/jar/*.jar ; do
+            cp -av $j ./jar/
         done
+        if [ -e $zfolder/jar/atomic ] ; then
+            for j in $zfolder/jar/atomic/*.jar ; do
+                cp -av $j ./jar/atomic/
+            done
+        fi
     done
     # copy the master pic JAR files
     # 7z folder verfified above already
     local zfile=archive/jogamp-$masterpick/$module-$masterpick.7z
     local zfolder=tmp/`basename $zfile .7z`
-    for sub in $submodules ; do
-        local jars=`find $zfolder/jar -maxdepth 1 -name $sub\*$masterpick.jar`
-        if [ -z "$jars" ] ; then
-            echo "ERROR: No platform JAR file for module $module, sub $sub, masterpick platform $masterpick, sdir $sourcedir"
-            exit 1
-        fi
+    for j in $zfolder/jar/*.jar ; do
+        cp -av $j ./jar/
         if [ -e $zfolder/jar/atomic ] ; then
-            local jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*$masterpick.jar`
-            if [ -z "$jars" ] ; then
-                echo "ERROR: No platform JAR file (atomic) for module $module, sub $sub, platform $i, sdir $sourcedir"
-                exit 1
-            fi
-        fi
-        local jars=`find $zfolder/jar -maxdepth 1 -name $sub\*.jar`
-        if [ -z "$jars" ] ; then
-            echo "ERROR: No JAR files for module $module, sub $sub, masterpick $masterpick, sdir $sourcedir"
-            exit 1
-        fi
-        for j in $jars ; do 
-            cp -av $j ./jar/
-        done
-        if [ -e $zfolder/jar/atomic ] ; then
-            local jars=`find $zfolder/jar/atomic -maxdepth 1 -name $sub\*.jar`
-            if [ -z "$jars" ] ; then
-                echo "ERROR: No JAR files (atomic) for module $module, sub $sub, masterpick $masterpick, sdir $sourcedir"
-                exit 1
-            fi
-            for j in $jars ; do 
+            for j in $zfolder/jar/atomic/*.jar ; do
                 cp -av $j ./jar/atomic/
             done
         fi

@@ -66,7 +66,7 @@ function promote-latest-builds() {
     echo
     echo "gluegen.build.number=$bgluegenslave" >> $dest/log/aggregated.artifact.properties
 
-    prom_promote_module gluegen $gluegenslave $dest gluegen
+    prom_promote_module gluegen $gluegenslave $dest
 
     cp -a $gluegenmaster/artifact.properties $dest/log/gluegen-master.artifact.properties
     cp -a $gluegenmaster/javadoc.7z $dest/archive/gluegen-javadoc.7z
@@ -87,7 +87,7 @@ function promote-latest-builds() {
     echo
     echo "joal.build.number=$bjoalslave" >> $dest/log/aggregated.artifact.properties
 
-    prom_promote_module joal $joalslave $dest joal
+    prom_promote_module joal $joalslave $dest
     
     cp -a $joalmaster/artifact.properties $dest/log/joal-master.artifact.properties
     cp -a $joalmaster/javadoc.7z $dest/archive/joal-javadoc.7z
@@ -122,8 +122,7 @@ function promote-latest-builds() {
     echo
     echo "jogl.build.number=$bjoglslave" >> $dest/log/aggregated.artifact.properties
 
-    # prom_promote_module jogl $joglslave $dest nativewindow jogl newt
-    prom_promote_module jogl $joglslave $dest jogl
+    prom_promote_module jogl $joglslave $dest
 
     cp -a $joglmaster/artifact.properties $dest/log/jogl-master.artifact.properties
     cp -a $joglmaster/javadoc.7z $dest/archive/jogl-javadoc.7z
@@ -162,7 +161,7 @@ function promote-latest-builds() {
     echo
     echo "jocl.build.number=$bjoclslave" >> $dest/log/aggregated.artifact.properties
 
-    prom_promote_module jocl $joclslave $dest jocl
+    prom_promote_module jocl $joclslave $dest
     
     cp -a $joclmaster/artifact.properties $dest/log/jocl-master.artifact.properties
     cp -a $joclmaster/jocl-javadoc.7z $dest/archive/jocl-javadoc.7z
