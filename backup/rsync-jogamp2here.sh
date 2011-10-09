@@ -3,7 +3,7 @@
 USESSH="-e ssh"
 
 SOURCE=root@jogamp.org:
-DEST1=/
+DEST1=/data/backup/jogamp.org/fs
 DEST2=/data/backup/jogamp.org/fs
 
 function my_rsync()
