@@ -14,7 +14,7 @@ function my_rsync()
     shift
 
     mkdir -p $dst
-    rsync $USESSH -apv --delete-after $* $SOURCE/$src $dst
+    rsync $USESSH -apv --delete --delete-after $* $SOURCE/$src $dst
 }
 
 function do_rsync()
