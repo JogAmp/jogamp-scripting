@@ -24,7 +24,7 @@ function do_rsync()
     my_rsync opt-linux-x86_64   $DEST1/
 
     my_rsync srv/glassfish      $DEST1/srv/
-    my_rsync srv/hudson         $DEST1/srv/
+    my_rsync srv/jenkins        $DEST1/srv/
     my_rsync srv/www/jogamp.org $DEST1/srv/www/
 
     my_rsync srv/scm            $DEST2/srv/
