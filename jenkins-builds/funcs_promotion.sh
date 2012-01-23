@@ -74,10 +74,10 @@ function prom_merge_modules() {
 
     local lthisdir=`pwd`
 
-    echo "INFO: Mergin modules <$modules>"
     cd $destdir
 
     for i in $os_and_archs ; do
+        echo "INFO: Mergin modules <$modules> to $mergefolder"
         local mergefolder=jogamp-$i
         cd tmp
         mkdir $mergefolder
@@ -90,27 +90,90 @@ function prom_merge_modules() {
             cd $modulefolder
             for k in artifact.properties LICENSE.txt README.txt ; do
                 if [ -e $k ] ; then
-                    mv -v $k ../$mergefolder/$j.$k
+                    cp -av $k ../$mergefolder/$j.$k
                 fi
             done
             for k in \*-java-src.zip ; do
                 if [ -e $k ] ; then
-                    mv -v $k ../$mergefolder/
+                    cp -av $k ../$mergefolder/
                 fi
             done
             for k in etc jar jnlp-files lib ; do
                 if [ -e $k ] ; then
                     mkdir -p ../$mergefolder/$k
-                    mv -v $k/* ../$mergefolder/$k/
+                    cp -av $k/* ../$mergefolder/$k/
                 fi
             done
+            if [ -e ../$mergefolder/lib ] ; then
+                echo "This folder contains deprecated plain native libraries for platform $i, please use the native JAR files in the jar folder. WARNING: This folder is subject to be removed soon." > ../$mergefolder/lib/README.txt
+            fi
             cd ..
         done
         cp -av ../log/aggregated.artifact.properties.sorted ../log/all.artifact.properties.sorted $mergefolder/
+        echo "This archive contains platform builds for $i only and is deprecated. Please use the jogamp-all-platforms archive for all supported platforms. WARNING: This platfrom archive is subject to be removed soon." > $mergefolder/README.txt
         echo "INFO: Create merged jogamp archive $mergefolder.7z"
         7z a -r ../archive/$mergefolder.7z $mergefolder
         cd ..
     done
+
+    local mergefolder=jogamp-all-platforms
+    echo "INFO: Mergin modules <$modules> to $mergefolder"
+    cd tmp
+    mkdir $mergefolder
+    for i in $os_and_archs ; do
+        for j in $modules ; do
+            local modulefolder=`find . -name $j\*$i`
+            if [ -z "$modulefolder" ] ; then
+                echo "ERROR: No module/platform extracted folder module $j, platform $i"
+                exit 1
+            fi
+            cd $modulefolder
+            if [ "$masterpick" = "$i" ] ; then
+                for k in artifact.properties LICENSE.txt README.txt ; do
+                    if [ -e $k ] ; then
+                        cp -av $k ../$mergefolder/$j.$k
+                    fi
+                done
+                for k in \*-java-src.zip ; do
+                    if [ -e $k ] ; then
+                        cp -av $k ../$mergefolder/
+                    fi
+                done
+                for k in etc jar jnlp-files ; do
+                    if [ -e $k ] ; then
+                        mkdir -p ../$mergefolder/$k
+                        cp -av $k/* ../$mergefolder/$k/
+                    fi
+                done
+                if [ -e lib ] ; then
+                    mkdir -p ../$mergefolder/lib/$i
+                    cp -av lib/* ../$mergefolder/lib/$i
+                fi
+            else
+                if [ -e jar ] ; then
+                    mkdir -p ../$mergefolder/jar
+                    cp -av jar/*natives*.jar ../$mergefolder/jar/
+                    if [ -e jar/atomic ] ; then
+                        mkdir -p ../$mergefolder/jar/atomic
+                        cp -av jar/atomic/*natives*.jar ../$mergefolder/jar/atomic/
+                    fi
+                fi
+                if [ -e lib ] ; then
+                    mkdir -p ../$mergefolder/lib/$i
+                    cp -av lib/* ../$mergefolder/lib/$i
+                fi
+            fi
+            if [ -e ../$mergefolder/lib/$i ] ; then
+                echo "This folder contains platform folders with deprecated plain native libraries, please use the native JAR files in the jar folder." > ../$mergefolder/lib/README.txt
+                echo "This folder contains deprecated plain native libraries for platform $i, please use the native JAR files in the jar folder." > ../$mergefolder/lib/$i/README.txt
+            fi
+            cd ..
+        done
+    done
+    cp -av ../log/aggregated.artifact.properties.sorted ../log/all.artifact.properties.sorted $mergefolder/
+    echo "INFO: Create merged jogamp archive $mergefolder.7z"
+    7z a -r ../archive/$mergefolder.7z $mergefolder
+    cd ..
 
     cd $lthisdir
 }
