@@ -332,11 +332,11 @@ function prom_cleanup() {
     rm -rf tmp
 
     # remove the platform 7z files of the local archive folder
+    # and merge the test-results
+    mkdir -p test-results
     for i in $os_and_archs ; do
-        for j in gluegen joal jocl jogl ; do
-            local zfile=archive/jogamp-$i/$j-$i.7z
-            rm -v $zfile
-        done
+        mv -v jogamp-$i/test-results/* test-results/
+        rm -rf jogamp-$i
     done
     cd $lthisdir
 }
