@@ -333,10 +333,10 @@ function prom_cleanup() {
 
     # remove the platform 7z files of the local archive folder
     # and merge the test-results
-    mkdir -p test-results
+    mkdir -p archive/test-results
     for i in $os_and_archs ; do
-        mv -v jogamp-$i/test-results/* test-results/
-        rm -rf jogamp-$i
+        mv -v archive/jogamp-$i/test-results/* archive/test-results/
+        rm -vrf archive/jogamp-$i
     done
     cd $lthisdir
 }
