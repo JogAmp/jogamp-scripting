@@ -330,6 +330,14 @@ function prom_cleanup() {
 
     echo "INFO: delete tmp folder"
     rm -rf tmp
+
+    # remove the platform 7z files of the local archive folder
+    for i in $os_and_archs ; do
+        for j in gluegen joal jocl jogl ; do
+            local zfile=archive/jogamp-$i/$j-$i.7z
+            rm -v $zfile
+        done
+    done
     cd $lthisdir
 }
 
