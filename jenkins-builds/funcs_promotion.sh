@@ -281,13 +281,13 @@ function prom_promote_demos() {
         echo "ERROR: No 7z file for module $module, sdir $sourcedir"
         exit 1
     fi
-    cp -av $sfile $zfile
     local sfolder=`basename $sfile .7z`
-    local zfolder=`basename $zfile .7z`
-    echo "INFO: extract $module - $zfile -> tmp/$zfolder"
+    local zfolder=$module
+    echo "INFO: extract $module - $sfile -> tmp/$zfolder"
     cd tmp
-    prom_extract ../$zfile $sfolder
+    prom_extract ../$sfile $sfolder
     mv -v $sfolder $zfolder
+    7z a -r ../$zfile $zfolder
     cd ..
     if $fromslave ; then
         prom_verify_artifacts $module log/$module.artifact.properties tmp/$zfolder/artifact.properties

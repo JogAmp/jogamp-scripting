@@ -34,7 +34,7 @@ logfile=$thisdir/`basename $0 .sh`.log
 archivedir=/srv/www/jogamp.org/deployment/archive/$branch
 rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch
 
-os_and_archs_minus_one="linux-i586 macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
+os_and_archs_minus_one="linux-i586 linux-armv7 macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
 masterpick="linux-amd64"
 os_and_archs="$masterpick $os_and_archs_minus_one"
 

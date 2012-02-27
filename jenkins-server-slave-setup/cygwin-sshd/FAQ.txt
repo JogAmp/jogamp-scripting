@@ -1,0 +1,16 @@
+How to update cygwin /etc/passwd to get all latest windoze users
+
+mkpasswd -cl > /etc/passwd
+
+mkgroup --local > /etc/group
+
++++++++++++
+
+http://www.howtogeek.com/howto/windows-vista/enable-the-hidden-administrator-account-on-windows-vista/
+
+Enable Built-in Administrator Account / start dos-shell 'run-as-admin':
+  net user administrator /active:yes
+
++++++
+
+

@@ -1,0 +1,68 @@
+
+# Pandaboard (TI Omap4, SGX 540)
+https://wiki.ubuntu.com/ARM/OMAP
+https://wiki.ubuntu.com/ARM/OMAP/Graphics
+
+(openmax?
+ try the https://launchpad.net/~tiomap-dev/+archive/omap-trunk  instead of the https://launchpad.net/~tiomap-dev/+archive/release)
+
+# Toshiba AC100 (NV Tegra2)
+https://wiki.ubuntu.com/ARM/TEGRA/AC100#Installing_Ubuntu_11.10_on_the_AC100
+https://launchpad.net/ubuntu/+source/nvidia-graphics-drivers-tegra/
+
+#install openjdk, ant/junit and rsync/mesa-utils-extra
+#
+apt-get install openjdk-6-jdk openjdk-6-jre openjdk-6-jre-headless openjdk-6-jre-lib icedtea-6-jre-cacao icedtea-6-jre-jamvm icedtea-netx icedtea-plugin \
+                ant junit \
+                rsync mesa-utils-extra
+
+#install and use openbox windowmanager!
+apt-get install openbox obconf
+
+Disable GLX:
+
+/etc/X11/xorg.conf:
+    # Disable GLX extension, DRI* is usually required even for EGL
+    Section "Module"
+    #   Disable     "dri"
+    #   Disable     "dri2"
+        Disable     "glx"
+    EndSection
+
+Package / Service / Module Removal:
+
+dpkg -P zeitgeist zeitgeist-extension-fts unity-lens-applications unity-lens-files
+dpkg -P zeitgeist-core zeitgeist-datahub rhythmbox-plugins libzeitgeist-1.0-1
+
+vi /etc/network/interfaces 
+    auto lo eth0
+    iface lo inet loopback
+
+    allow-hotplug eth0
+    iface eth0 inet dhcp
+
+update-rc.d -f network-manager remove
+dpkg -P network-manager network-manager-gnome
+
+update-rc.d -f cups remove
+dpkg -P cups hplip hplip-cups bluez-cups cups-driver-gutenprint
+
+vi /etc/modprobe.d/blacklist.conf 
+    blacklist wl12xx_sdio
+    blacklist wl12xx
+    blacklist bnep
+    blacklist rfcomm
+    blacklist bluetooth
+    blacklist fuse
+    blacklist wl12xx
+    blacklist mac80211
+    blacklist cfg80211
+    blacklist rfkill
+    blacklist st_drv
+    blacklist joydev
+    blacklist btwilink
+    blacklist btrfs
+
+update-rc.d -f bluetooth remove
+
+dpkg -P rtkit
