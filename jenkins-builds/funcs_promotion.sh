@@ -285,7 +285,7 @@ function prom_promote_demos() {
     local zfolder=$module
     echo "INFO: extract $module - $sfile -> tmp/$zfolder"
     cd tmp
-    prom_extract ../$sfile $sfolder
+    prom_extract $sfile $sfolder
     mv -v $sfolder $zfolder
     7z a -r ../$zfile $zfolder
     cd ..
