@@ -1,0 +1,20 @@
+# GDM configuration storage
+#
+# /etc/gdm/custom.conf
+#
+
+[daemon]
+TimedLoginEnable=true
+TimedLogin=jogamp
+TimedLoginDelay=5
+
+[security]
+
+[xdmcp]
+
+[greeter]
+
+[chooser]
+
+[debug]
+

@@ -1,0 +1,14 @@
+mac has a feature called "security context" which causes the node to fail resolving domains after a while.
+see e.g: http://osdir.com/ml/unix-porting/2010-05/msg00000.html
+
+symptoms:
+ - works as long the console which invoked the script is up
+ - works until process goes in background
+
+possible workarounds:
+ - invoke as: /usr/libexec/StartupItemContext ./script.sh
+ - run as root
+ - run with launchd
+
+(i tried the first option... lets see if it works)
+
