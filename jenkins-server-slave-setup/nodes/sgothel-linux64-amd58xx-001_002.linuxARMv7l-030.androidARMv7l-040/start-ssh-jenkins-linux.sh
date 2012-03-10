@@ -2,6 +2,8 @@
 
 cd ~/jenkins
 
+JENKINS_NODE_STARTUP_DIR=`pwd`
+
 scp chuckslave@jogamp.org:/srv/jenkins/war/WEB-INF/slave.jar .
 
 function connect_1 {
@@ -44,10 +46,9 @@ function connect_30 {
     export NODE_LABEL=label/linux-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7
     JENKINS_WS=$HOST_ROOT/workspace
-    GLUEGEN_ROOT=$JENKINS_WS/gluegen/$NODE_LABEL
 
     # arm-linux-gnueabi == armel triplet
-    PATH=$GLUEGEN_ROOT/make/lib/linux/arm-linux-gnueabi/bin:$PATH
+    PATH=$JENKINS_NODE_STARTUP_DIR/arm-linux-gnueabi/bin:$PATH
     export PATH
 
     export HOST_UID=jogamp
@@ -63,8 +64,7 @@ function connect_30 {
     export TARGET_PLATFORM_LIBS=$TARGET_PLATFORM_ROOT/usr/lib
     export TARGET_JAVA_LIBS=$TARGET_PLATFORM_ROOT/jre/lib/arm
 
-    #export GLUEGEN_CPPTASKS_FILE=$GLUEGEN_ROOT/make/lib/gluegen-cpptasks-linux-armv7.xml
-    export GLUEGEN_CPPTASKS_FILE=/home/jogamp/jenkins/gluegen-cpptasks-linux-armv7.xml
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv7.xml
 
     export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
 
@@ -84,7 +84,6 @@ function connect_40 {
     export NODE_LABEL=label/android-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7_Android
     JENKINS_WS=$HOST_ROOT/workspace
-    GLUEGEN_ROOT=$JENKINS_WS/gluegen/$NODE_LABEL
 
     export HOST_UID=jogamp
     # jogamp02 - 10.1.0.122
@@ -121,8 +120,7 @@ function connect_40 {
     # Need to add toolchain bins to the PATH. 
     export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_SDK_HOME/platform-tools:$PATH"
 
-    #export GLUEGEN_CPPTASKS_FILE=$GLUEGEN_ROOT/make/lib/gluegen-cpptasks-android-armv7.xml
-    export GLUEGEN_CPPTASKS_FILE=/home/jogamp/jenkins/gluegen-cpptasks-android-armv7.xml
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv7.xml
 
     #export JUNIT_DISABLED="true"
     #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
