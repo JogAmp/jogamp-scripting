@@ -155,7 +155,9 @@ function prom_merge_modules() {
             else
                 if [ -e jar ] ; then
                     mkdir -p ../$mergefolder/jar
-                    cp -av jar/*natives*.jar ../$mergefolder/jar/
+                    for l in jar/*natives*.jar jar/*.apk ; do
+                        cp -av $l ../$mergefolder/jar/
+                    done
                     if [ -e jar/atomic ] ; then
                         mkdir -p ../$mergefolder/jar/atomic
                         cp -av jar/atomic/*natives*.jar ../$mergefolder/jar/atomic/
@@ -228,7 +230,7 @@ function prom_promote_module() {
         # 7z folder verfified above already
         local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
-        for j in $zfolder/jar/*.jar ; do
+        for j in $zfolder/jar/*.jar $zfolder/jar/*.apk ; do
             cp -av $j ./jar/
         done
         if [ -e $zfolder/jar/atomic ] ; then
@@ -354,7 +356,7 @@ function prom_integrity_check() {
 
     mkdir -p $tmpdir
     cd $tmpdir
-    for i in $lthisdir/$destdir/$jardir/*.jar ; do
+    for i in $lthisdir/$destdir/$jardir/*.jar $lthisdir/$destdir/$jardir/*.apk ; do
         local bname=`basename $i`
         echo -n "INFO: integrity check - $bname - "
         local OK=0
