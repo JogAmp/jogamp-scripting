@@ -80,6 +80,49 @@ function connect_30 {
   done
 }
 
+function connect_31 {
+  . /opt-share/etc/profile.ant
+  . /opt-linux-x86_64/etc/profile.jre6
+  . /opt-linux-x86_64/etc/profile.j2se6
+
+    export NODE_LABEL=label/linux-armv7hf-img
+    HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7hf
+    JENKINS_WS=$HOST_ROOT/workspace
+
+    # arm-linux-gnueabi == armel triplet
+    PATH=$JENKINS_NODE_STARTUP_DIR/arm-linux-gnueabihf/bin:$PATH
+    export PATH
+
+    export HOST_UID=jogamp
+    export HOST_IP=jogamp02
+    export HOST_RSYNC_ROOT=ROOTDIR/$JENKINS_WS
+
+    export TARGET_UID=jogamp
+    export TARGET_IP=panda01
+    export TARGET_ROOT=/home/jogamp/JogAmpSlaveARMv7hf
+    export TARGET_ANT_HOME=/usr/share/ant
+
+    export TARGET_PLATFORM_ROOT=/opt-linux-armv7-armhf
+    export TARGET_PLATFORM_LIBS=$TARGET_PLATFORM_ROOT/usr/lib
+    export TARGET_JAVA_LIBS=$TARGET_PLATFORM_ROOT/jre/lib/arm
+
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv7hf.xml
+
+    export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
+
+  java -version
+  sshpid=
+  while true ; do
+    if [ ! -z "$sshpid" ] ; then
+	kill -9 $sshpid
+    fi
+    ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6031:localhost:5555 -N &
+    sshpid=$!
+    java -server -Xmx512m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/linuxARMv7hf-jogamp-arm32hf-sgothel-031/slave-agent.jnlp
+  done
+}
+
+
 function connect_40 {
     export NODE_LABEL=label/android-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7_Android
@@ -88,7 +131,7 @@ function connect_40 {
     export HOST_UID=jogamp
     # jogamp02 - 10.1.0.122
     export HOST_IP=10.1.0.122
-    export HOST_RSYNC_ROOT=PROJECTS/JOGL
+    export HOST_RSYNC_ROOT=ROOTDIR/$JENKINS_WS
 
     export TARGET_UID=jogamp
     export TARGET_IP=panda02
@@ -145,6 +188,9 @@ connect_2 > linux64-AMD58xx-ubuntu10-jogamp-x64-sgothel-002.log 2>&1 &
 disown $!
 
 connect_30 > linuxARMv7-jogamp-arm32-sgothel-030.log 2>&1 &
+disown $!
+
+connect_31 > linuxARMv7hf-jogamp-arm32hf-sgothel-031.log 2>&1 &
 disown $!
 
 connect_40 > androidARMv7-jogamp-arm32-sgothel-040.log 2>&1 &
