@@ -6,6 +6,12 @@
 # wsdir_jars_sign    <wsdir> <pkcs12-keystore> <storepass> [signarg]
 #
 
+#
+# see Java Bug 5078608
+# http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5078608
+#
+PACK200_OPTIONS="--segment-limit=-1"
+
 function wsdir_jars_repack() {
 
 local wsdir=$1
@@ -30,8 +36,8 @@ if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
   cp -a *jar orig/
 
   for i in *.jar ; do
-    echo pack200 --repack $i
-    pack200 --repack $i
+    echo pack200 --repack $PACK200_OPTIONS $i
+    pack200 --repack $PACK200_OPTIONS $i
   done
 fi
 
@@ -42,8 +48,8 @@ if [ -e atomic ] ; then
       cp -a *jar orig/
 
       for i in *.jar ; do
-        echo pack200 --repack $i
-        pack200 --repack $i
+        echo pack200 --repack $PACK200_OPTIONS $i
+        pack200 --repack $PACK200_OPTIONS $i
       done
     fi
 
@@ -79,8 +85,8 @@ if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
   for i in *.jar ; do
     echo gzip -9 $i to $i.gz
     gzip -9 -cv $i > $i.gz
-    echo pack200 -E9 $i.pack.gz $i
-    pack200 -E9 $i.pack.gz $i
+    echo pack200 -E9 $PACK200_OPTIONS $i.pack.gz $i
+    pack200 -E9 $PACK200_OPTIONS $i.pack.gz $i
   done
 
   mv DLLS/* .
@@ -96,8 +102,8 @@ if [ -e atomic ] ; then
       for i in *.jar ; do
         echo gzip -9 $i to $i.gz
         gzip -9 -cv $i > $i.gz
-        echo pack200 -E9 $i.pack.gz $i
-        pack200 -E9 $i.pack.gz $i
+        echo pack200 -E9 $PACK200_OPTIONS $i.pack.gz $i
+        pack200 -E9 $PACK200_OPTIONS $i.pack.gz $i
       done
 
       mv DLLS/* .
