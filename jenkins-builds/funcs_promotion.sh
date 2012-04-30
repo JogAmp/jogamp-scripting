@@ -2,13 +2,8 @@
 
 
 function prom_setup() {
-    local lrootdir=$1
-    shift
     local ldest=$1
     shift
-
-    local lthisdir=`pwd`
-    cd $lrootdir
 
     rm -rf $ldest
     mkdir $ldest
@@ -24,8 +19,6 @@ function prom_setup() {
     mkdir $ldest/log
     mkdir $ldest/resources
     mkdir $ldest/tmp
-
-    cd $lthisdir
 }
 
 function prom_lslatest() {
@@ -68,6 +61,9 @@ function prom_verify_artifacts() {
 }
 
 function prom_merge_modules() {
+    # debug
+    # set -x
+
     local destdir=$1
     shift
     local modules=$*
@@ -193,6 +189,9 @@ function prom_merge_modules() {
 # promote_files jogl    /builds/jogl-b211   tmp-archive
 #
 function prom_promote_module() {
+    # debug
+    # set -x
+
     local module=$1
     shift
     local sourcedir=$1
@@ -243,14 +242,16 @@ function prom_promote_module() {
     # 7z folder verfified above already
     local zfile=archive/jogamp-$masterpick/$module-$masterpick.7z
     local zfolder=tmp/`basename $zfile .7z`
-    for j in $zfolder/jar/*.jar ; do
-        cp -av $j ./jar/
+    if [ -e $zfolder/jar ] ; then
+        for j in $zfolder/jar/*.jar ; do
+            cp -av $j ./jar/
+        done
         if [ -e $zfolder/jar/atomic ] ; then
             for j in $zfolder/jar/atomic/*.jar ; do
                 cp -av $j ./jar/atomic/
             done
         fi
-    done
+    fi
     cp -av $zfolder/jnlp-files/* ./jnlp-files/
     if [ -e $zfolder/resources ] ; then
         cp -av $zfolder/resources/* ./resources/

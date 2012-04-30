@@ -38,9 +38,10 @@ os_and_archs_minus_one="linux-i586 linux-armv7 linux-armv7hf android-armv7 macos
 masterpick="linux-amd64"
 os_and_archs="$masterpick $os_and_archs_minus_one"
 
-dest=tmp-archive
-
 cd $rootdir
+
+dest=tmp-archive
+rm -rf $dest
 
 function promote-latest-builds() {
     echo
@@ -52,7 +53,7 @@ function promote-latest-builds() {
     echo
     echo `date`
     echo
-    prom_setup $rootdir $dest
+    prom_setup $dest
 
     gluegenslave=`prom_lslatest gluegen-b`
     bgluegenslave=`prom_buildnumber_2 $gluegenslave`
