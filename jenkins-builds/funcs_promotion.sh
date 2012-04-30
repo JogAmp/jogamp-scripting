@@ -155,7 +155,7 @@ function prom_merge_modules() {
             else
                 if [ -e jar ] ; then
                     mkdir -p ../$mergefolder/jar
-                    for l in `find jar -name \*natives\* -o -name \*.apk` ; do
+                    for l in `find jar -maxdepth 1 -name \*natives\* -o -name \*.apk` ; do
                         cp -av $l ../$mergefolder/jar/
                     done
                     if [ -e jar/atomic ] ; then
@@ -230,7 +230,7 @@ function prom_promote_module() {
         # 7z folder verfified above already
         local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
-        for j in `find $zfolder/jar -name \*.jar -o -name \*.apk` ; do
+        for j in `find $zfolder/jar -maxdepth 1 -name \*.jar -o -name \*.apk` ; do
             cp -av $j ./jar/
         done
         if [ -e $zfolder/jar/atomic ] ; then
