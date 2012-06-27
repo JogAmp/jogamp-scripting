@@ -31,7 +31,7 @@ Instructions
 
     $ mkdir input
     $ cd input
-    $ wget http://jogamp.org/deployment/v2.0-rc9/archive/jogamp-all-platforms.7z
+    $ wget http://jogamp.org/deployment/v2.0-rc10/archive/jogamp-all-platforms.7z
     $ 7z x jogamp-all-platforms.7z
 
   2. Switch back to the old directory:
