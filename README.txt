@@ -195,7 +195,8 @@ files were deployed along with the main jar file for each project. Using
     do
       CLASS="natives-${PLATFORM}"
       mvn gpg:sign-and-deploy-file \
-        -Dfile="gluegen-rt-${VERSION}-${CLASS}.jar"
+        -Dfile="gluegen-rt-${VERSION}-natives-${PLATFORM}.jar \
+        -Dclassifier="natives-${PLATFORM}"
     done
 
   Assuming version 2.0-rc10, this results in:
