@@ -141,8 +141,10 @@ Instructions
 
      If all files are there, and assuming that the checkbox is still selected
      from the previous step, click the 'Close' button above the repository
-     browser - this will 'close' the staging repository and the release will
-     be official!
+     browser - this will 'close' the staging repository (meaning no new files
+     can be added). Then click 'Release' when you absolutely positively want
+     to commit. The release will be made official and the files synced to
+     the Central repository within two hours.
 
      If there are still more projects to release, return to step 6.
 
