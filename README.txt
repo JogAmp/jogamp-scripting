@@ -147,6 +147,84 @@ Instructions
      If there are still more projects to release, return to step 6.
 
 ------------------------------------------------------------------------
+Projects
+------------------------------------------------------------------------
+
+The way that Maven works demanded a certain structure to the projects
+produced. The requirements were:
+
+  1. The end-user of the jogamp projects released to the repository
+     must not have to do anything beyond adding one or two dependencies
+     to their own projects. Everything must work using only the basic
+     dependency resolution mechanism that Maven supports and must not
+     require anything complex in the way of build scripts.
+
+  2. The way that jogamp projects locate their own jar files must
+     work as it always had.
+
+The first requirement was reasonably easy to satisfy (and the details
+of which will be covered shortly). The second requirement was complicated
+by the fact that Maven unconditionally appends version numbers to jar
+files (and requires the numbers to be present in order for the dependency
+resolution to work). After trying various approaches, a small change was
+made to the jogamp code in order to allow it to cope with version numbers,
+and the Maven projects were carefully structured to produce jar files
+with usable names. In other words, we had to essentially write Maven
+POM files that, when "deployed", produced jar files with the correct
+names, using a variety of tricks. The other issue was that jogamp implicitly
+assumed that all of the jar files would be in the same directory, whereas
+Maven essentially assumes one directory per jar file.
+
+We ended up with the following structure: For each part of jogamp that
+had associated native binaries (contained within jar files), a project
+was created. Then, using the "classifiers" [3], each of the native jar
+files were deployed along with the main jar file for each project. Using
+'gluegen-rt' as an example:
+
+  The main jar file as part of jogamp is "gluegen-rt.jar". When
+  "deployed" by Maven, this becomes "gluegen-rt-${VERSION}.jar".
+
+  Each native jar file associated with gluegen-rt is named
+  "gluegen-rt-natives-${OS}-${ARCH}.jar". We use "classifiers" to
+  get Maven to "deploy" jar files with the correct names:
+
+    PLATFORMS="linux-amd64 linux-i586 ..."
+    for PLATFORM in ${PLATFORMS}
+    do
+      CLASS="natives-${PLATFORM}"
+      mvn gpg:sign-and-deploy-file \
+        -Dfile="gluegen-rt-${VERSION}-${CLASS}.jar"
+    done
+
+  Assuming version 2.0-rc10, this results in:
+
+    gluegen-rt-2.0-rc10.jar
+    gluegen-rt-2.0-rc10-natives-linux-amd64.jar
+    gluegen-rt-2.0-rc10-natives-linux-i586.jar
+    ...
+
+This results in a project with a main jar and a set of native jar
+files, each with the correct name and version. As the native jar
+files are implicitly part of the same "project", they're deployed
+in the same directory as the main jar file, and the jogamp code can
+locate them without issue.
+
+The problem with this approach is that the end-user would have
+to add an explicit dependency on "gluegen-rt" and each and every
+one of the associated native jars in their project's POM file! The
+simplest solution for this problem was to create a second project
+that contained explicit dependencies on all of the classified jar
+files of the first. The end-user then simply adds a dependency on
+this second project instead of the first, and everything is resolved
+automatically by Maven. This second project also contains an empty
+"dummy" jar file in order to allow Maven to deploy it to repositories.
+
+With that in mind, each part of Maven therefore has an associated
+"-main" project, meant to be used by end-users. This "-main" project,
+when added to the dependencies of any project, pulls in all of the
+real jogamp jars, native or otherwise.
+
+------------------------------------------------------------------------
 Notes
 ------------------------------------------------------------------------
 
@@ -168,3 +246,4 @@ Footnotes
     deploy one 'artifactId' at a time - that translates to deploying one
     jogamp project at a time.
 
+[3] https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html
