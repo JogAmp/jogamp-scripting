@@ -22,7 +22,7 @@ cat <<EOF
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jogamp.gluegen</groupId>
-  <artifactId>gluegen-rt-main</artifactId>
+  <artifactId>gluegen-rt</artifactId>
   <version>${VERSION}</version>
   <packaging>jar</packaging>
   <name>GlueGen Runtime</name>
