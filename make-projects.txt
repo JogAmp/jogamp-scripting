@@ -1,0 +1,8 @@
+gluegen-rt            : natives    : no-dummy-jar
+gluegen-rt-main       : no-natives : dummy-jar
+jogl-all              : natives    : no-dummy-jar
+jogl-all-main         : no-natives : dummy-jar
+jogl-all-mobile       : no-natives : no-dummy-jar
+jogl-all-mobile-main  : no-natives : dummy-jar
+jogl-all-noawt        : no-natives : no-dummy-jar
+jogl-all-noawt-main   : no-natives : dummy-jar

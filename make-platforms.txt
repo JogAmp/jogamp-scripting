@@ -1,0 +1,10 @@
+android-armv7    : Android ARMv7
+linux-amd64      : Linux AMD64
+linux-armv7      : Linux ARMv7
+linux-armv7hf    : Linux ARMv7hf
+linux-i586       : Linux i586
+macosx-universal : Mac OS X Universal
+solaris-amd64    : Solaris AMD64
+solaris-i586     : Solaris i586
+windows-amd64    : Windows AMD64
+windows-i586     : Windows i586
