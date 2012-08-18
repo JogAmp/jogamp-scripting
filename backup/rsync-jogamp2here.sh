@@ -2,6 +2,9 @@
 
 USESSH="-e ssh"
 
+#SSH_AUTH_SOCK=/tmp/ssh-3t7ximSUbHxy/agent.17860; export SSH_AUTH_SOCK;
+#SSH_AGENT_PID=17861; export SSH_AGENT_PID;
+
 SOURCE=root@jogamp.org:
 DEST1=/data/backup/jogamp.org/fs
 DEST2=/data/backup/jogamp.org/fs
