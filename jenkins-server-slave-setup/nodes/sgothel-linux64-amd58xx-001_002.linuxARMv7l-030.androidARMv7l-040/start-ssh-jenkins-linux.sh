@@ -60,11 +60,11 @@ function connect_30 {
     export TARGET_ROOT=/home/jogamp/JogAmpSlaveARMv7
     export TARGET_ANT_HOME=/usr/share/ant
 
-    export TARGET_PLATFORM_ROOT=/opt-linux-armv7-armel
+    export TARGET_PLATFORM_ROOT=/opt-linux-armv6-armel
     export TARGET_PLATFORM_LIBS=$TARGET_PLATFORM_ROOT/usr/lib
     export TARGET_JAVA_LIBS=$TARGET_PLATFORM_ROOT/jre/lib/arm
 
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv4.xml
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv6.xml
 
     export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
 
@@ -102,11 +102,11 @@ function connect_31 {
     export TARGET_ROOT=/home/jogamp/JogAmpSlaveARMv7hf
     export TARGET_ANT_HOME=/usr/share/ant
 
-    export TARGET_PLATFORM_ROOT=/opt-linux-armv7-armhf
+    export TARGET_PLATFORM_ROOT=/opt-linux-armv6-armhf
     export TARGET_PLATFORM_LIBS=$TARGET_PLATFORM_ROOT/usr/lib
     export TARGET_JAVA_LIBS=$TARGET_PLATFORM_ROOT/jre/lib/arm
 
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv7hf.xml
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv6hf.xml
 
     export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
 
@@ -163,7 +163,7 @@ function connect_40 {
     # Need to add toolchain bins to the PATH. 
     export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_SDK_HOME/platform-tools:$PATH"
 
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv7.xml
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
 
     #export JUNIT_DISABLED="true"
     #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
