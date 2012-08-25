@@ -1,5 +1,5 @@
-set J2RE_HOME=c:\jre1.6.0_30_x64
-set JAVA_HOME=c:\jdk1.6.0_30_x64
+set J2RE_HOME=c:\jre1.6.0_34_x64
+set JAVA_HOME=c:\jdk1.6.0_34_x64
 set ANT_PATH=C:\apache-ant-1.8.2
 set GIT_PATH=C:\cygwin\bin
 set SEVENZIP=C:\Program Files\7-Zip
