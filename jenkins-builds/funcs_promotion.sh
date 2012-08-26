@@ -179,9 +179,9 @@ function prom_merge_modules() {
     # move unsigned APKs in seperate folder
     if [ -e $mergefolder/apk ] ; then
         cd $mergefolder/apk
-        mkdir unsigned
+        mkdir -p unsigned
         for i in *-unsigned.apk ; do
-            mv $i unsigned/`basename $i -unsigned.apk`.apk
+            mv -v $i unsigned/`basename $i -unsigned.apk`.apk
         done
         cd ../..
     fi
@@ -259,7 +259,7 @@ function prom_promote_module() {
     cd apk
     mkdir unsigned
     for i in *-unsigned.apk ; do
-        mv $i unsigned/`basename $i -unsigned.apk`.apk
+        mv -v $i unsigned/`basename $i -unsigned.apk`.apk
     done
     cd ..
     # copy the master pic JAR files
@@ -383,7 +383,7 @@ function prom_integrity_check() {
     cd $tmpdir
     for i in `find $lthisdir/$destdir/$jardir -name \*.jar -o -name \*.apk` ; do
         local bname=`basename $i`
-        echo -n "INFO: integrity check - $bname - "
+        echo -n "INFO: integrity check - $i - $bname - "
         local OK=0
         jar xvf $i >& $bname.log && OK=1
         if [ $OK -eq 0 ] ; then
