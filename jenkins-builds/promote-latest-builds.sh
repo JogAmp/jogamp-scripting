@@ -189,6 +189,7 @@ function promote-latest-builds() {
 
     prom_integrity_check $dest jar            tmp/dump
     prom_integrity_check $dest jar/atomic     tmp/dump
+    prom_integrity_check $dest apk            tmp/dump
     prom_integrity_check $dest joal-demos/jar tmp/dump
     prom_integrity_check $dest jogl-demos/jar tmp/dump
     prom_integrity_check $dest jocl-demos/jar tmp/dump

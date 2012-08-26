@@ -13,6 +13,7 @@ function prom_setup() {
         mkdir $ldest/archive/jogamp-$i/test-results/
     done
     mkdir $ldest/jar
+    mkdir $ldest/apk
     mkdir $ldest/jar/atomic
     mkdir $ldest/javadoc
     mkdir $ldest/jnlp-files
@@ -151,8 +152,12 @@ function prom_merge_modules() {
             else
                 if [ -e jar ] ; then
                     mkdir -p ../$mergefolder/jar
-                    for l in `find jar -maxdepth 1 -name \*natives\* -o -name \*.apk` ; do
+                    for l in `find jar -maxdepth 1 -name \*natives\*` ; do
                         cp -av $l ../$mergefolder/jar/
+                    done
+                    for l in `find jar -maxdepth 1 -name \*.apk` ; do
+                        mkdir -p ../$mergefolder/apk
+                        cp -av $l ../$mergefolder/apk/
                     done
                     if [ -e jar/atomic ] ; then
                         mkdir -p ../$mergefolder/jar/atomic
@@ -171,6 +176,15 @@ function prom_merge_modules() {
             cd ..
         done
     done
+    # move unsigned APKs in seperate folder
+    if [ -e $mergefolder/apk ] ; then
+        cd $mergefolder/apk
+        mkdir unsigned
+        for i in *-unsigned.apk ; do
+            mv $i unsigned/`basename $i -unsigned.apk`.apk
+        done
+        cd ../..
+    fi
     cp -av ../log/aggregated.artifact.properties.sorted ../log/all.artifact.properties.sorted $mergefolder/
     echo "INFO: Create merged jogamp archive $mergefolder.7z"
     7z a -r ../archive/$mergefolder.7z $mergefolder
@@ -229,8 +243,11 @@ function prom_promote_module() {
         # 7z folder verfified above already
         local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
-        for j in `find $zfolder/jar -maxdepth 1 -name \*.jar -o -name \*.apk` ; do
+        for j in `find $zfolder/jar -maxdepth 1 -name \*.jar` ; do
             cp -av $j ./jar/
+        done
+        for j in `find $zfolder/jar -maxdepth 1 -name \*.apk` ; do
+            cp -av $j ./apk/
         done
         if [ -e $zfolder/jar/atomic ] ; then
             for j in $zfolder/jar/atomic/*.jar ; do
@@ -238,6 +255,13 @@ function prom_promote_module() {
             done
         fi
     done
+    # move unsigned APKs in seperate folder
+    cd apk
+    mkdir unsigned
+    for i in *-unsigned.apk ; do
+        mv $i unsigned/`basename $i -unsigned.apk`.apk
+    done
+    cd ..
     # copy the master pic JAR files
     # 7z folder verfified above already
     local zfile=archive/jogamp-$masterpick/$module-$masterpick.7z
