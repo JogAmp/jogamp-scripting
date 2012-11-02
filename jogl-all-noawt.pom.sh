@@ -23,7 +23,7 @@ cat <<EOF
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jogamp.jogl</groupId>
   <artifactId>jogl-all-noawt</artifactId>
-  <version>2.0-rc9</version>
+  <version>${VERSION}</version>
   <packaging>jar</packaging>
   <name>JOGL</name>
   <description>Java™ Binding for the OpenGL® API (Without AWT)</description>
