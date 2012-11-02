@@ -26,12 +26,12 @@ Instructions
 
   1. Obtain the jogamp-all-platforms.7z release for the version
      of jogamp you wish to deploy to Central. As an example, we'll
-     use 2.0-rc10. Unpack the 7z file to the 'input' subdirectory,
+     use 2.0-rc11. Unpack the 7z file to the 'input' subdirectory,
      creating it if it doesn't exist:
 
     $ mkdir input
     $ cd input
-    $ wget http://jogamp.org/deployment/v2.0-rc10/archive/jogamp-all-platforms.7z
+    $ wget http://jogamp.org/deployment/v2.0-rc11/archive/jogamp-all-platforms.7z
     $ 7z x jogamp-all-platforms.7z
 
   2. Switch back to the old directory:
@@ -77,7 +77,7 @@ Instructions
   4. Now, run make.sh with the desired version number to generate POM
      files and copy jar files to the correct places:
 
-      $ ./make.sh 2.0-rc10
+      $ ./make.sh 2.0-rc11
 
   5. The scripts will have created an 'output' directory, containing
      all the prepared releases. It's now necessary to deploy the releases,
@@ -115,9 +115,13 @@ Instructions
      is the name that the scripts use to refer to the remote repository),
      and state that it wants username 'jogamp' and password '********'.
 
-  6. Now we can deploy a project:
+  6. Now we can deploy an individual project to the staging repository:
 
-      $ ./make-deploy.sh gluegen-rt-main 2.0-rc10
+      $ ./make-deploy-one.sh gluegen-rt-main 2.0-rc11
+
+     Or deploy all of the projects defined in make-projects.txt:
+
+      $ ./make-deploy.sh 2.0-rc11
 
      The scripts will upload all necessary jars, poms, signatures, etc.
 
@@ -199,11 +203,11 @@ files were deployed along with the main jar file for each project. Using
         -Dclassifier="natives-${PLATFORM}"
     done
 
-  Assuming version 2.0-rc10, this results in:
+  Assuming version 2.0-rc11, this results in:
 
-    gluegen-rt-2.0-rc10.jar
-    gluegen-rt-2.0-rc10-natives-linux-amd64.jar
-    gluegen-rt-2.0-rc10-natives-linux-i586.jar
+    gluegen-rt-2.0-rc11.jar
+    gluegen-rt-2.0-rc11-natives-linux-amd64.jar
+    gluegen-rt-2.0-rc11-natives-linux-i586.jar
     ...
 
 This results in a project with a main jar and a set of native jar
