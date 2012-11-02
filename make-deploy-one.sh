@@ -16,17 +16,17 @@ shift
 VERSION="$1"
 shift
 
-# REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-# REPOSITORY_ID="sonatype-nexus-staging"
+REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+REPOSITORY_ID="sonatype-nexus-staging"
 
-REPOSITORY_URL="scpexe://jogamp.org/home/mraynsford/repository/"
-REPOSITORY_ID="jogamp-test-mirror"
+# REPOSITORY_URL="scpexe://jogamp.org/home/mraynsford/repository/"
+# REPOSITORY_ID="jogamp-test-mirror"
 
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 CURRENT_DIR=`pwd` || exit 1
 
 PROJECT_LINE=`egrep "^${NAME}\s+" make-projects.txt` || exit 1
- 
+
 # Determine whether or not the project has native jars
 NATIVES=`echo "${PROJECT_LINE}" | awk -F: '{print $2}'` || exit 1
 NATIVES=`echo "${NATIVES}"      | tr -d ' '`            || exit 1
