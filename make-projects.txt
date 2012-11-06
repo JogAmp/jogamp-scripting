@@ -1,5 +1,7 @@
 gluegen-rt            : natives    : no-dummy-jar
 gluegen-rt-main       : no-natives : dummy-jar
+joal                  : natives    : no-dummy-jar
+joal-main             : no-natives : dummy-jar
 jocl                  : natives    : no-dummy-jar
 jocl-main             : no-natives : dummy-jar
 jogl-all              : natives    : no-dummy-jar
