@@ -9,7 +9,7 @@ fi
 VERSION="$1"
 shift
 
-PROJECTS=`cat make-projects.txt | awk -F: '{print $1}'` || exit 1
+PROJECTS=`./make-list-projects.sh | awk -F: '{print $1}'` || exit 1
 
 for PROJECT in ${PROJECTS}
 do

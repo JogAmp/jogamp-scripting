@@ -14,7 +14,7 @@ fi
 VERSION="$1"
 shift
 
-PROJECTS=`cat make-projects.txt` || exit 1
+PROJECTS=`./make-list-projects.sh` || exit 1
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 
 CURRENT_DIR=`pwd` || exit 1

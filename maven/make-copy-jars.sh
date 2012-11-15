@@ -34,7 +34,7 @@ then
   exit 1
 fi
 
-PROJECTS=`cat make-projects.txt` || exit 1
+PROJECTS=`./make-list-projects.sh` || exit 1
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 
 IFS="
@@ -95,5 +95,6 @@ do
   SOURCE="empty.jar"
   TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-javadoc.jar"
   copy "${SOURCE}" "${TARGET}"
+
 done
 

@@ -1,3 +1,8 @@
+#
+# Lines prefixed with '#' are considered comments and ignored.
+#
+# project-name : has-natives? : use-dummy-jar? : source-jar-name?
+#
 gluegen-rt            : natives    : no-dummy-jar : gluegen-java-src.zip
 gluegen-rt-main       : no-natives : dummy-jar    : dummy-src
 gluegen-rt-android    : no-natives : no-dummy-jar : gluegen-java-src.zip
