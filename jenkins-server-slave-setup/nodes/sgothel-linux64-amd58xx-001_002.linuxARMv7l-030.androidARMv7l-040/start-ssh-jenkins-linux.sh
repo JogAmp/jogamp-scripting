@@ -143,10 +143,10 @@ function connect_40 {
     export TARGET_ANT_HOME=/usr/share/ant
 
     export NDK_ROOT=/opt-linux-x86/android-ndk
-    export ANDROID_SDK_HOME=/opt-linux-x86/android-sdk-linux_x86
+    export ANDROID_HOME=/opt-linux-x86/android-sdk-linux_x86
 
     echo NDK_ROOT $NDK_ROOT
-    echo ANDROID_SDK_HOME $ANDROID_SDK_HOME
+    echo ANDROID_HOME $ANDROID_HOME
 
     export ANDROID_VERSION=9
     export SOURCE_LEVEL=1.6
@@ -161,9 +161,10 @@ function connect_40 {
     export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
 
     # Need to add toolchain bins to the PATH. 
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_SDK_HOME/platform-tools:$PATH"
+    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
+    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
 
     #export JUNIT_DISABLED="true"
     #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
