@@ -30,17 +30,24 @@ i.e. don't enter the quotes.
             - MemberOf
                 - Add: 'Administrators'
 
-    - Repeat this for account: 'cyg_server' ! (only for win7 service)
-        - Same options
+    - The following is only required if running sshd as a service:
 
-    - Repeat this for account: 'sshd' ! (only for win7 service)
-        - Same options, _BUT_ don't add MemberOf 'Administrators'
+        - Repeat this for account: 'cyg_server' ! (only for win7 service)
+            - Same options
+
+        - Repeat this for account: 'sshd' ! (only for win7 service)
+            - Same options, _BUT_ don't add MemberOf 'Administrators'
 
 2) Enable account: Administrator (or use powershell)
 
-- cmd.exe: 'lusrmgr' 
-    - enable Administrator
-    - set password for Administrator
+  Windows Professional License:
+    - cmd.exe: 'lusrmgr' 
+        - enable Administrator
+        - set password for Administrator
+
+  Windows Home License:
+    - start dos-shell with right click: 'Run as administrator':
+          - net user administrator /active:yes
 
 3) We need all these passwords, incl. Administrator !!
 Please put them in a text file (user:password), ie c:\admin.txt
@@ -53,7 +60,7 @@ please:
     - LOGIN TO WINDOWS AS USER 'jogamp'
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-4) Install latest cygwin 1.7.5-1 as user 'jogamp'
+4) Install latest cygwin >= 1.7.5-1 as user 'jogamp'
     - http://www.cygwin.com/
     - Answer: For All users
     - Default location C:\cygwin

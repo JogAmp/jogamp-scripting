@@ -8,7 +8,7 @@ mkgroup --local > /etc/group
 
 http://www.howtogeek.com/howto/windows-vista/enable-the-hidden-administrator-account-on-windows-vista/
 
-Enable Built-in Administrator Account / start dos-shell 'run-as-admin':
+Enable Built-in Administrator Account / start dos-shell with right click: 'Run as administrator':
   net user administrator /active:yes
 
 +++++

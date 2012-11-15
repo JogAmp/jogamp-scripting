@@ -29,6 +29,10 @@ configure the ssh deamon, sshd:
 
                     chown jogamp /etc/ssh*
 
+                    vi /etc/sshd_config - change:
+                        - UsePrivilegeSeparation sandbox
+                        + UsePrivilegeSeparation no
+
 8) Autostart user 'jogamp' and user space sshd
 
    8.1) Autostart sshd for user 'jogamp'
