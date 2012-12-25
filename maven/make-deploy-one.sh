@@ -16,11 +16,14 @@ shift
 VERSION="$1"
 shift
 
-REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-REPOSITORY_ID="sonatype-nexus-staging"
-
-# REPOSITORY_URL="scpexe://jogamp.org/home/mraynsford/repository/"
-# REPOSITORY_ID="jogamp-test-mirror"
+if [ -z "${REPOSITORY_URL}" -o -z "${REPOSITORY_ID}" ] ; then
+    REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    REPOSITORY_ID="sonatype-nexus-staging"
+    # REPOSITORY_URL="scpexe://jogamp.org/home/mraynsford/repository/"
+    # REPOSITORY_ID="jogamp-test-mirror"
+    # REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
+    # REPOSITORY_ID="jogamp-mirror"
+fi
 
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 CURRENT_DIR=`pwd` || exit 1
