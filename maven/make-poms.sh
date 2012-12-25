@@ -14,7 +14,7 @@ PROJECTS=`cat make-projects.txt | awk -F: '{print $1}'` || exit 1
 for PROJECT in ${PROJECTS}
 do
   echo "make-poms: info: generating pom for ${PROJECT}" 1>&2 
-  "./${PROJECT}.pom.sh" "${VERSION}" > "${PROJECT}.pom.tmp" || exit 1
-  mv "${PROJECT}.pom.tmp" "${PROJECT}.pom" || exit 1
+  "./${PROJECT}.pom.sh" "${VERSION}" > "output/${PROJECT}.pom.tmp" || exit 1
+  mv "output/${PROJECT}.pom.tmp" "output/${PROJECT}.pom" || exit 1
 done
 

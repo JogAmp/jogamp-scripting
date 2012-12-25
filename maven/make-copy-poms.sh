@@ -29,7 +29,7 @@ PROJECTS=`cat make-projects.txt | awk -F: '{print $1}'` || exit 1
 
 for PROJECT in ${PROJECTS}
 do
-  SOURCE="${PROJECT}.pom"
+  SOURCE="output/${PROJECT}.pom"
   TARGET="output/${PROJECT}/${VERSION}/${PROJECT}-${VERSION}.pom"
   copy "${SOURCE}" "${TARGET}"
   TARGET="output/${PROJECT}/${VERSION}/pom.xml"
