@@ -54,6 +54,10 @@ do
   DUMMY=`echo "${PROJECT_LINE}" | awk -F: '{print $3}'` || exit 1
   DUMMY=`echo "${DUMMY}"        | tr -d ' '`            || exit 1
 
+  # Determine the source zip file, may be dummy-src
+  SRC_ZIP=`echo "${PROJECT_LINE}" | awk -F: '{print $4}'` || exit 1
+  SRC_ZIP=`echo "${SRC_ZIP}"      | tr -d ' '`            || exit 1
+
   # Copy all native jars, if necessary
   if [ "${NATIVES}" = "natives" ]
   then
@@ -69,21 +73,25 @@ do
   if [ "${DUMMY}" = "dummy-jar" ]
   then
     SOURCE="empty.jar"
-    TARGET="output/${NAME}/${VERSION}/${NAME}.jar"
-    copy "${SOURCE}" "${TARGET}"
   else
     # Copy main jar
     SOURCE="${INPUT}/jar/${NAME}.jar"
-    TARGET="output/${NAME}/${VERSION}/${NAME}.jar"
-    copy "${SOURCE}" "${TARGET}"
   fi
+  TARGET="output/${NAME}/${VERSION}/${NAME}.jar"
+  copy "${SOURCE}" "${TARGET}"
 
-  # Copy dummy jars to 'sources' and 'javadoc' jars, as we
-  # don't publish real versions of these yet.
-  SOURCE="empty.jar"
+  # Copy dummy jars, if necessary
+  if [ "${SRC_ZIP}" = "dummy-src" ]
+  then
+      SOURCE="empty.jar"
+  else
+      SOURCE="${INPUT}/${SRC_ZIP}"
+  fi
   TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-sources.jar"
   copy "${SOURCE}" "${TARGET}"
  
+  # Copy dummy jars to 'javadoc' jars, as we
+  # don't publish real versions of these yet.
   SOURCE="empty.jar"
   TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-javadoc.jar"
   copy "${SOURCE}" "${TARGET}"

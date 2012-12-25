@@ -1,14 +1,14 @@
-gluegen-rt            : natives    : no-dummy-jar
-gluegen-rt-main       : no-natives : dummy-jar
-gluegen-rt-android    : no-natives : no-dummy-jar
-joal                  : natives    : no-dummy-jar
-joal-main             : no-natives : dummy-jar
-jocl                  : natives    : no-dummy-jar
-jocl-main             : no-natives : dummy-jar
-jogl-all              : natives    : no-dummy-jar
-jogl-all-main         : no-natives : dummy-jar
-jogl-all-mobile       : no-natives : no-dummy-jar
-jogl-all-mobile-main  : no-natives : dummy-jar
-jogl-all-noawt        : no-natives : no-dummy-jar
-jogl-all-noawt-main   : no-natives : dummy-jar
-jogl-all-android      : no-natives : no-dummy-jar
+gluegen-rt            : natives    : no-dummy-jar : gluegen-java-src.zip
+gluegen-rt-main       : no-natives : dummy-jar    : dummy-src
+gluegen-rt-android    : no-natives : no-dummy-jar : gluegen-java-src.zip
+joal                  : natives    : no-dummy-jar : joal-java-src.zip
+joal-main             : no-natives : dummy-jar    : dummy-src
+jocl                  : natives    : no-dummy-jar : jocl-java-src.zip
+jocl-main             : no-natives : dummy-jar    : dummy-src
+jogl-all              : natives    : no-dummy-jar : jogl-java-src.zip
+jogl-all-main         : no-natives : dummy-jar    : dummy-src
+jogl-all-mobile       : no-natives : no-dummy-jar : jogl-java-src.zip
+jogl-all-mobile-main  : no-natives : dummy-jar    : dummy-src
+jogl-all-noawt        : no-natives : no-dummy-jar : jogl-java-src.zip
+jogl-all-noawt-main   : no-natives : dummy-jar    : dummy-src
+jogl-all-android      : no-natives : no-dummy-jar : jogl-java-src.zip
