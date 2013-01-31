@@ -153,7 +153,8 @@ function connect_40 {
     export TARGET_LEVEL=1.6
     export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
 
-    export GCC_VERSION=4.4.3
+    #export GCC_VERSION=4.4.3
+    export GCC_VERSION=4.7
     HOST_ARCH=linux-x86
     export TARGET_TRIPLE=arm-linux-androideabi
 
@@ -161,6 +162,7 @@ function connect_40 {
     export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
 
     # Need to add toolchain bins to the PATH. 
+    export PATH_VANILLA=$PATH
     export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
