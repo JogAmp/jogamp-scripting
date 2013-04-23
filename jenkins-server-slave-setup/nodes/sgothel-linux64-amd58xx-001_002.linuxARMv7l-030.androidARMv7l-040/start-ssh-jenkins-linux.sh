@@ -48,7 +48,7 @@ function connect_30 {
     JENKINS_WS=$HOST_ROOT/workspace
 
     # arm-linux-gnueabi == armel triplet
-    PATH=$JENKINS_NODE_STARTUP_DIR/arm-linux-gnueabi/bin:$PATH
+    PATH=$JENKINS_NODE_STARTUP_DIR/toolchain/armsf-linux-gnueabi/bin:$PATH
     export PATH
 
     export HOST_UID=jogamp
@@ -90,7 +90,7 @@ function connect_31 {
     JENKINS_WS=$HOST_ROOT/workspace
 
     # arm-linux-gnueabi == armel triplet
-    PATH=$JENKINS_NODE_STARTUP_DIR/arm-linux-gnueabihf/bin:$PATH
+    PATH=$JENKINS_NODE_STARTUP_DIR/toolchain/armhf-linux-gnueabi/bin:$PATH
     export PATH
 
     export HOST_UID=jogamp
