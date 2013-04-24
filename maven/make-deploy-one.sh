@@ -25,6 +25,8 @@ if [ -z "${REPOSITORY_URL}" -o -z "${REPOSITORY_ID}" ] ; then
   # REPOSITORY_ID="jogamp-mirror"
 fi
 
+info "using repository: ${REPOSITORY_ID} ${REPOSITORY_URL}"
+
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 CURRENT_DIR=`pwd` || exit 1
 
@@ -36,39 +38,41 @@ NATIVES=`echo "${NATIVES}"      | tr -d ' '`            || exit 1
 
 cd "output/${NAME}/${VERSION}" || exit 1
 
-# Deploy jar.
-mvn gpg:sign-and-deploy-file        \
-  "-DpomFile=pom.xml"               \
-  "-Dfile=${NAME}.jar"              \
-  "-Durl=${REPOSITORY_URL}"         \
-  "-DrepositoryId=${REPOSITORY_ID}"
+# Maintain a list of extra files, along with their classifiers, to deploy.
+DEPLOY_EXTRA_FILES=""
+DEPLOY_EXTRA_CLASSIFIERS=""
+DEPLOY_EXTRA_TYPES=""
+
+# Deploy javadoc jar
+DEPLOY_EXTRA_FILES="${NAME}-${VERSION}-javadoc.jar"
+DEPLOY_EXTRA_CLASSIFIERS="javadoc"
+DEPLOY_EXTRA_TYPES="jar"
+
+# Deploy source jar
+DEPLOY_EXTRA_FILES="${DEPLOY_EXTRA_FILES},${NAME}-${VERSION}-sources.jar"
+DEPLOY_EXTRA_CLASSIFIERS="${DEPLOY_EXTRA_CLASSIFIERS},sources"
+DEPLOY_EXTRA_TYPES="${DEPLOY_EXTRA_TYPES},jar"
 
 # Deploy native jars into repository, if necessary.
 if [ "${NATIVES}" = "natives" ]
 then
   for PLATFORM in ${PLATFORMS}
   do
-    mvn gpg:sign-and-deploy-file                          \
-      "-DpomFile=pom.xml"                                 \
-      "-Dfile=${NAME}-${VERSION}-natives-${PLATFORM}.jar" \
-      "-Dclassifier=natives-${PLATFORM}"                  \
-      "-Durl=${REPOSITORY_URL}"                           \
-      "-DrepositoryId=${REPOSITORY_ID}"
+    f="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
+    DEPLOY_EXTRA_FILES="${DEPLOY_EXTRA_FILES},${f}"
+    DEPLOY_EXTRA_CLASSIFIERS="${DEPLOY_EXTRA_CLASSIFIERS},natives-${PLATFORM}"
+    DEPLOY_EXTRA_TYPES="${DEPLOY_EXTRA_TYPES},jar"
+    info "adding file ${f}"
   done
 fi
 
-# Deploy empty 'sources' and 'javadoc' jars.
-mvn gpg:sign-and-deploy-file              \
-  "-DpomFile=pom.xml"                     \
-  "-Dfile=${NAME}-${VERSION}-javadoc.jar" \
-  "-Dclassifier=javadoc"                  \
-  "-Durl=${REPOSITORY_URL}"               \
-  "-DrepositoryId=${REPOSITORY_ID}"
-
-mvn gpg:sign-and-deploy-file              \
-  "-DpomFile=pom.xml"                     \
-  "-Dfile=${NAME}-${VERSION}-sources.jar" \
-  "-Dclassifier=sources"                  \
-  "-Durl=${REPOSITORY_URL}"               \
+# Deploy everything.
+mvn gpg:sign-and-deploy-file                  \
+  "-DpomFile=pom.xml"                         \
+  "-Dfile=${NAME}.jar"                        \
+  "-Dfiles=${DEPLOY_EXTRA_FILES}"             \
+  "-Dclassifiers=${DEPLOY_EXTRA_CLASSIFIERS}" \
+  "-Dtypes=${DEPLOY_EXTRA_TYPES}"             \
+  "-Durl=${REPOSITORY_URL}"                   \
   "-DrepositoryId=${REPOSITORY_ID}"
 
