@@ -21,7 +21,7 @@ Sonatype. See the repository usage guide [1] for details on getting an
 account.
 
 ------------------------------------------------------------------------
-Instructions
+Instructions (deploying a release to Central)
 ------------------------------------------------------------------------
 
   1. Obtain the jogamp-all-platforms.7z release for the version
@@ -153,6 +153,69 @@ Instructions
      If there are still more projects to release, return to step 6.
 
 ------------------------------------------------------------------------
+Instructions (deploying something to the jogamp test repository)
+------------------------------------------------------------------------
+
+In order to deploy to the jogamp test repository, the artifacts must be
+deployed over SSH. As Maven now uses jsch [4], and because we require
+the use of SSH keypairs, and because jsch can't talk to OpenSSH's
+ssh-agent, it takes a bit of extra work to get deployment working
+over SSH.
+
+  1. First, it's necessary to generate a "master password" for
+     Maven. This is analogous to a password used for a web browser
+     keychain; it is used to encrypt all other passwords.
+
+     So, pick a good password, and then encrypt it (where 'abcdefgh'
+     is the password):
+
+       $ mvn --encrypt-master-password abcdefgh
+
+     The command will produce output similar to (note the braces):
+
+       {Ugr6u/ykq9yAl51tEAJSnsUr+6D/qO9cRxr6r7suOr4}
+
+  2. Then, save this password in $HOME/.m2/settings-security.xml:
+
+    <settingsSecurity>
+      <master>{Ugr6u/ykq9yAl51tEAJSnsUr+6D/qO9cRxr6r7suOr4}</master>
+    </settingsSecurity>
+
+  3. Now, it's necessary to encrypt your SSH key's passphrase with
+     your master password (where '12345678' is the passphrase):
+
+       $ mvn --encrypt-password 12345678
+       {9N6TewUd+9sEbMpmJpLC+O4Q4so0aM3ewriU+n7iA+c=}
+
+  4. Now, it's necessary to add a definition to $HOME/.m2/settings.xml
+     so that, given a unique server ID, Maven can find:
+
+      * Your SSH private key
+      * The passphrase required to decrypt it
+      * The username to use on the server
+
+     For convenience, we'll call the server "jogamp-test-scp" here,
+     but it's obviously possible to use whatever name is desired:
+
+    <servers>
+      <server>
+        <id>jogamp-test-scp</id>
+        <username>someone</username>
+        <privateKey>/home/someone/.ssh/id_rsa</privateKey>
+        <passphrase>{9N6TewUd+9sEbMpmJpLC+O4Q4so0aM3ewriU+n7iA+c=}</passphrase>
+      </server>
+    </servers>
+
+  5. Now, when running make-deploy.sh, the server ID we added to
+     $HOME/.m2/settings.xml must be used as the REPOSITORY_ID (and
+     the REPOSITORY_URL must be adjusted slightly to use the scp://
+     protocol as opposed to the old scpexe:// protocol):
+
+     $ export REPOSITORY_ID=jogamp-test-scp
+     $ export REPOSITORY_URL="scp://jogamp.org/srv/www/jogamp.org/deployment/maven/"
+     $ ./make-deploy.sh ...
+
+------------------------------------------------------------------------
 Projects
 ------------------------------------------------------------------------
 
@@ -254,3 +317,5 @@ Footnotes
     jogamp project at a time.
 
 [3] https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html
+
+[4] http://www.jcraft.com/jsch/
