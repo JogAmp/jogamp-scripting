@@ -44,12 +44,16 @@ DEPLOY_EXTRA_CLASSIFIERS=""
 DEPLOY_EXTRA_TYPES=""
 
 # Deploy javadoc jar
-DEPLOY_EXTRA_FILES="${NAME}-${VERSION}-javadoc.jar"
+f="${NAME}-${VERSION}-javadoc.jar"
+info "adding file ${f}"
+DEPLOY_EXTRA_FILES="${f}"
 DEPLOY_EXTRA_CLASSIFIERS="javadoc"
 DEPLOY_EXTRA_TYPES="jar"
 
 # Deploy source jar
-DEPLOY_EXTRA_FILES="${DEPLOY_EXTRA_FILES},${NAME}-${VERSION}-sources.jar"
+f="${NAME}-${VERSION}-sources.jar"
+info "adding file ${f}"
+DEPLOY_EXTRA_FILES="${DEPLOY_EXTRA_FILES},${f}"
 DEPLOY_EXTRA_CLASSIFIERS="${DEPLOY_EXTRA_CLASSIFIERS},sources"
 DEPLOY_EXTRA_TYPES="${DEPLOY_EXTRA_TYPES},jar"
 
