@@ -18,7 +18,7 @@ function connect_1 {
     fi
     ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6001:localhost:5555 -N &
     sshpid=$!
-    java -server -Xmx512m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/linux64-AMD58xx-ubuntu10-jogamp-x32-sgothel-001/slave-agent.jnlp
+    java -server -Xmx512m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/linux64-AMD58xx-debian7-jogamp-x32-sgothel-001/slave-agent.jnlp
   done
 }
 
@@ -34,7 +34,7 @@ function connect_2 {
     fi
     ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6002:localhost:5555 -N &
     sshpid=$!
-    java -server -Xmx512m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/linux64-AMD58xx-ubuntu10-jogamp-x64-sgothel-002/slave-agent.jnlp
+    java -server -Xmx512m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/linux64-AMD58xx-debian7-jogamp-x64-sgothel-002/slave-agent.jnlp
   done
 }
 
@@ -184,10 +184,10 @@ function connect_40 {
 
 }
 
-connect_1 > linux64-AMD58xx-ubuntu10-jogamp-x32-sgothel-001.log 2>&1 &
+connect_1 > linux64-AMD58xx-debian7-jogamp-x32-sgothel-001.log 2>&1 &
 disown $!
 
-connect_2 > linux64-AMD58xx-ubuntu10-jogamp-x64-sgothel-002.log 2>&1 &
+connect_2 > linux64-AMD58xx-debian7-jogamp-x64-sgothel-002.log 2>&1 &
 disown $!
 
 connect_30 > linuxARMv7-jogamp-arm32-sgothel-030.log 2>&1 &
