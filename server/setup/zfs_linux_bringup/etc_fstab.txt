@@ -1,0 +1,3 @@
+
+UUID=187bf74d-d4c3-4138-a61a-d4bfb4bc5052 /mnt/usbroot     ext4    errors=remount-ro 0       2
+
