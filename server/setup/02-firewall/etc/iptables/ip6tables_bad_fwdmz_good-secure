@@ -1,0 +1,285 @@
+#! /bin/sh
+
+# set -x
+
+action=$1
+shift
+
+#
+#* Single end device with untrusted inet connection
+#
+
+ETH_EXTERN=eth0
+IP_EXTERN_SELF=$( /sbin/ip -o -f inet6 addr show dev $ETH_EXTERN scope global | awk ' { print $4;  } ' )
+IP_EXTERN_GW=$( /sbin/ip -o -f inet6 route show dev $ETH_EXTERN | grep default | awk ' { print $3;  } ' )
+
+##
+##
+
+IPTABLES=/sbin/ip6tables
+
+if [ "$action" != "start" -a "$action" != "stop" ] ; then
+        echo usage $0 \( start \| stop \)
+        echo
+        echo    $0 start
+        echo    $0 stop
+        exit 1
+fi
+
+if [ "$action" = "stop" ] ; then
+        echo "IPTABLES rules down" 
+
+        $IPTABLES -F acl_external_input
+        $IPTABLES -F acl_srv_connect
+        $IPTABLES -F acl_srv_web
+        $IPTABLES -F acl_srv_shared
+        $IPTABLES -F acl_srv_email
+        $IPTABLES -F acl_srv_login_sec
+        $IPTABLES -F INPUT
+        $IPTABLES -F FORWARD
+
+        $IPTABLES -X acl_external_input
+        $IPTABLES -X acl_srv_connect
+        $IPTABLES -X acl_srv_web
+        $IPTABLES -X acl_srv_shared
+        $IPTABLES -X acl_srv_email
+        $IPTABLES -X acl_srv_login_sec
+
+        $IPTABLES -P INPUT   ACCEPT
+        $IPTABLES -P FORWARD ACCEPT
+
+        exit 0
+fi
+
+if [ "$action" = "start" ] ; then
+          echo "IPTABLES rules up" 
+
+        # Anti-spoofing 
+        #
+        # Since we don't have any asymmetric routing, 
+        # we can simply turn on anti-spoofing for all interfaces. 
+        #
+        #for f in /proc/sys/net/ipv4/conf/*ppp*/rp_filter; do echo 1 > $f; done
+
+        $IPTABLES -P INPUT   DROP
+
+        $IPTABLES -N acl_external_input
+        $IPTABLES -N acl_srv_connect
+        $IPTABLES -N acl_srv_web
+        $IPTABLES -N acl_srv_shared
+        $IPTABLES -N acl_srv_email
+        $IPTABLES -N acl_srv_login_sec
+
+        ###################################################################
+        ###################################################################
+        #
+
+        # INPUT -> user chains
+        #
+        # Unfortunately, we only know (in the FORWARD chain) the outgoing interface. 
+        # Thus, to figure out what interface the packet came in on, 
+        # we use the source address (the anti-spoofing prevents address faking). 
+        #
+        # Note that we log anything which doesn't match any of these (obviously, this should never happen). 
+        #
+
+        #
+        # INPUT Allow FIREWALL itself !
+        #
+        $IPTABLES -p all -A INPUT  -i $ETH_EXTERN         -s $IP_EXTERN_SELF                   -j ACCEPT
+        $IPTABLES -p all -A INPUT  -i lo                                                       -j ACCEPT
+
+        $IPTABLES -p all -A INPUT  -i $ETH_EXTERN                                              -j acl_external_input
+
+        #$IPTABLES -p tcp -A INPUT  -i $ETH_EXTERN  --tcp-flags ACK ACK                         -j LOG \
+        #             --log-level debug --log-prefix "FW6-IN: ack "
+        $IPTABLES -p tcp -A INPUT  -i $ETH_EXTERN  --tcp-flags ACK ACK                         -j ACCEPT
+
+        $IPTABLES -p all -A INPUT  -i $ETH_EXTERN   -j LOG --log-level debug --log-prefix "FW6-IN: rej acl_ext input "
+        $IPTABLES -p all -A INPUT  -i $ETH_EXTERN                                              -j REJECT
+
+        #
+        # INPUT Log & Reject any
+        #
+        $IPTABLES -p all -A INPUT                        -j LOG --log-level debug --log-prefix "FW6-IN: rej ANY input "
+        $IPTABLES -p all -A INPUT                                                              -j REJECT
+
+        #
+        ###################################################################
+        ###################################################################
+        ###################################################################
+        #
+
+        # FORWARD -> user chains
+        #
+
+        #
+        # FORWARD Allow FIREWALL itself !
+        #
+        $IPTABLES -p all -A FORWARD  -i $ETH_EXTERN         -s $IP_EXTERN_SELF                 -j ACCEPT
+        $IPTABLES -p all -A FORWARD  -i lo                                                     -j ACCEPT
+
+        $IPTABLES -p all -A FORWARD  -i $ETH_EXTERN                                            -j acl_external_input
+        $IPTABLES -p all -A FORWARD  -i $ETH_EXTERN   -j LOG --log-level debug --log-prefix "FW6-FWD: rej acl_ext input "
+        $IPTABLES -p all -A FORWARD  -i $ETH_EXTERN                                            -j REJECT
+
+        #
+        # FORWARD Log & Reject any
+        #
+        $IPTABLES -p all -A FORWARD    -j LOG --log-level debug --log-prefix "FW6-FWD: rej ANY input "
+        $IPTABLES -p all -A FORWARD                                                            -j REJECT
+
+        #
+        #
+        #########################################################################################################################
+        #########################################################################################################################
+        #########################################################################################################################
+        #
+        # acl_extern_
+        #
+
+        #
+        # Allow fragments (second etc. parts of a huge packet ..)
+        # Allow icmpv6 notification: 3/4 destination-unreachable/fragmentation-needed
+        #
+        # ATTENTION .. can be anything (ICMP), but the very 1st will be filtered ok !
+        #
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type echo-request -m limit --limit 5/s  -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type echo-reply                  -j ACCEPT
+
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type destination-unreachable     -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type packet-too-big              -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type time-exceeded               -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type parameter-problem           -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type neighbour-solicitation      -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type neighbour-advertisement     -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type router-solicitation         -j ACCEPT
+        $IPTABLES  -A acl_external_input   -p icmpv6 --icmpv6-type router-advertisement        -j ACCEPT
+
+        $IPTABLES -p all -A acl_external_input                                                 -j acl_srv_connect     # includes: allow to answer ..
+        $IPTABLES -p all -A acl_external_input                                                 -j acl_srv_login_sec
+        $IPTABLES -p all -A acl_external_input                                                 -j acl_srv_web
+        $IPTABLES -p all -A acl_external_input                                                 -j acl_srv_shared
+        $IPTABLES -p all -A acl_external_input                                                 -j acl_srv_email
+
+        # --syn == "--tcp-flags SYN,RST,ACK SYN"
+        #$IPTABLES -p tcp -A acl_external_input        ! --syn -j LOG --log-level debug --log-prefix "FW6-Ext: rej INET !syn "
+        #$IPTABLES -p tcp -A acl_external_input        ! --syn                                 -j REJECT
+        #$IPTABLES -p all -A acl_external_input -m state ! --state ESTABLISHED,RELATED   -j LOG --log-level debug --log-prefix "FW6-Ext: rej INET !resp "
+        #$IPTABLES -p all -A acl_external_input -m state ! --state ESTABLISHED,RELATED         -j REJECT
+
+        #
+        #########################################################################################################################
+        #########################################################################################################################
+        #########################################################################################################################
+        #
+        # INPUT Allow acl_srv_shared 
+        #
+        # FTP, SAMBA, GNUnet clients
+        #
+
+        # ANONYMOUS FTP
+        #
+        #$IPTABLES -p tcp -A acl_srv_shared        --dport ftp-data:ftp                        -j ACCEPT
+        #$IPTABLES -p udp -A acl_srv_shared        --dport ftp-data:ftp                        -j ACCEPT
+
+        $IPTABLES -p tcp -A acl_srv_shared        --dport git                                  -j ACCEPT
+        $IPTABLES -p udp -A acl_srv_shared        --dport git                                  -j ACCEPT
+
+        #
+        #
+        #########################################################################################################################
+        #
+        # INPUT Allow acl_srv_login_sec 
+        #
+        # SSH
+        #
+
+        # SSH
+        #
+        #$IPTABLES -p tcp -A acl_srv_login_sec        --dport ssh                              -j LOG --log-level debug --log-prefix "FW6-ACL_SSH: "
+        $IPTABLES -p tcp -A acl_srv_login_sec        --dport ssh                               -j ACCEPT
+        $IPTABLES -p udp -A acl_srv_login_sec        --dport ssh                               -j ACCEPT
+
+        #
+        #
+        #########################################################################################################################
+        #
+        # INPUT Allow acl_srv_email 
+        #
+        # POP3s, SMTP
+        #
+
+        # IMAPs
+        #
+        $IPTABLES -p tcp -A acl_srv_email        --dport imaps                                 -j ACCEPT
+
+        # POP3s
+        #
+        $IPTABLES -p tcp -A acl_srv_email        --dport pop3s                                 -j ACCEPT
+
+        # ident
+        #
+        $IPTABLES -p tcp -A acl_srv_email        --dport ident                                 -j ACCEPT
+
+        # SMTPs
+        #
+        $IPTABLES -p tcp -A acl_srv_email        --dport smtp                                  -j ACCEPT
+        $IPTABLES -p tcp -A acl_srv_email        --dport smtps                                 -j ACCEPT
+
+        #
+        #########################################################################################################################
+        #
+        # INPUT Allow acl_srv_web 
+        #
+        # HTTP, NTP
+        #
+
+        # HTTP
+        #
+        $IPTABLES -p tcp -A acl_srv_web        --dport http                                    -j ACCEPT
+        $IPTABLES -p tcp -A acl_srv_web        --dport https                                   -j ACCEPT
+        #$IPTABLES -p tcp -A acl_srv_web        --dport http-alt                               -j ACCEPT
+        #$IPTABLES -p tcp -A acl_srv_web        --dport webcache                               -j ACCEPT
+        #$IPTABLES -p tcp -A acl_srv_web        --dport squid                                  -j ACCEPT
+
+        #
+        #
+        #########################################################################################################################
+        #
+        # INPUT Allow acl_srv_connect 
+        #
+        # ICMP, NTP, DHCP, DNS, ANSWER
+        #
+
+        # IPSEC
+        #
+        #$IPTABLES -p ah  -A acl_srv_connect                                                    -j ACCEPT
+        $IPTABLES -p esp -A acl_srv_connect                                                    -j ACCEPT
+
+        # DHCP .. TFTP
+        #
+        $IPTABLES -p udp -A acl_srv_connect -i $ETH_EXTERN --dport mdns        -s $IP_EXTERN_SELF  -j ACCEPT # 
+        $IPTABLES -p udp -A acl_srv_connect -i $ETH_EXTERN --dport bootps:tftp -s $IP_EXTERN_GW    -j ACCEPT #
+        $IPTABLES -p tcp -A acl_srv_connect -i $ETH_EXTERN --dport bootps:69   -s $IP_EXTERN_GW    -j ACCEPT #
+
+        # DNS
+        #
+        # $IPTABLES -p tcp -A acl_srv_connect        --dport mdns                              -j ACCEPT
+        # $IPTABLES -p udp -A acl_srv_connect        --dport mdns                              -j ACCEPT
+        # $IPTABLES -p tcp -A acl_srv_connect        --dport domain                            -j ACCEPT
+        # $IPTABLES -p udp -A acl_srv_connect        --dport domain                            -j ACCEPT
+        # $IPTABLES -p tcp -A acl_srv_connect        --dport netbios-ns:netbios-ssn            -j ACCEPT
+        # $IPTABLES -p udp -A acl_srv_connect        --dport netbios-ns:netbios-ssn            -j ACCEPT
+
+        #
+        # acl_srv_connect Allow * to answer,
+        # only for known connections - no new unknown ones !
+        #
+        $IPTABLES -p all  -A acl_srv_connect          -m state   --state ESTABLISHED,RELATED   -j ACCEPT
+
+        #
+        #
+        #########################################################################################################################
+fi
+
