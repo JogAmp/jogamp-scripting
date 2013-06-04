@@ -34,8 +34,9 @@ Tuning:
                arc.c = arc.c_max
                arc.p = arc.c / 2
            or
-               # ARC: 512MB - 12 GB
-               echo options zfs zfs_arc_min=536870912 zfs_arc_max=12884901888 >> /etc/modprobe.d/zfs.conf
+               # ARC: 0 - 12 GB
+               echo options zfs zfs_arc_max=12884901888 >> /etc/modprobe.d/zfs.conf
+               echo zfs zfs_arc_max=12884901888 >> /etc/initramfs-tools/modules
 
                17179869184 # 0x400000000 (16 GB)
                12884901888 # 0x300000000 (12 GB)
@@ -46,8 +47,6 @@ Tuning:
 
     - Dedup Ram: 5GB of RAM per Terrabyte of storage ?
     - Advanced Format 4096 byte blocks -> ashift=12 ?!
-
-    echo options zfs zfs_arc_min=536870912 zfs_arc_max=8589934592 >> /etc/modprobe.d/zfs.conf
 
 +++
 
@@ -83,6 +82,7 @@ Install:
               down ip -6 route del default via fe80::1 dev eth0
 
             - echo jogamp.org > /etc/hostname
+              /etc/init.d/hostname.sh start
 
 
   2 Boot USB drive
@@ -115,6 +115,29 @@ Install:
             - apt-get install debian-zfs libzfs-dev
             - apt-get install zfs-initramfs
             - apt-get install vim
+
+            - Edit /etc/default/zfs 
+                - ZFS_MOUNT='no'
+                + ZFS_MOUNT='yes'
+
+            - Fix /usr/share/initramfs-tools/scripts/zfs issues:
+                --- /usr/share/initramfs-tools/scripts/zfs      2013-03-27 04:14:41.000000000 +0100
+                +++ initramfs-tools.scripts.zfs 2013-06-04 04:20:23.278131866 +0200
+                @@ -104,7 +104,7 @@
+                                echo ""
+                                echo "Manually import the root pool at the command prompt and then exit."
+                                echo "Hint: Try:  zpool import -f -R / -N $ZFS_RPOOL"
+                -               /bin/sh
+                +               # /bin/sh
+                        fi
+                 
+                        if [ -z "$ZFS_BOOTFS" ]
+    
+            - ARC Mem config (assume 32GB ram)
+              # ARC: 0 - 12 GB
+              echo options zfs zfs_arc_max=12884901888 >> /etc/modprobe.d/zfs.conf
+              echo zfs zfs_arc_max=12884901888 >> /etc/initramfs-tools/modules
+              depmod -a
 
         2.3 Gather some specs ..
             - Gather hdd UUIDs
@@ -185,20 +208,43 @@ Install:
             - Set zfs pool bootfs
                 - zpool set bootfs=jogamp07/system/debian7_01 jogamp07
 
-            - Ensure zpool.cache exists:
-                - zpool set cachefile=/etc/zfs/zpool.cache jogamp07
-
             - Export zfs pool
                 - zpool export jogamp07
 
             - Import zfs pool
                 - zpool import -f -R /mnt/new jogamp07
 
+            - Ensure zpool.cache exists:
+                - zpool set cachefile=/etc/zfs/zpool.cache jogamp07
+
             - Copy zpool.cache:
                 - mkdir -p /mnt/new/etc/zfs
                 - cp -a /etc/zfs/zpool.cache /mnt/new/etc/zfs
 
-        2.5 Populate ZFS rootfs
+        2.5 Grub Config
+            - cp grub_custom.cfg /boot/grub/custom.cfg 
+            - edit /boot/grub/custom.cfg to match your partitions / UUID, e.g.:
+                    menuentry "zfs_01" {
+                            load_video
+                            insmod gzio
+                            insmod part_msdos
+                            insmod ext2
+                            set root='(hd2,msdos1)'
+                            search --no-floppy --fs-uuid --set=root 187bf74d-d4c3-4138-a61a-d4bfb4bc5052
+                            linux   /boot/vmlinuz-3.2.0-4-amd64 boot=zfs rpool=jogamp07 bootfs=jogamp07/system/debian7_01 ro
+                            initrd  /boot/initrd.img-3.2.0-4-amd64
+                    }
+
+              - If not yet installed:
+                - grub-install --no-floppy /dev/sdc (the USB device!)
+
+            - Edit /etc/default/grub:
+                #GRUB_DEFAULT=0
+                GRUB_DEFAULT="zfs_01"
+
+            - update-grub
+
+        2.6 Populate ZFS rootfs
             Below is scripted in './zfs04-system-populate.sh'
 
             - See [C1]
@@ -209,6 +255,7 @@ Install:
                 - In case you use same /etc/network/interfaces (scripted):
                   mv /mnt/new/etc/network/interfaces /mnt/new/etc/network/interfaces.orig
                   cp -a /etc/network/interfaces /mnt/new/etc/network/interfaces
+                  cp -a /etc/udev/rules.d/70-persistent-net.rules /mnt/new/etc/udev/rules.d/
 
                 - Or redo 1.1.1 (Mind that you do it for rootfs on /mnt/new)
 
@@ -236,70 +283,35 @@ Install:
                 LANG: en_US.UTF-8, LANGUAGE=en_US:en
                 TZ: your choice
 
-            - apt-get install ssh ntp 
+            - apt-get install ssh ntp htop iotop rsync xz-utils p7zip-full
 
         2.8 ZFS on new System
             - Redo: 2.2 Install ZFS on USB drive (Script './apt-install-zfs_kernel_etc.sh')
 
-            - Edit /mnt/new/etc/default/zfs 
-                - ZFS_MOUNT='no'
-                + ZFS_MOUNT='yes'
-
-            - Fix /usr/share/initramfs-tools/scripts/zfs issues:
-                --- /usr/share/initramfs-tools/scripts/zfs      2013-03-27 04:14:41.000000000 +0100
-                +++ initramfs-tools.scripts.zfs 2013-06-04 04:20:23.278131866 +0200
-                @@ -104,7 +104,7 @@
-                                echo ""
-                                echo "Manually import the root pool at the command prompt and then exit."
-                                echo "Hint: Try:  zpool import -f -R / -N $ZFS_RPOOL"
-                -               /bin/sh
-                +               # /bin/sh
-                        fi
-                 
-                        if [ -z "$ZFS_BOOTFS" ]
-    
-            - ARC Mem config (assume 32GB ram)
-              # ARC: 512MB - 12 GB
-              echo options zfs zfs_arc_min=536870912 zfs_arc_max=12884901888 >> /etc/modprobe.d/zfs.conf
-
         2.9 Leave New System / Final Touches
+
             - Mount USB rootfs in new system
                 - mkdir -p /mnt/usbroot
-                - Use extra boot partition on USB stick (-> 1.0)
+                - Use root partition on USB stick (-> 1.0)
                 - Edit /etc/fstab, i.e.:
                     UUID=187bf74d-d4c3-4138-a61a-d4bfb4bc5052 /mnt/usbroot     ext4    errors=remount-ro 0       2
+                - mount /mnt/usbroot
                 - rm -rf /boot
-                - ln -s /mnt/usbboot/boot /boot
+                - ln -s /mnt/usbroot/boot /boot
+                - umount /mnt/usbroot
 
             - Exit from chroot
             - umount proc/dev/sys './chroot-umount.sh'
-            - zfs export jogamp07
-            - zfs import -N jogamp07
-                - zpool set cachefile=/etc/zfs/zpool.cache jogamp07
+                You may need to:
+                - umount -l /mnt/new/dev
+
+            Reset zfs pool cache ..
+            - zpool export jogamp07
+            - zpool import -N jogamp07
+            - zpool set cachefile=/etc/zfs/zpool.cache jogamp07
             - update-initramfs -u -k all
             - 
 
-        3.0 Grub on USB 
-            - cp grub_custom.cfg /boot/grub/custom.cfg 
-            - edit /boot/grub/custom.cfg to match your partitions / UUID, e.g.:
-                    menuentry "zfs 01" {
-                            load_video
-                            insmod gzio
-                            insmod part_msdos
-                            insmod ext2
-                            set root='(hd2,msdos1)'
-                            search --no-floppy --fs-uuid --set=root 187bf74d-d4c3-4138-a61a-d4bfb4bc5052
-                            linux   /boot/vmlinuz-3.2.0-4-amd64 boot=zfs rpool=jogamp07 bootfs=jogamp07/system/debian7_01 ro
-                            initrd  /boot/initrd.img-3.2.0-4-amd64
-                    }
-                grub-install --no-floppy /dev/sdc (the USB device!)
-
-        3.0 Launch new system via grub on USB
-            3.1 Grub / Boot 
-            - apt-get install gdisk gptsync parted
-            - apt-get install grub2
-                - Don't install grub on any device!
-            - 
 
         X.1 Skip: Grub 2.00 Derivates / Boot 
             Note: All failed detecting ZFS rootfs properly!
