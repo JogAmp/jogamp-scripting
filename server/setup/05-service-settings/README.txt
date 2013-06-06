@@ -145,3 +145,14 @@ Debian 7.00 (Wheezy)
 
     /etc/init.d/apache2 start
 
+12 jabot
+    As user jabot:
+        cd /srv/jabot ; git clone file:///srv/scm/users/sgothel/jabot.git
+        cd jabot ; ant
+
+    As user root:
+        cp -a /srv/jabot/jabot/scripts/jabot-init-debian /etc/init.d/jabot
+        update-rc.d jabot defaults
+
+13 jenkins
+    ..
