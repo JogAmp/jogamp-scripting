@@ -1,0 +1,29 @@
+# file: /etc/procmailrc
+# system-wide settings for procmail
+SHELL="/bin/bash"
+SENDMAIL="/usr/sbin/sendmail -oi -t"
+LOGFILE="/var/log/procmail.log"
+DELIVER="/usr/lib/dovecot/deliver"
+
+# filter mail through bogofilter, tagging it as Ham, Spam, or Unsure,
+# and updating the wordlist
+:0fw
+| /usr/bin/bogofilter -uep
+
+# if bogofilter failed, return the mail to the queue;
+# the MTA will retry to deliver it later
+# 75 is the value for EX_TEMPFAIL in /usr/include/sysexits.h
+:0e
+{ EXITCODE=75 HOST }
+
+# deliver to dovecot
+#
+:0 w
+| $DELIVER -d $LOGNAME
+
+# if deliver failed, return the mail to the queue;
+# the MTA will retry to deliver it later
+# 75 is the value for EX_TEMPFAIL in /usr/include/sysexits.h
+:0e
+{ EXITCODE=75 HOST }
+

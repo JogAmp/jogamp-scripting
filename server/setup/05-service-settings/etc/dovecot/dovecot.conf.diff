@@ -1,0 +1,19 @@
+--- dovecot.conf.orig	2013-02-05 02:03:27.000000000 +0100
++++ dovecot.conf	2013-06-05 22:36:52.290033000 +0200
+@@ -18,6 +18,7 @@
+ 
+ # Enable installed protocols
+ !include_try /usr/share/dovecot/protocols.d/*.protocol
++# protocols = imaps pop3s sieve lmtp
+ 
+ # A comma separated list of IPs or hosts where to listen in for connections. 
+ # "*" listens in all IPv4 interfaces, "::" listens in all IPv6 interfaces.
+@@ -35,7 +36,7 @@
+ #instance_name = dovecot
+ 
+ # Greeting message for clients.
+-#login_greeting = Dovecot ready.
++login_greeting = jogamp.org is ready.
+ 
+ # Space separated list of trusted network ranges. Connections from these
+ # IPs are allowed to override their IP addresses and ports (for logging and
