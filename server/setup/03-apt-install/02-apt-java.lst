@@ -1,0 +1,9 @@
+openjdk-7-jdk:amd64
+openjdk-7-jre:amd64
+openjdk-7-jre-headless:amd64
+openjdk-7-jre-lib
+openjdk-7-jre-zero:amd64
+icedtea-7-jre-cacao:amd64
+icedtea-7-jre-jamvm:amd64
+icedtea-netx:amd64
+icedtea-netx-common
