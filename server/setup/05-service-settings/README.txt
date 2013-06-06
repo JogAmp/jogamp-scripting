@@ -32,6 +32,12 @@ Debian 7.00 (Wheezy)
     - MySQL
         - old server: backup DB
           - run backup-mysql.sh on old server, result is e.g. backup-mysqldb-20130605162509.sql
+          - !!! strip all system-DB's (schema's) from the backup,
+            i.e. all which are not created for applications, e.g.: 
+            - mysql
+            - users
+            - test
+            - t_*
 
         - new server: import DB
           - get backup backup-mysqldb-20130605162509.sql
@@ -40,6 +46,11 @@ Debian 7.00 (Wheezy)
           - mysql --user=root --password  < backup-mysqldb-20130605162509.sql
           - backup-2: backup-mysql.sh
           - mysqlcheck --user=root --password --all-databases
+
+        - if things go wrong: re-install mysql
+          dpkg -P mysql-server mysql-server-5.5 mysql-server-core-5.5
+          rm -rf /var/lib/mysql/*
+          apt-get install mysql-server mysql-server-5.5 mysql-server-core-5.5
 
     - Services
         - mv /data/backup/srv/* /srv/
@@ -106,3 +117,31 @@ Debian 7.00 (Wheezy)
 
     /etc/init.d/sendmail start
     
+10 GIT
+    xinetd for git
+        apt-get install xinetd
+        cp /etc/xinetd.d/git
+        /etc/init.d/xinetd restart
+
+    gitweb
+        We use deployed gitweb now, and simply deploy gitweb.conf
+        - ln -s /usr/share/gitweb DocumentRoot/git
+        - cp srv/scm/gitweb.conf
+
+11 apache2
+    - php
+        apt-get install php5-pgsql php5-ldap php5-imap php5-odbc php5-dev php5-common php5 php5-mysql php5-gd php5-xmlrpc \
+                        php5-xsl php5-cli php5-intl php5-pspell php5-snmp php5-sasl
+
+    - misc for perl/bugzilla
+        - Perl: redo init (find closest mirror ..)
+            - perl -MCPAN -e shell
+                - o conf init
+        - Packages
+            - apt-get install libgd-gd2-perl libgd-graph-perl libgd-tools libgdal-perl libgdal-dev libgdata-dev libgd2-xpm-dev
+
+    - Sync config files in /etc/apache2/ with: etc/apache2/apache2.diff
+        - see also etc/apache2/mods-enabled.lst, etc ..
+
+    /etc/init.d/apache2 start
+
