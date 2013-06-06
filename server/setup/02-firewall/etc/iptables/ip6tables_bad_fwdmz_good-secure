@@ -226,6 +226,7 @@ if [ "$action" = "start" ] ; then
         #
         $IPTABLES -p tcp -A acl_srv_email        --dport smtp                                  -j ACCEPT
         $IPTABLES -p tcp -A acl_srv_email        --dport smtps                                 -j ACCEPT
+        $IPTABLES -p tcp -A acl_srv_email        --dport sieve                                 -j ACCEPT
 
         #
         #########################################################################################################################
