@@ -53,7 +53,7 @@ dnl # Uncomment and edit the following line if your outgoing mail needs to
 dnl # be sent out through an external mail server:
 dnl #
 dnl define(`SMART_HOST', `smtp.your.provider')dnl
-dnl define(`SMART_HOST',	`smtp:mail.jausoft.com')dnl
+dnl define(`SMART_HOST',	`smtp:mail.jogamp.org')dnl
 dnl define(`RELAY_MAILER_ARGS', `TCP $h 26')dnl
 dnl #
 define(`confDEF_USER_ID', ``8:12'')dnl
@@ -84,17 +84,17 @@ dnl #
 FEATURE(`no_default_msa')dnl
 
 DAEMON_OPTIONS(`Family=inet6, Name=MTA-v6, Port=smtp, Addr=::1')dnl
-DAEMON_OPTIONS(`Family=inet6, Name=MTA-v6, Port=smtp, Addr=2a01:4f8:192:1165::2')dnl
+DAEMON_OPTIONS(`Family=inet6, Name=MTA-v6, Port=smtp, Addr=2a01:4f8:192:1164::2')dnl
 DAEMON_OPTIONS(`Family=inet,  Name=MTA-v4, Port=smtp, Addr=127.0.0.1')dnl
-DAEMON_OPTIONS(`Family=inet,  Name=MTA-v4, Port=smtp, Addr=144.76.84.102')dnl
+DAEMON_OPTIONS(`Family=inet,  Name=MTA-v4, Port=smtp, Addr=144.76.84.101')dnl
 
 DAEMON_OPTIONS(`Family=inet6, Name=MSP-v6, Port=submission, M=Ea, Addr=::1')dnl
 DAEMON_OPTIONS(`Family=inet,  Name=MSP-v4, Port=submission, M=Ea, Addr=127.0.0.1')dnl
 
 DAEMON_OPTIONS(`Family=inet6, Name=TLSMTA-v6, Port=smtps, M=Eas, Addr=::1')dnl
-DAEMON_OPTIONS(`Family=inet6, Name=TLSMTA-v6, Port=smtps, M=Eas, Addr=2a01:4f8:192:1165::2')dnl
+DAEMON_OPTIONS(`Family=inet6, Name=TLSMTA-v6, Port=smtps, M=Eas, Addr=2a01:4f8:192:1164::2')dnl
 DAEMON_OPTIONS(`Family=inet,  Name=TLSMTA-v4, Port=smtps, M=Eas, Addr=127.0.0.1')dnl
-DAEMON_OPTIONS(`Family=inet,  Name=TLSMTA-v4, Port=smtps, M=Eas, Addr=144.76.84.102')dnl
+DAEMON_OPTIONS(`Family=inet,  Name=TLSMTA-v4, Port=smtps, M=Eas, Addr=144.76.84.101')dnl
 
 dnl #
 dnl # Be somewhat anal in what we allow
@@ -133,10 +133,10 @@ dnl define(`confCRL', `/etc/ssl/local/ca-my.crl')dnl
 dnl define(`confSERVER_CERT', `/etc/pki/tls/certs/sendmail.pem')dnl
 dnl define(`confSERVER_KEY', `/etc/pki/tls/certs/sendmail.pem')dnl
 define(`confCACERT', `/etc/ssl/local/thawte-SSL123_CA_Bundle.pem')dnl
-define(`confSERVER_CERT', `/etc/ssl/local/jausoft2013-hostcert.pem')dnl
-define(`confSERVER_KEY', `/etc/ssl/local/jausoft2013-hostkey.mail.pem')dnl
-define(`confCLIENT_CERT', `/etc/ssl/local/jausoft2013-hostcert.pem')dnl
-define(`confCLIENT_KEY', `/etc/ssl/local/jausoft2013-hostcert.pem')dnl
+define(`confSERVER_CERT', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
+define(`confSERVER_KEY', `/etc/ssl/local/jogamp2013-hostkey.mail.pem')dnl
+define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
+define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
 dnl #
 dnl define(`confTO_QUEUEWARN', `4h')dnl
 dnl define(`confTO_QUEUERETURN', `5d')dnl
@@ -159,10 +159,7 @@ FEATURE(`virtusertable', `hash -o /etc/mail/virtusertable.db')dnl
 FEATURE(redirect)dnl
 FEATURE(always_add_domain)dnl
 dnl # Masquerading options
-MASQUERADE_AS(`jausoft.com')dnl
-dnl MASQUERADE_AS(`jausoft.net')dnl
-dnl MASQUERADE_DOMAIN(`jordan.goethel.localnet')dnl
-dnl MASQUERADE_DOMAIN(`goethel.localnet')dnl
+MASQUERADE_AS(`jogamp.org')dnl
 dnl FEATURE(`allmasquerade')dnl
 FEATURE(`masquerade_envelope')dnl
 FEATURE(`masquerade_entire_domain')dnl

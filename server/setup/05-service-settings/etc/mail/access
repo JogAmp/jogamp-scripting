@@ -102,10 +102,10 @@ ClientConn:IPv6:::1		0
 #ClientRate:192.168		0
 #ClientConn:192.168		0
 
-Connect:144.76.84.102           RELAY
-Connect:2a01:4f8:192:1165::2	RELAY
-GreetPause:144.76.84.102        0
-GreetPause:2a01:4f8:192:1165::2 0
+Connect:144.76.84.101           RELAY
+Connect:2a01:4f8:192:1164::2	RELAY
+GreetPause:144.76.84.101        0
+GreetPause:2a01:4f8:192:1164::2 0
 
 # Defaults
 GreetPause:				5000
