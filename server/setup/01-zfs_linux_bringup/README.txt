@@ -20,7 +20,7 @@ Small Pool:
 
 Big Pool:
     1x ZPool
-        2x VDEV 2x n TB raidz1 ( 1 + 1 )
+        2x VDEV 3x n TB raidz1 ( 2 + 1 )
 
 +++
 
@@ -44,6 +44,8 @@ Tuning:
                 4294967296 # 0x100000000 ( 4 GB)
                 1073741824 # 0x040000000 ( 1 GB)
                  536870912 # 0x020000000 (.5 GB)
+
+            Note: 'cat /sys/module/zfs/parameters/zfs_arc_max' shows you the current value on a running system!
 
     - Dedup Ram: 5GB of RAM per Terrabyte of storage ?
     - Advanced Format 4096 byte blocks -> ashift=12 ?!
@@ -138,6 +140,8 @@ Install:
               echo options zfs zfs_arc_max=12884901888 >> /etc/modprobe.d/zfs.conf
               echo zfs zfs_arc_max=12884901888 >> /etc/initramfs-tools/modules
               depmod -a
+
+            Note: 'cat /sys/module/zfs/parameters/zfs_arc_max' shows you the current value on a running system!
 
         2.3 Gather some specs ..
             - Gather hdd UUIDs
