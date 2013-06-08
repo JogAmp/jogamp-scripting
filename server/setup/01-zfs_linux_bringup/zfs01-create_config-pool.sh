@@ -4,7 +4,7 @@ zpool create -f -o ashift=12 jogamp07 mirror /dev/disk/by-id/ata-WDC_WD15EADS-00
 
 zpool autoexpand=on jogamp07
 zpool autoreplace=on jogamp07
-zpool listsnapshots=on jogamp07
+zpool listsnapshots=off jogamp07
 
 zfs set dedup=off jogamp07
 zfs set compression=off jogamp07

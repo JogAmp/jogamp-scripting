@@ -173,7 +173,7 @@ Install:
             - Config zpool
                 - zpool autoexpand=on jogamp07
                 - zpool autoreplace=on jogamp07
-                - zpool listsnapshots=on jogamp07
+                - zpool listsnapshots=off jogamp07
 
             - Config root dataset (for all datasets)
                 - zfs set dedup=off jogamp07
