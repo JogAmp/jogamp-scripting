@@ -145,7 +145,36 @@ Debian 7.00 (Wheezy)
 
     /etc/init.d/apache2 start
 
-12 jabot
+12 jogamp_web daemons ..
+    # m h  dom mon dow   command
+    51  *    *   *   *   /bin/bash /home/jogamp_web/jogamp.org/planet2/update-planet.sh >& /dev/null
+    52  *    *   *   *   /bin/bash /home/jogamp_web/jogamp.org/planet2/update-stream.sh >& /dev/null
+    10 23    *   *   *   /bin/bash /home/jogamp_web/awstats/awstats-start.sh >& /dev/null
+
+    awstats:
+        user: jogamp_web
+        script home:  /home/jogamp_web/awstats
+        install home: /home/jogamp_web/awstats/installation
+            root@server:
+                apt-get install libgeoip-dev libgeo-ip-perl php5-geoip python-geoip geoip-database libnet-whois-raw-perl
+                mkdir /var/lib/awstats/
+                chown -R jogamp_web:jogamp_web /var/lib/awstats/
+                chown -R jogamp_web:jogamp_web /etc/GeoIP
+
+            jogamp_web@server:
+                cd /home/jogamp_web/awstats
+                wget http://prdownloads.sourceforge.net/awstats/awstats-7.1.1.tar.gz
+                tar xzf awstats-7.1.1.tar.gz
+                ln -s awstats-7.1.1 installation
+                mkdir config
+                mkdir log
+
+                cp -a BACKUP/awstats/awstats.jogamp.org.conf /home/jogamp_web/awstats/config
+                cp -a BACKUP/awstats/awstats-start.sh /home/jogamp_web/awstats/
+
+            Populate /etc/GeoIP .. 
+
+13 jabot
     As user jabot:
         cd /srv/jabot ; git clone file:///srv/scm/users/sgothel/jabot.git
         cd jabot ; ant
@@ -155,4 +184,8 @@ Debian 7.00 (Wheezy)
         update-rc.d jabot defaults
 
 13 jenkins
-    ..
+    root@jogamp.org:
+        cp ../../../jenkins-server-slave-setup/scripts/jenkins-initd-debian /etc/init.d/jenkins
+        cp ../../../jenkins-server-slave-setup/scripts/jenkins.logrotate /etc/logrotate.d/
+        update-rc.d jenkins defaults
+        /etc/init.d/jenkins start
