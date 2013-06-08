@@ -8,5 +8,6 @@ zfs create -o mountpoint=/     jogamp07/system/debian7_01
 zfs create -o mountpoint=/home jogamp07/users
 zfs create -o mountpoint=/root jogamp07/users/root
 zfs create -o mountpoint=/data jogamp07/data
+zfs create -o compression=gzip jogamp07/data/backup
 zfs create -o mountpoint=/srv  jogamp07/services
 
