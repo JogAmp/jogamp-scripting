@@ -31,3 +31,10 @@ Ensure you have followed
     Update/Sync from this folder:
     - scp etc/zfs/zfswatcher.conf root@server:/etc/zfs/
     - scp etc/logrotate.d/zfswatcher root@server:/etc/logrotate.d/
+
+- 1st snapshot
+    - Recursive ..
+        - zfs snapshot -r jogamp_org@setup_complete
+    - Remove snapshot on swap ..
+        - zfs destroy jogamp_org/swap@setup_complete
+
