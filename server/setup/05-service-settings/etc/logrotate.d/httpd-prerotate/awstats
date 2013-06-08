@@ -1,0 +1,4 @@
+#! /bin/bash
+
+su - jogamp_web -c /home/jogamp_web/awstats/awstats-start.sh
+

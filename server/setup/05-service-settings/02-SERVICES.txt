@@ -172,6 +172,9 @@ Debian 7.00 (Wheezy)
                 cp -a BACKUP/awstats/awstats.jogamp.org.conf /home/jogamp_web/awstats/config
                 cp -a BACKUP/awstats/awstats-start.sh /home/jogamp_web/awstats/
 
+                cp -a BACKUP etc/logrotate.d/httpd-prerotate /etc/logrotate.d/
+                    this kicks off /home/jogamp_web/awstats/awstats-start.sh before the logrotate
+
             Populate /etc/GeoIP .. 
 
 13 jabot

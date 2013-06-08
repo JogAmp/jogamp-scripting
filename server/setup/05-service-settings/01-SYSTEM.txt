@@ -1,0 +1,33 @@
+
+Ensure you have followed
+    01-zfs_linux_bringup  
+    02-firewall
+
+- smartmontools
+    - make sure that root email is properly fwd:
+      /etc/aliases:
+        root    ADMIN_USER_NAME
+      /etc/mail/virtusertable
+        root@jogamp.org ADMIN_USER_NAME
+        
+    - apt-get install smartmontools
+    - edit /etc/smartd.conf
+        DEVICESCAN -l error -l selftest -H -m root@jogamp.org -M test
+    
+- zfswatcher
+    Only enable logfile and email notification (no web)
+
+    - apt-get install golang
+    - cd /usr/src
+    - git clone git://github.com/damicon/zfswatcher.git
+    - cd zfswatcher
+    - edit Makefile
+        fix GO location
+    - make
+    - make install
+    - cp etc/debian-startup.sh /etc/init.d/zfswatcher
+    - update-rc.d zfswatcher defaults
+
+    Update/Sync from this folder:
+    - scp etc/zfs/zfswatcher.conf root@server:/etc/zfs/
+    - scp etc/logrotate.d/zfswatcher root@server:/etc/logrotate.d/
