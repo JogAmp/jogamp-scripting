@@ -185,6 +185,7 @@ Debian 7.00 (Wheezy)
 
 13 jenkins
     root@jogamp.org:
+        apt-get install graphviz-dev graphviz
         cp ../../../jenkins-server-slave-setup/scripts/jenkins-initd-debian /etc/init.d/jenkins
         cp ../../../jenkins-server-slave-setup/scripts/jenkins.logrotate /etc/logrotate.d/
         update-rc.d jenkins defaults
