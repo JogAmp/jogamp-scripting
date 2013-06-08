@@ -1,0 +1,74 @@
+#! /bin/bash
+#
+# jenkins    Start/Stop the Jenkins Continuous Integration server.
+#
+# chkconfig: 345 91 10
+# description: Jenkins is a Continuous Integration server. \
+# processname: jenkins
+# pidfile: /var/run/jenkins.pid
+
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Get config.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && exit 0
+
+JENKINS_USER=jogamp_ci
+JENKINS_HOME=/srv/jenkins
+startup=$JENKINS_HOME/scripts/start.jenkins.sh
+shutdown=$JENKINS_HOME/scripts/stop.jenkins.sh
+export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")
+
+start(){
+ echo -n $"Starting Jenkins service: "
+ su - $JENKINS_USER -c $startup
+ RETVAL=$?
+ echo
+}
+
+stop(){
+ action $"Stopping Jenkins service: " 
+ su - $JENKINS_USER -c $shutdown 
+ RETVAL=$?
+ echo
+}
+
+status(){
+ numproc=`ps -ef | grep jenkins.war | grep -v "grep jenkins.war" | wc -l`
+ if [ $numproc -gt 0 ]; then
+  echo "Jenkins is running..."
+  else
+  echo "Jenkins is stopped..."
+ fi
+}
+
+restart(){
+  stop
+  start
+}
+
+
+# See how we were called.
+case "$1" in
+start)
+ start
+ ;;
+stop)
+ stop
+ ;;
+status)
+ status
+ ;; 
+restart)
+ restart
+ ;;
+*)
+ echo $"Usage: $0 {start|stop|status|restart}"
+ exit 1
+esac
+
+exit 0
