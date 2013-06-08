@@ -30,7 +30,6 @@ JENKINS_USER=jogamp_ci
 JENKINS_HOME=/srv/jenkins
 startup=$JENKINS_HOME/scripts/start.jenkins.sh
 shutdown=$JENKINS_HOME/scripts/stop.jenkins.sh
-export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")
 
 start(){
  echo -n $"Starting Jenkins service: "
@@ -40,7 +39,7 @@ start(){
 }
 
 stop(){
- action $"Stopping Jenkins service: " 
+ echo -n $"Stopping Jenkins service: " 
  su - $JENKINS_USER -c $shutdown 
  RETVAL=$?
  echo
