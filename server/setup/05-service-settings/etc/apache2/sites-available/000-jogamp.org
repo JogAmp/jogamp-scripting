@@ -1,0 +1,247 @@
+#
+# Almost any Apache directive may go into a VirtualHost container.
+# The first VirtualHost section is used for requests without a known
+# server name.
+#
+<VirtualHost *:80>
+    ServerAdmin jausoft@jausoft.com
+    ServerName jogamp.org
+    ServerAlias www.jogamp.org
+    ServerPath /jogamp.org/
+    RewriteEngine On
+
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+
+    DocumentRoot /srv/www/jogamp.org
+
+    # don't loose time with IP address lookups
+    HostnameLookups Off
+
+    # needed for named virtual hosts
+    UseCanonicalName Off
+
+    # configures the footer on server-generated documents
+    ServerSignature On
+
+	<Directory "/srv/www/jogamp.org">
+	    Options Indexes FollowSymLinks
+	    AllowOverride All
+	    Order allow,deny
+	    Allow from all
+	</Directory>
+
+    RewriteCond %{HTTP_HOST} ^www.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/$1 [R=301,L,NE]
+
+    #RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    #RewriteRule ^/(.*)$ http://jogamp.org/%1/$1 [R=301,L,NE]
+
+    RewriteCond %{REQUEST_URI} ^/wiki/index.php$
+    RewriteCond %{QUERY_STRING} ^title=Special:UserLogin
+    RewriteCond %{REQUEST_METHOD} ^GET$
+    RewriteRule ^(.*)$ https://%{SERVER_NAME}/$1 [R=301,L,NE]
+
+    #
+    # Due to security concerns, session hijacking .. etc .. the whole
+    # bugzilla stream will go over https
+    #
+    RewriteCond %{REQUEST_URI} ^/bugzilla
+    RewriteRule ^/bugzilla/(.*)$ https://%{SERVER_NAME}/bugzilla/$1 [R=301,L,NE]
+
+    SetEnv GIT_PROJECT_ROOT /srv/scm
+    SetEnv GIT_HTTP_EXPORT_ALL
+    ScriptAlias /srv/scm/ /usr/lib/git-core/git-http-backend/
+	<Directory "/srv/www/jogamp.org/git">
+       DirectoryIndex gitweb.cgi
+       Allow from all
+       AllowOverride all
+       Order allow,deny
+       Options ExecCGI
+       <Files gitweb.cgi>
+       SetHandler cgi-script
+       </Files>
+       SetEnv  GITWEB_CONFIG  /srv/scm/gitweb.conf
+    </Directory>
+
+	Alias /icons/ "/srv/www/jogamp.org/icons/"
+
+	<Directory "/srv/www/jogamp.org/icons">
+	    Options Indexes MultiViews
+	    AllowOverride None
+	    Order allow,deny
+	    Allow from all
+	</Directory>
+
+    #
+    # Due to security concerns, session hijacking .. etc .. the whole
+    # hudson and bugzilla stream will go over https
+    #
+    RewriteCond %{REQUEST_URI} ^/chuck
+    RewriteRule ^/chuck/(.*)$ https://%{SERVER_NAME}/chuck/$1 [R=301,L,NE]
+
+    #RewriteCond %{REQUEST_URI} ^/chuck
+    #RewriteRule ^/chuck/login(.*)$ https://%{SERVER_NAME}/chuck/login$1 [R=301,L,NE]
+    #
+    #RewriteCond %{REQUEST_URI} ^/chuck
+    #RewriteCond %{HTTP_COOKIE} JSESSIONID=(.*) [NC,OR]
+    #RewriteCond %{HTTP_COOKIE} ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE [NC]
+    #RewriteRule ^/chuck/(.*)$ https://%{SERVER_NAME}/chuck/$1 [R=301,L,NE]
+    #
+    # Cookies:
+    #   wikidb_mw_LoggedOut                       /
+    #   wikidb_mw__session                        /
+    #   wikidb_mw_Token                           /
+    #   wikidb_mw_UserID                          /
+    #   wikidb_mw_UserName                        /
+    #
+    #   Bugzilla_login                            /bugzilla
+    #   Bugzilla_logincookie                      /bugzilla
+    #   DEFAULTFORMAT                             /bugzilla
+    #
+    #   ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE  /chuck   
+    #   JSESSIONID                                /chuck
+    #
+
+	#
+	# http://wiki.hudson-ci.org/display/HUDSON/Running+Hudson+behind+Apache
+	#
+	#ProxyRequests     Off
+    #ProxyPreserveHost On
+
+	# Local reverse proxy authorization override
+	# Most unix distribution deny proxy by default (ie /etc/apache2/mods-enabled/proxy.conf in Ubuntu)
+	#<Proxy http://localhost:8089/chuck*>
+	#  Order deny,allow
+	#  Allow from all
+	#</Proxy>
+	#ProxyPass         /chuck  http://localhost:8080/chuck
+	#ProxyPassReverse  /chuck  http://localhost:8080/chuck
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName blog.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName bugzilla.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ https://jogamp.org/%1/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName wiki.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName scm.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/git/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName jogl.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/www/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName jocl.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/www/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName joal.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/www/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName demos.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName chuck.jogamp.org
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.org-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.org-access.log combined
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.org$ [NC]
+    RewriteRule ^/(.*)$ https://jogamp.org/%1/$1 [R=301,L,NE]
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName jogamp.com
+    ServerAlias *.jogamp.com
+    ServerPath /jogamp.org/
+    ErrorLog ${APACHE_LOG_DIR}/jogamp.com-error.log
+    CustomLog ${APACHE_LOG_DIR}/jogamp.com-access.log combined
+
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^www.jogamp\.com$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/$1 [R=301,L,NE]
+
+    RewriteCond %{HTTP_HOST} ^(.*)\.jogamp\.com$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/%1/$1 [R=301,L,NE]
+
+    RewriteCond %{HTTP_HOST} ^jogamp\.com$ [NC]
+    RewriteRule ^/(.*)$ http://jogamp.org/$1 [R=301,L,NE]
+</VirtualHost>
+
+#
+# Directives to allow use of AWStats as a CGI
+#
+#Alias /awstatsclasses "/usr/local/awstats/wwwroot/classes/"
+#Alias /awstatscss "/usr/local/awstats/wwwroot/css/"
+#Alias /awstatsicons "/usr/local/awstats/wwwroot/icon/"
+#ScriptAlias /awstats/ "/usr/local/awstats/wwwroot/cgi-bin/"
+
+#
+# This is to permit URL access to scripts/files in AWStats directory.
+#
+<Directory "/usr/local/awstats/wwwroot">
+    Options None
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Directory>
+
