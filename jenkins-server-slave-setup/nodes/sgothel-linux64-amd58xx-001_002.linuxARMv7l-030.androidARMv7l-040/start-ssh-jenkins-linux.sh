@@ -163,7 +163,7 @@ function connect_40 {
 
     # Need to add toolchain bins to the PATH. 
     export PATH_VANILLA=$PATH
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$PATH"
+    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/17.0.0:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
     export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
