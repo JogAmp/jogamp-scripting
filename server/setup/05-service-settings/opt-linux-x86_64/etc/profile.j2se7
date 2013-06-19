@@ -1,0 +1,15 @@
+unset NS_JAVA
+unset DYN_JAVA
+unset JAVA_ROOT
+unset JAVA_BINDIR
+unset JDK_HOME
+unset JAVA_COMPILER
+unset TYA_LOGFILE
+
+# export LIBXCB_ALLOW_SLOPPY_LOCK=1
+
+export CLASSPATH=.
+
+export JAVA_HOME=/opt-linux-x86_64/j2se7
+
+export PATH=$JAVA_HOME/bin:$PATH
