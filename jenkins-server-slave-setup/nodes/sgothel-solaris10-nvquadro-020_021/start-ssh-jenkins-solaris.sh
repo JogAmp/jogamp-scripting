@@ -12,6 +12,13 @@ function connect_1 {
   export PATH=/usr/java/bin:$PATH
   #. /opt-solaris-x86/etc/profile.jre6
   #. /opt-solaris-x86/etc/profile.j2se6
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
   java -d32 -version
   which java
   sshpid=
@@ -31,6 +38,13 @@ function connect_2 {
   export PATH=/usr/java/bin/amd64:$PATH
   #. /opt-solaris-x86_64/etc/profile.jre6
   #. /opt-solaris-x86_64/etc/profile.j2se6
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
   java -d64 -version
   sshpid=
   while true ; do

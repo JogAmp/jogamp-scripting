@@ -4,7 +4,7 @@ export JENKINS_WAR=$JENKINS_HOME/jenkins.war
 export JENKINS_LOG=$JENKINS_HOME/jenkins.log
 
 #export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")
-export JAVA_HOME=/opt-linux-x86_64/jre6
+export JAVA_HOME=/opt-linux-x86_64/jre7
 JAVA=$JAVA_HOME/bin/java
 
 nohup nice $JAVA -server -Xmx1024m -jar $JENKINS_WAR --httpPort=8080 --prefix=/chuck > $JENKINS_LOG 2>&1 &

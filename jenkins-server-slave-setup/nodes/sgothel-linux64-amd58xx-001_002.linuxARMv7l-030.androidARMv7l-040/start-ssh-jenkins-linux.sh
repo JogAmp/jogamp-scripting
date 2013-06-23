@@ -8,8 +8,15 @@ scp chuckslave@jogamp.org:/srv/jenkins/war/WEB-INF/slave.jar .
 
 function connect_1 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86/etc/profile.jre6
-  . /opt-linux-x86/etc/profile.j2se6
+  . /opt-linux-x86/etc/profile.jre7
+  . /opt-linux-x86/etc/profile.j2se7
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
   java -version
   sshpid=
   while true ; do
@@ -24,8 +31,15 @@ function connect_1 {
 
 function connect_2 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre6
-  . /opt-linux-x86_64/etc/profile.j2se6
+  . /opt-linux-x86_64/etc/profile.jre7
+  . /opt-linux-x86_64/etc/profile.j2se7
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
   java -version
   sshpid=
   while true ; do
@@ -40,8 +54,14 @@ function connect_2 {
 
 function connect_30 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre6
-  . /opt-linux-x86_64/etc/profile.j2se6
+  . /opt-linux-x86_64/etc/profile.jre7
+  . /opt-linux-x86_64/etc/profile.j2se7
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
     export NODE_LABEL=label/linux-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7
@@ -82,8 +102,14 @@ function connect_30 {
 
 function connect_31 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre6
-  . /opt-linux-x86_64/etc/profile.j2se6
+  . /opt-linux-x86_64/etc/profile.jre7
+  . /opt-linux-x86_64/etc/profile.j2se7
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
     export NODE_LABEL=label/linux-armv7hf-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7hf
@@ -124,6 +150,10 @@ function connect_31 {
 
 
 function connect_40 {
+  . /opt-share/etc/profile.ant
+  . /opt-linux-x86_64/etc/profile.jre7
+  . /opt-linux-x86_64/etc/profile.j2se7
+
     export NODE_LABEL=label/android-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7_Android
     JENKINS_WS=$HOST_ROOT/workspace
@@ -152,6 +182,8 @@ function connect_40 {
     export SOURCE_LEVEL=1.6
     export TARGET_LEVEL=1.6
     export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+    export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
     #export GCC_VERSION=4.4.3
     export GCC_VERSION=4.7
