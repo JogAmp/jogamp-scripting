@@ -1,0 +1,4 @@
+# /opt-linux-x86_64/etc/profile.local
+
+test -e /opt-linux-x86_64/etc/profile.j2se7       && . /opt-linux-x86_64/etc/profile.j2se7
+test -e /opt-linux-x86_64/etc/profile.jre7        && . /opt-linux-x86_64/etc/profile.jre7

@@ -1,0 +1,5 @@
+# /etc/profile.ant
+
+MAVEN_PATH=/opt-share/apache-maven
+PATH=$MAVEN_PATH/bin:$PATH
+export MAVEN_PATH PATH

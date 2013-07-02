@@ -1,0 +1,9 @@
+apache2
+apache2-mpm-worker
+apache2-utils
+apache2.2-bin
+apache2.2-common
+libapache-pom-java
+libapache2-mod-authn-sasl
+libapache2-mod-dnssd
+python-httplib2

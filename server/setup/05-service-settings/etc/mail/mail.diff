@@ -1,0 +1,213 @@
+--- mail.orig/access	2013-06-05 13:30:08.812083000 +0200
++++ mail/access	2013-06-06 01:52:31.460642000 +0200
+@@ -101,6 +101,12 @@
+ #GreetPause:192.168		0
+ #ClientRate:192.168		0
+ #ClientConn:192.168		0
++
++Connect:144.76.84.101           RELAY
++Connect:2a01:4f8:192:1164::2	RELAY
++GreetPause:144.76.84.101        0
++GreetPause:2a01:4f8:192:1164::2 0
++
+ # Defaults
+ GreetPause:				5000
+ ClientRate:				10
+--- mail.orig/local-host-names	2013-06-05 13:30:08.803772000 +0200
++++ mail/local-host-names	2013-06-06 00:06:50.857480000 +0200
+@@ -1,2 +1,4 @@
+ localhost
++mail.jogamp.org
++www.jogamp.org
+ jogamp.org
+--- mail.orig/sendmail.mc	2013-06-05 13:30:07.254441000 +0200
++++ mail/sendmail.mc	2013-06-06 01:51:45.426125000 +0200
+@@ -40,6 +40,34 @@
+ undefine(`confHOST_STATUS_DIRECTORY')dnl        #DAEMON_HOSTSTATS=
+ dnl # Items controlled by /etc/mail/sendmail.conf - DO NOT TOUCH HERE
+ dnl #
++
++dnl # default logging level is 9, you might want to set it higher to
++dnl # debug the configuration
++dnl #
++dnl define(`confLOG_LEVEL', `9')dnl
++dnl define(`confLOG_LEVEL', `22')dnl
++dnl #
++
++dnl #
++dnl # Uncomment and edit the following line if your outgoing mail needs to
++dnl # be sent out through an external mail server:
++dnl #
++dnl define(`SMART_HOST', `smtp.your.provider')dnl
++dnl define(`SMART_HOST',	`smtp:mail.jogamp.org')dnl
++dnl define(`RELAY_MAILER_ARGS', `TCP $h 26')dnl
++dnl #
++define(`confDEF_USER_ID', ``8:12'')dnl
++dnl define(`confAUTO_REBUILD')dnl
++define(`confTO_CONNECT', `1m')dnl
++define(`confTO_COMMAND', `2m')dnl
++define(`confTRY_NULL_MX_LIST', `True')dnl
++define(`confDONT_PROBE_INTERFACES', `True')dnl
++define(`UUCP_MAILER_MAX', `2000000')dnl
++define(`confUSERDB_SPEC', `/etc/mail/userdb.db')dnl
++dnl #
++define(`ALIAS_FILE', `/etc/aliases')dnl
++define(`STATUS_FILE', `/var/log/mail/statistics')dnl
++
+ dnl # General defines
+ dnl #
+ dnl # SAFE_FILE_ENV: [undefined] If set, sendmail will do a chroot()
+@@ -52,15 +80,72 @@
+ dnl # Remove `, Addr=' clauses to receive from any interface
+ dnl # If you want to support IPv6, switch the commented/uncommentd lines
+ dnl #
++
+ FEATURE(`no_default_msa')dnl
+-dnl DAEMON_OPTIONS(`Family=inet6, Name=MTA-v6, Port=smtp, Addr=::1')dnl
++
++DAEMON_OPTIONS(`Family=inet6, Name=MTA-v6, Port=smtp, Addr=::1')dnl
++DAEMON_OPTIONS(`Family=inet6, Name=MTA-v6, Port=smtp, Addr=2a01:4f8:192:1164::2')dnl
+ DAEMON_OPTIONS(`Family=inet,  Name=MTA-v4, Port=smtp, Addr=127.0.0.1')dnl
+-dnl DAEMON_OPTIONS(`Family=inet6, Name=MSP-v6, Port=submission, M=Ea, Addr=::1')dnl
++DAEMON_OPTIONS(`Family=inet,  Name=MTA-v4, Port=smtp, Addr=144.76.84.101')dnl
++
++DAEMON_OPTIONS(`Family=inet6, Name=MSP-v6, Port=submission, M=Ea, Addr=::1')dnl
+ DAEMON_OPTIONS(`Family=inet,  Name=MSP-v4, Port=submission, M=Ea, Addr=127.0.0.1')dnl
++
++DAEMON_OPTIONS(`Family=inet6, Name=TLSMTA-v6, Port=smtps, M=Eas, Addr=::1')dnl
++DAEMON_OPTIONS(`Family=inet6, Name=TLSMTA-v6, Port=smtps, M=Eas, Addr=2a01:4f8:192:1164::2')dnl
++DAEMON_OPTIONS(`Family=inet,  Name=TLSMTA-v4, Port=smtps, M=Eas, Addr=127.0.0.1')dnl
++DAEMON_OPTIONS(`Family=inet,  Name=TLSMTA-v4, Port=smtps, M=Eas, Addr=144.76.84.101')dnl
++
+ dnl #
+ dnl # Be somewhat anal in what we allow
+ define(`confPRIVACY_FLAGS',dnl
+ `needmailhelo,needexpnhelo,needvrfyhelo,restrictqrun,restrictexpand,nobodyreturn,authwarnings')dnl
++dnl # define(`confPRIVACY_FLAGS', `authwarnings,needmailhelo,novrfy,noexpn,noetrn,noverb,restrictqrun')dnl
++
++dnl define(`confAUTH_OPTIONS', `A')dnl
++dnl #
++dnl # The following allows relaying if the user authenticates, and disallows
++dnl # plaintext authentication (PLAIN/LOGIN) on non-TLS links
++dnl #
++dnl define(`confAUTH_OPTIONS', `A p')dnl
++define(`confAUTH_OPTIONS', `Apy')dnl
++dnl # 
++dnl # PLAIN is the preferred plaintext authentication method and used by
++dnl # Mozilla Mail and Evolution, though Outlook Express and other MUAs do
++dnl # use LOGIN. Other mechanisms should be used if the connection is not
++dnl # guaranteed secure.
++dnl # Please remember that saslauthd needs to be running for AUTH. 
++dnl #
++dnl TRUST_AUTH_MECH(`EXTERNAL DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
++dnl define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
++TRUST_AUTH_MECH(`GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
++define(`confAUTH_MECHANISMS', `GSSAPI LOGIN PLAIN')dnl
++
++dnl #
++dnl # Rudimentary information on creating certificates for sendmail TLS:
++dnl #     cd /usr/share/ssl/certs; make sendmail.pem
++dnl # Complete usage:
++dnl #     make -C /usr/share/ssl/certs usage
++dnl #
++define(`confCACERT_PATH', `/etc/ssl/local')dnl
++dnl define(`confCACERT', `/etc/ssl/local/ca-my.crt')dnl
++dnl define(`confCRL', `/etc/ssl/local/ca-my.crl')dnl
++dnl define(`confSERVER_CERT', `/etc/pki/tls/certs/sendmail.pem')dnl
++dnl define(`confSERVER_KEY', `/etc/pki/tls/certs/sendmail.pem')dnl
++define(`confCACERT', `/etc/ssl/local/thawte-SSL123_CA_Bundle.pem')dnl
++define(`confSERVER_CERT', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
++define(`confSERVER_KEY', `/etc/ssl/local/jogamp2013-hostkey.mail.pem')dnl
++define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
++define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
++dnl #
++dnl define(`confTO_QUEUEWARN', `4h')dnl
++dnl define(`confTO_QUEUERETURN', `5d')dnl
++dnl define(`confQUEUE_LA', `12')dnl
++dnl define(`confREFUSE_LA', `18')dnl
++define(`confQUEUE_LA', `12')dnl
++define(`confREFUSE_LA', `18')dnl
++define(`confTO_IDENT', `0')dnl
++
+ dnl #
+ dnl # Define connection throttling and window length
+ define(`confCONNECTION_RATE_THROTTLE', `15')dnl
+@@ -68,15 +153,43 @@
+ dnl #
+ dnl # Features
+ dnl #
++
++dnl FEATURE(`mailertable', `hash -o /etc/mail/mailertable.db')dnl
++FEATURE(`virtusertable', `hash -o /etc/mail/virtusertable.db')dnl
++FEATURE(redirect)dnl
++FEATURE(always_add_domain)dnl
++dnl # Masquerading options
++MASQUERADE_AS(`jogamp.org')dnl
++dnl FEATURE(`allmasquerade')dnl
++FEATURE(`masquerade_envelope')dnl
++FEATURE(`masquerade_entire_domain')dnl
++
+ dnl # use /etc/mail/local-host-names
+ FEATURE(`use_cw_file')dnl
++dnl
++dnl # use /etc/mail/trusted-users
++dnl
++FEATURE(use_ct_file)dnl
++dnl #
++
++# define(`PROCMAIL_MAILER_PATH', `/usr/bin/procmail')dnl
++# FEATURE(local_procmail, `', `/usr/bin/procmail -t -Y -a $h -d $u')dnl
++dnl #
++dnl # dovecot
++dnl #
++dnl FEATURE(local_procmail, `/usr/lib/dovecot/dovecot-lda', `/usr/lib/dovecot/dovecot-lda -d $u')dnl
++dnl MODIFY_MAILER_FLAGS(`LOCAL', `-f')dnl
++ 
+ dnl #
+ dnl # The access db is the basis for most of sendmail's checking
+-FEATURE(`access_db', , `skip')dnl
++dnl # FEATURE(`access_db', , `skip')dnl
++FEATURE(`access_db', `hash -T<TMPF> -o /etc/mail/access.db')dnl
+ dnl #
+ dnl # The greet_pause feature stops some automail bots - but check the
+ dnl # provided access db for details on excluding localhosts...
+-FEATURE(`greet_pause', `1000')dnl 1 seconds
++dnl # configured in file: access
++dnl FEATURE(`greet_pause', `1000')dnl 1 seconds
++FEATURE(`blacklist_recipients')dnl
+ dnl #
+ dnl # Delay_checks allows sender<->recipient checking
+ FEATURE(`delay_checks', `friend', `n')dnl
+@@ -97,8 +210,16 @@
+ include(`/etc/mail/m4/dialup.m4')dnl
+ include(`/etc/mail/m4/provider.m4')dnl
+ dnl #
++dnl # The following example makes mail from this host and any additional
++dnl # specified domains appear to be sent from mydomain.com
++dnl #
+ dnl # Default Mailer setup
+ MAILER_DEFINITIONS
+ MAILER(`local')dnl
+ MAILER(`smtp')dnl
++MAILER(`procmail')dnl
+ 
++dnl define(`FAX_MAILER_PATH',`/usr/bin/faxmail')dnl
++dnl define(`FAX_MAILER_ARGS',`faxmail -d -n -t done -R -s a4 -p 12pt $u@$h $f')dnl
++dnl define(`FAX_MAILER_MAX',`100000000')dnl
++dnl MAILER(`fax')dnl
+--- mail.orig/submit.mc	2013-06-05 13:30:07.256640000 +0200
++++ mail/submit.mc	2013-06-06 00:05:36.459064992 +0200
+@@ -44,6 +44,7 @@
+ dnl MASQUERADE_AS()dnl
+ dnl FEATURE(`masquerade_envelope')dnl
+ dnl #
++FEATURE(`use_ct_file')dnl
+ dnl #---------------------------------------------------------------------
+ dnl # The real reason we're here: the FEATURE(msp)
+ dnl # NOTE WELL:  MSA (587) should have M=Ea, so we need to use stock 25
+--- mail.orig/virtusertable	1970-01-01 01:00:00.000000000 +0100
++++ mail/virtusertable	2013-06-06 02:02:58.162920000 +0200
+@@ -0,0 +1,3 @@
++mediastream@jogamp.org mediastream
++
++@jogamp.org     nirvana

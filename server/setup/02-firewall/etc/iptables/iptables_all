@@ -1,0 +1,56 @@
+#! /bin/bash
+
+case "$1" in
+    start)
+	echo "iptables-all start"
+
+    #/etc/iptables/ipv6_6to4_tunnel start
+	#/etc/iptables/ip_tc    start
+	#/etc/iptables/ip_alias start
+	#/etc/iptables/ip_route start
+
+    #sleep 1s
+    #/etc/init.d/rpcbind start
+    #/etc/init.d/named start
+    #/etc/init.d/dhcp6s start
+    #/etc/init.d/dhcpd start
+    #/etc/init.d/radvd start
+    #/etc/init.d/ypserv start
+    #/etc/init.d/yppasswdd start
+    #/etc/init.d/nfsserver start
+
+	echo -n "iptables setup init"
+    /etc/iptables/ip6tables_bad_fwdmz_good-secure start
+    /etc/iptables/ip4tables_bad_fwdmz_good-secure start
+	;;
+
+    stop)
+	echo "iptables-all stop"
+
+    /etc/iptables/ip4tables_bad_fwdmz_good-secure stop
+    /etc/iptables/ip6tables_bad_fwdmz_good-secure stop
+
+    #/etc/init.d/nfsserver stop
+    #/etc/init.d/yppasswdd stop
+    #/etc/init.d/ypserv stop
+    #/etc/init.d/radvd stop
+    #/etc/init.d/dhcpd stop
+    #/etc/init.d/dhcp6s stop
+    #/etc/init.d/named stop
+    #/etc/init.d/rpcbind stop
+
+	#/etc/iptables/ip_route stop
+	#/etc/iptables/ip_alias stop
+	#/etc/iptables/ip_tc    stop
+    #/etc/iptables/ipv6_6to4_tunnel stop
+	;;
+
+    restart)
+	$0 stop  &&  $0 start  ||  return=$rc_failed
+	;;
+    *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+    ;;
+esac
+

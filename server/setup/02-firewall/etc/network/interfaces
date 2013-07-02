@@ -1,0 +1,22 @@
+### Hetzner Online AG - installimage
+# Loopback device:
+auto lo
+iface lo inet loopback
+
+# device: eth0
+auto  eth0
+iface eth0 inet static
+  address   144.76.84.101
+  broadcast 144.76.84.127
+  netmask   255.255.255.224
+  gateway   144.76.84.97
+  # default route to access subnet
+  up route add -net 144.76.84.96 netmask 255.255.255.224 gw 144.76.84.97 eth0
+  # firewall
+  up /etc/iptables/iptables_all start
+  down /etc/iptables/iptables_all stop
+
+iface eth0 inet6 static
+  address 2a01:4f8:192:1164::2
+  netmask 64
+  gateway fe80::1

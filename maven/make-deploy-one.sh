@@ -30,7 +30,7 @@ info "using repository: ${REPOSITORY_ID} ${REPOSITORY_URL}"
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 CURRENT_DIR=`pwd` || exit 1
 
-PROJECT_LINE=`./make-list-projects.sh | egrep "^${NAME}\s+"` || exit 1
+PROJECT_LINE=`./make-list-projects.sh | grep -P "^${NAME}\s+"` || exit 1
 
 # Determine whether or not the project has native jars
 NATIVES=`echo "${PROJECT_LINE}" | awk -F: '{print $2}'` || exit 1

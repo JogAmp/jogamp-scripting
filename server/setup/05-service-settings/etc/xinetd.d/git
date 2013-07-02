@@ -1,0 +1,15 @@
+# default: off
+# description: The rsync server is a good addition to an ftp server, as it \
+#       allows crc checksumming etc.
+service git
+{
+        disable = no
+        socket_type     = stream
+        port            = 9418
+        wait            = no
+        user            = nobody
+        server          = /usr/bin/git
+        server_args     = daemon --inetd --syslog --verbose --export-all /srv/scm
+        log_on_failure  += USERID
+}
+

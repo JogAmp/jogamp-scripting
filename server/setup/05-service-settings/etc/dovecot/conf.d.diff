@@ -1,0 +1,355 @@
+diff -Nur conf.d.orig/10-auth.conf conf.d/10-auth.conf
+--- conf.d.orig/10-auth.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/10-auth.conf	2013-06-05 22:38:44.722493000 +0200
+@@ -6,20 +6,20 @@
+ # SSL/TLS is used (LOGINDISABLED capability). Note that if the remote IP
+ # matches the local IP (ie. you're connecting from the same computer), the
+ # connection is considered secure and plaintext authentication is allowed.
+-#disable_plaintext_auth = yes
++disable_plaintext_auth = yes
+ 
+ # Authentication cache size (e.g. 10M). 0 means it's disabled. Note that
+ # bsdauth, PAM and vpopmail require cache_key to be set for caching to be used.
+-#auth_cache_size = 0
++auth_cache_size = 10M
+ # Time to live for cached data. After TTL expires the cached record is no
+ # longer used, *except* if the main database lookup returns internal failure.
+ # We also try to handle password changes automatically: If user's previous
+ # authentication was successful, but this one wasn't, the cache isn't used.
+ # For now this works only with plaintext authentication.
+-#auth_cache_ttl = 1 hour
++auth_cache_ttl = 1 hour
+ # TTL for negative hits (user not found, password mismatch).
+ # 0 disables caching them completely.
+-#auth_cache_negative_ttl = 1 hour
++auth_cache_negative_ttl = 1 hour
+ 
+ # Space separated list of realms for SASL authentication mechanisms that need
+ # them. You can leave it empty if you don't want to support multiple realms.
+diff -Nur conf.d.orig/10-logging.conf conf.d/10-logging.conf
+--- conf.d.orig/10-logging.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/10-logging.conf	2013-06-05 22:38:44.722879000 +0200
+@@ -5,6 +5,7 @@
+ # Log file to use for error messages. "syslog" logs to syslog,
+ # /dev/stderr logs to stderr.
+ #log_path = syslog
++log_path = /var/log/dovecot.log
+ 
+ # Log file to use for informational messages. Defaults to log_path.
+ #info_log_path = 
+@@ -14,14 +15,14 @@
+ # Syslog facility to use if you're logging to syslog. Usually if you don't
+ # want to use "mail", you'll use local0..local7. Also other standard
+ # facilities are supported.
+-#syslog_facility = mail
++syslog_facility = mail
+ 
+ ##
+ ## Logging verbosity and debugging.
+ ##
+ 
+ # Log unsuccessful authentication attempts and the reasons why they failed.
+-#auth_verbose = no
++auth_verbose = yes
+ 
+ # In case of password mismatches, log the attempted password. Valid values are
+ # no, plain and sha1. sha1 can be useful for detecting brute force password
+diff -Nur conf.d.orig/10-mail.conf conf.d/10-mail.conf
+--- conf.d.orig/10-mail.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/10-mail.conf	2013-06-05 22:44:18.646267000 +0200
+@@ -27,7 +27,10 @@
+ #
+ # <doc/wiki/MailLocation.txt>
+ #
+-mail_location = mbox:~/mail:INBOX=/var/mail/%u
++# mail_location = mbox:~/mail:INBOX=/var/mail/%u
++# mail_location = 
++# mail_location = mbox:~/mail:INBOX=/var/mail/%u
++mail_location = mdbox:~/mdbox
+ 
+ # If you need to set multiple mailbox locations or want to change default
+ # namespace settings, you can do it by defining namespace sections.
+@@ -41,7 +44,7 @@
+ # on filesystem level to do so.
+ namespace inbox {
+   # Namespace type: private, shared or public
+-  #type = private
++  type = private
+ 
+   # Hierarchy separator to use. You should use the same separator for all
+   # namespaces or some clients get confused. '/' is usually a good one.
+@@ -65,38 +68,51 @@
+   # useful when converting from another server with different namespaces which
+   # you want to deprecate but still keep working. For example you can create
+   # hidden namespaces with prefixes "~/mail/", "~%u/mail/" and "mail/".
+-  #hidden = no
++  hidden = no
+ 
+   # Show the mailboxes under this namespace with LIST command. This makes the
+   # namespace visible for clients that don't support NAMESPACE extension.
+   # "children" value lists child mailboxes, but hides the namespace prefix.
+-  #list = yes
++  list = yes
+ 
+   # Namespace handles its own subscriptions. If set to "no", the parent
+   # namespace handles them (empty prefix should always have this as "yes")
+-  #subscriptions = yes
++  subscriptions = yes
++}
++
++namespace local {
++  type = private
++  separator = /
++  prefix = Maildir/
++  location = maildir:~/Maildir
++  inbox = no
++  hidden = no
++  list = yes
++  subscriptions = no
+ }
+ 
+ # Example shared namespace configuration
+-#namespace {
+-  #type = shared
+-  #separator = /
++namespace {
++  type = shared
++  separator = /
+ 
+   # Mailboxes are visible under "shared/user@domain/"
+   # %%n, %%d and %%u are expanded to the destination user.
+-  #prefix = shared/%%u/
++  prefix = shared/%%u/
+ 
+   # Mail location for other users' mailboxes. Note that %variables and ~/
+   # expands to the logged in user's data. %%n, %%d, %%u and %%h expand to the
+   # destination user's data.
+   #location = maildir:%%h/Maildir:INDEX=~/Maildir/shared/%%u
++  location = mdbox:%%h/mdbox/
+ 
+   # Use the default namespace for saving subscriptions.
+-  #subscriptions = no
++  subscriptions = no
+ 
+   # List the shared/ namespace only if there are visible shared mailboxes.
+-  #list = children
+-#}
++  list = children
++}
++
+ # Should shared INBOX be visible as "shared/user" or "shared/user/INBOX"?
+ #mail_shared_explicit_inbox = yes
+ 
+@@ -116,7 +132,7 @@
+ # dangerous to set these if users can create symlinks (e.g. if "mail" group is
+ # set here, ln -s /var/mail ~/mail/var could allow a user to delete others'
+ # mailboxes, or ln -s /secret/shared/box ~/mail/mybox would allow reading it).
+-#mail_access_groups =
++mail_access_groups = mail
+ 
+ # Allow full filesystem access to clients. There's no access checks other than
+ # what the operating system does for the active UID/GID. It works with both
+@@ -194,14 +210,14 @@
+ 
+ # UNIX socket path to master authentication server to find users.
+ # This is used by imap (for shared users) and lda.
+-#auth_socket_path = /var/run/dovecot/auth-userdb
++auth_socket_path = /var/run/dovecot/auth-userdb
+ 
+ # Directory where to look up mail plugins.
+ #mail_plugin_dir = /usr/lib/dovecot/modules
+ 
+ # Space separated list of plugins to load for all services. Plugins specific to
+ # IMAP, LDA, etc. are added to this list in their own .conf files.
+-#mail_plugins = 
++mail_plugins = acl
+ 
+ ##
+ ## Mailbox handling optimizations
+diff -Nur conf.d.orig/10-master.conf conf.d/10-master.conf
+--- conf.d.orig/10-master.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/10-master.conf	2013-06-06 00:25:02.628967000 +0200
+@@ -17,10 +17,11 @@
+ service imap-login {
+   inet_listener imap {
+     #port = 143
++    port = 0
+   }
+   inet_listener imaps {
+-    #port = 993
+-    #ssl = yes
++    port = 993
++    ssl = yes
+   }
+ 
+   # Number of connections to handle before starting a new process. Typically
+@@ -38,10 +39,11 @@
+ service pop3-login {
+   inet_listener pop3 {
+     #port = 110
++    port = 0
+   }
+   inet_listener pop3s {
+-    #port = 995
+-    #ssl = yes
++    port = 995
++    ssl = yes
+   }
+ }
+ 
+@@ -62,6 +64,7 @@
+   # Most of the memory goes to mmap()ing files. You may need to increase this
+   # limit if you have huge mailboxes.
+   #vsz_limit = $default_vsz_limit
++  vsz_limit = 2048M
+ 
+   # Max. number of IMAP processes (connections)
+   #process_limit = 1024
+diff -Nur conf.d.orig/10-ssl.conf conf.d/10-ssl.conf
+--- conf.d.orig/10-ssl.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/10-ssl.conf	2013-06-06 00:30:58.227832000 +0200
+@@ -4,13 +4,16 @@
+ 
+ # SSL/TLS support: yes, no, required. <doc/wiki/SSL.txt>
+ #ssl = yes
++ssl = required
+ 
+ # PEM encoded X.509 SSL/TLS certificate and private key. They're opened before
+ # dropping root privileges, so keep the key file unreadable by anyone but
+ # root. Included doc/mkcert.sh can be used to easily generate self-signed
+ # certificate, just make sure to update the domains in dovecot-openssl.cnf
+-ssl_cert = </etc/dovecot/dovecot.pem
+-ssl_key = </etc/dovecot/private/dovecot.pem
++#ssl_cert = </etc/dovecot/dovecot.pem
++#ssl_key = </etc/dovecot/private/dovecot.pem
++ssl_cert = </etc/ssl/local/jogamp2013-hostcert.pem
++ssl_key = </etc/ssl/local/jogamp2013-hostkey.mail.pem
+ 
+ # If key file is password protected, give the password here. Alternatively
+ # give it when starting dovecot with -p parameter. Since this file is often
+@@ -22,6 +25,7 @@
+ # ssl_verify_client_cert=yes. The file should contain the CA certificate(s)
+ # followed by the matching CRL(s). (e.g. ssl_ca = </etc/ssl/certs/ca.pem)
+ #ssl_ca = 
++ssl_ca = </etc/ssl/local/thawte-SSL123_CA_Bundle.pem
+ 
+ # Require that CRL check succeeds for client certificates.
+ #ssl_require_crl = yes
+diff -Nur conf.d.orig/15-lda.conf conf.d/15-lda.conf
+--- conf.d.orig/15-lda.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/15-lda.conf	2013-06-05 22:38:44.724403000 +0200
+@@ -37,12 +37,12 @@
+ #lda_original_recipient_header =
+ 
+ # Should saving a mail to a nonexistent mailbox automatically create it?
+-#lda_mailbox_autocreate = no
++lda_mailbox_autocreate = yes
+ 
+ # Should automatically created mailboxes be also automatically subscribed?
+-#lda_mailbox_autosubscribe = no
++lda_mailbox_autosubscribe = yes
+ 
+ protocol lda {
+   # Space separated list of plugins to load (default is global mail_plugins).
+-  #mail_plugins = $mail_plugins
++  mail_plugins = $mail_plugins sieve
+ }
+diff -Nur conf.d.orig/20-imap.conf conf.d/20-imap.conf
+--- conf.d.orig/20-imap.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/20-imap.conf	2013-06-05 22:38:44.724715000 +0200
+@@ -14,6 +14,7 @@
+ 
+   # Space separated list of plugins to load (default is global mail_plugins).
+   #mail_plugins = $mail_plugins
++  mail_plugins = $mail_plugins imap_acl
+ 
+   # IMAP logout format string:
+   #  %i - total number of bytes read from client
+diff -Nur conf.d.orig/20-lmtp.conf conf.d/20-lmtp.conf
+--- conf.d.orig/20-lmtp.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/20-lmtp.conf	2013-06-05 22:38:44.725026000 +0200
+@@ -12,5 +12,5 @@
+ 
+ protocol lmtp {
+   # Space separated list of plugins to load (default is global mail_plugins).
+-  #mail_plugins = $mail_plugins
++  mail_plugins = $mail_plugins sieve
+ }
+diff -Nur conf.d.orig/20-managesieve.conf conf.d/20-managesieve.conf
+--- conf.d.orig/20-managesieve.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/20-managesieve.conf	2013-06-06 01:10:53.662647000 +0200
+@@ -4,7 +4,7 @@
+ 
+ # Service definitions
+ 
+-#service managesieve-login {
++service managesieve-login {
+   #inet_listener sieve {
+   #  port = 4190
+   #}
+@@ -23,16 +23,16 @@
+ 
+   # If you set service_count=0, you probably need to grow this.
+   #vsz_limit = 64M
+-#}
++}
+ 
+-#service managesieve {
++service managesieve {
+   # Max. number of ManageSieve processes (connections)
+   #process_count = 1024
+-#}
++}
+ 
+ # Service configuration
+ 
+-#protocol sieve {
++protocol sieve {
+   # Maximum ManageSieve command line length in bytes. ManageSieve usually does
+   # not involve overly long command lines, so this setting will not normally
+   # need adjustment 
+@@ -70,4 +70,4 @@
+ 
+   # Refer to 90-sieve.conf for script quota configuration and configuration of 
+   # Sieve execution limits. 
+-#}
++}
+diff -Nur conf.d.orig/90-acl.conf conf.d/90-acl.conf
+--- conf.d.orig/90-acl.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/90-acl.conf	2013-06-05 23:41:19.326258000 +0200
+@@ -9,7 +9,7 @@
+ # specifies how many seconds to wait between stat()ing dovecot-acl file
+ # to see if it changed.
+ plugin {
+-  #acl = vfile:/etc/dovecot/global-acls:cache_secs=300
++  acl = vfile:/etc/dovecot/global-acls:cache_secs=300
+ }
+ 
+ # To let users LIST mailboxes shared by other users, Dovecot needs a
+diff -Nur conf.d.orig/90-sieve.conf conf.d/90-sieve.conf
+--- conf.d.orig/90-sieve.conf	2013-02-05 02:03:27.000000000 +0100
++++ conf.d/90-sieve.conf	2013-06-05 22:38:44.726032000 +0200
+@@ -17,6 +17,7 @@
+   # --> See sieve_before fore executing scripts before the user's personal
+   #     script.
+   #sieve_default = /var/lib/dovecot/sieve/default.sieve
++  sieve_default = /var/lib/dovecot/sieve/global/default.sieve
+ 
+   # Directory for :personal include scripts for the include extension. This
+   # is also where the ManageSieve service stores the user's scripts.
+@@ -24,6 +25,7 @@
+ 
+   # Directory for :global include scripts for the include extension. 
+   #sieve_global_dir =
++  sieve_global_dir = /var/lib/dovecot/sieve/global/
+ 
+   # Path to a script file or a directory containing script files that need to be
+   # executed before the user's script. If the path points to a directory, all
+@@ -34,6 +36,7 @@
+   #sieve_before =
+   #sieve_before2 =
+   #sieve_before3 = (etc...)
++  sieve_before = /var/lib/dovecot/sieve/prologue.sieve
+ 
+   # Identical to sieve_before, only the specified scripts are executed after the
+   # user's script (only when keep is still in effect!). Multiple script file or

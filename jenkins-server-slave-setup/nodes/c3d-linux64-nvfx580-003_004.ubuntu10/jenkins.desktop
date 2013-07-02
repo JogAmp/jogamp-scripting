@@ -1,0 +1,20 @@
+[Desktop Entry]
+Comment[en_US]=
+Comment=
+Exec=/home/jogamp/jenkins/start-ssh-jenkins-linux.sh
+GenericName[en_US]=jenkins KDE autostart
+GenericName=jenkins KDE autostart
+Icon=exec
+MimeType=
+Name[en_US]=jenkins
+Name=jenkins
+Path=/home/jogamp/jenkins
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=none
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+X-Ubuntu-Gettext-Domain=desktop_kdebase

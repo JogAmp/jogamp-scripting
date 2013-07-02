@@ -1,0 +1,12 @@
+/var/log/zfswatcher.log
+{
+	rotate 6
+	monthly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	postrotate
+		kill -HUP `cat /var/run/zfswatcher.pid` 2>/dev/null 2>&1 || true
+	endscript
+}

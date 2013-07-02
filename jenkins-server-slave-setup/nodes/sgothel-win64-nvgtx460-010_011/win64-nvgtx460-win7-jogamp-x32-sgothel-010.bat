@@ -1,5 +1,5 @@
-set J2RE_HOME=c:\jre1.6.0_35_x32
-set JAVA_HOME=c:\jdk1.6.0_35_x32
+set J2RE_HOME=c:\jre1.7.0_25_x32
+set JAVA_HOME=c:\jdk1.7.0_25_x32
 set ANT_PATH=C:\apache-ant-1.8.2
 set GIT_PATH=C:\cygwin\bin
 set SEVENZIP=C:\Program Files\7-Zip
@@ -8,6 +8,12 @@ set CMAKE_PATH=C:\cmake-2.8.10.2-win32-x86
 set CMAKE_C_COMPILER=c:\mingw\bin\gcc
 
 set PATH=%JAVA_HOME%\bin;%ANT_PATH%\bin;c:\mingw\bin;%CMAKE_PATH%\bin;%GIT_PATH%;%SEVENZIP%;%PATH%
+
+set SOURCE_LEVEL=1.6
+set TARGET_LEVEL=1.6
+set TARGET_RT_JAR=C:\jre1.6.0_30\lib\rt.jar
+
+set JOGAMP_JAR_CODEBASE=Codebase: *.jogamp.org
 
 REM    -Dc.compiler.debug=true 
 REM    -DuseOpenMAX=true 

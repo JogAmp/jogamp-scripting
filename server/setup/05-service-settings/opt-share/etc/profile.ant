@@ -1,0 +1,5 @@
+# /etc/profile.ant
+
+ANT_PATH=/opt-share/apache-ant
+PATH=$ANT_PATH/bin:$PATH
+export ANT_PATH PATH

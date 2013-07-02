@@ -1,0 +1,12 @@
+mysql-common
+mysql-server
+mysql-server-5.5
+mysql-server-core-5.5
+mysql-client-5.5
+mysql-utilities
+mysql-workbench
+mysql-workbench-data
+python-mysql.connector
+dovecot-mysql
+libdbd-mysql-perl
+libmysqlclient18
