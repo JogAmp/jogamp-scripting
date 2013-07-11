@@ -4,6 +4,8 @@ cd ~/jenkins
 
 scp chuckslave@jogamp.org:/srv/jenkins/war/WEB-INF/slave.jar .
 
+xrandr -s 1920x1080
+
 function connect_3 {
   . /opt-share/etc/profile.ant
   . /opt-linux-x86/etc/profile.jre7
