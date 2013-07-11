@@ -58,6 +58,10 @@ do
   SRC_ZIP=`echo "${PROJECT_LINE}" | awk -F: '{print $4}'` || exit 1
   SRC_ZIP=`echo "${SRC_ZIP}"      | tr -d ' '`            || exit 1
 
+  # Determine whether or not the project has atomic jars
+  ATOMICS=`echo "${PROJECT_LINE}" | awk -F: '{print $5}'` || exit 1
+  ATOMICS=`echo "${ATOMICS}"      | tr -d ' '`            || exit 1
+
   # Copy all native jars, if necessary
   if [ "${NATIVES}" = "natives" ]
   then
@@ -89,12 +93,27 @@ do
   fi
   TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-sources.jar"
   copy "${SOURCE}" "${TARGET}"
- 
+
   # Copy dummy jars to 'javadoc' jars, as we
   # don't publish real versions of these yet.
   SOURCE="empty.jar"
   TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-javadoc.jar"
   copy "${SOURCE}" "${TARGET}"
+
+  # Copy atomic jars, if necessary.
+  if [ "${ATOMICS}" = "atomics" ]
+  then
+    for JAR in ${INPUT}/jar/atomic/${NAME}-*.jar
+    do
+      JAR_NAME=`basename "${JAR}"` || exit 1
+      JAR_NAME=`echo ${JAR_NAME} | sed "s/^${NAME}-//g"` || exit 1
+      JAR_NAME="${NAME}-${VERSION}-${JAR_NAME}"
+
+      SOURCE="${JAR}"
+      TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
+      copy "${SOURCE}" "${TARGET}"
+    done
+  fi
 
 done
 

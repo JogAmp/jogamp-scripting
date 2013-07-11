@@ -1,19 +1,23 @@
 #
 # Lines prefixed with '#' are considered comments and ignored.
 #
-# project-name : has-natives? : use-dummy-jar? : source-jar-name?
+# project-name : has-natives? : use-dummy-jar? : source-jar-name? : atomics?
 #
-gluegen-rt            : natives    : no-dummy-jar : gluegen-java-src.zip
-gluegen-rt-main       : no-natives : dummy-jar    : dummy-src
-gluegen-rt-android    : no-natives : no-dummy-jar : gluegen-java-src.zip
-joal                  : natives    : no-dummy-jar : joal-java-src.zip
-joal-main             : no-natives : dummy-jar    : dummy-src
-jocl                  : natives    : no-dummy-jar : jocl-java-src.zip
-jocl-main             : no-natives : dummy-jar    : dummy-src
-jogl-all              : natives    : no-dummy-jar : jogl-java-src.zip
-jogl-all-main         : no-natives : dummy-jar    : dummy-src
-jogl-all-mobile       : no-natives : no-dummy-jar : jogl-java-src.zip
-jogl-all-mobile-main  : no-natives : dummy-jar    : dummy-src
-jogl-all-noawt        : no-natives : no-dummy-jar : jogl-java-src.zip
-jogl-all-noawt-main   : no-natives : dummy-jar    : dummy-src
-jogl-all-android      : no-natives : no-dummy-jar : jogl-java-src.zip
+gluegen               : no-natives : no-dummy-jar : gluegen-java-src.zip : atomics
+gluegen-rt            : natives    : no-dummy-jar : gluegen-java-src.zip : no-atomics
+gluegen-rt-android    : no-natives : no-dummy-jar : gluegen-java-src.zip : no-atomics
+gluegen-rt-main       : no-natives : dummy-jar    : dummy-src            : no-atomics
+joal                  : natives    : no-dummy-jar : joal-java-src.zip    : no-atomics
+joal-main             : no-natives : dummy-jar    : dummy-src            : no-atomics
+jocl                  : natives    : no-dummy-jar : jocl-java-src.zip    : no-atomics
+jocl-main             : no-natives : dummy-jar    : dummy-src            : no-atomics
+jogl                  : no-natives : dummy-jar    : jogl-java-src.zip    : atomics
+jogl-all              : natives    : no-dummy-jar : jogl-java-src.zip    : no-atomics
+jogl-all-android      : no-natives : no-dummy-jar : jogl-java-src.zip    : no-atomics
+jogl-all-main         : no-natives : dummy-jar    : dummy-src            : no-atomics
+jogl-all-mobile       : no-natives : no-dummy-jar : jogl-java-src.zip    : no-atomics
+jogl-all-mobile-main  : no-natives : dummy-jar    : dummy-src            : no-atomics
+jogl-all-noawt        : no-natives : no-dummy-jar : jogl-java-src.zip    : no-atomics
+jogl-all-noawt-main   : no-natives : dummy-jar    : dummy-src            : no-atomics
+nativewindow          : no-natives : dummy-jar    : dummy-src            : atomics
+newt                  : no-natives : dummy-jar    : dummy-src            : atomics
