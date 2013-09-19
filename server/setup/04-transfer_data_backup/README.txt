@@ -2,6 +2,11 @@ Initial backup from our non ZFS storage:
     Used rsync backup script: ../../../backup/rsync-jogamp2here.sh
 
 ZFS send / receive ..
+    Note: To avoid recursion of backups,
+          the destination backup is in 'pool/backup' not in 'pool/data/backup' !
+
+    Example: ../../../backup/zsync-jogamp2jausoft.sh
+
     On receiver:
         > zfs list
         ...
@@ -18,12 +23,14 @@ ZFS send / receive ..
             zfs send -Pvn -R -D tank/data@data_01 > /dev/null
 
         test receive:        
-            zfs send -R -D tank/data@data_01 | ssh user@server.example.com "zfs receive -vn -u -d pool/data/backup/jogamp.org"
+            zfs send -R -D tank/data@data_01 | ssh user@server.example.com "zfs receive -vn -u -d pool/backup/jogamp.org"
 
         the real thing ..
-            zfs send -R -D tank/data@data_01 | ssh user@server.example.com "zfs receive -v -u -d pool/data/backup/jogamp.org"
-            zfs inherit mountpoint pool/data/backup/jogamp.org/data
-            zfs mount pool/data/backup/jogamp.org/data
+            zfs send -R -D tank/data@data_01 | ssh user@server.example.com "zfs receive -v -u -d pool/backup/jogamp.org"
+
+    On receiver:
+            zfs inherit mountpoint pool/backup/jogamp.org/data
+            zfs mount pool/backup/jogamp.org/data
 
 
 
