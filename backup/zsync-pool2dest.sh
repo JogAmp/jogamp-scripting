@@ -1,13 +1,16 @@
 #! /bin/bash
 
 #
-# one_zsync pool dest data-set target-snapshot [incremental-start-snapshot]
+# one_zsync src_pool dest_pool dest_ssh data-set target-snapshot [incremental-start-snapshot]
+#    Example: one_zsync jogamp_org jausoft_com root@jausoft.com data snap02 snap01
 #
 function one_zsync()
 {
-    pool=$1
+    src_pool=$1
     shift
-    dest=$1
+    dest_pool=$1
+    shift
+    dest_ssh=$1
     shift
     dset=$1
     shift
@@ -15,69 +18,86 @@ function one_zsync()
     shift
     snap0=$1
     shift
-    if[ -z "$snap0" ] ; then
-        zfs send -R -D $pool/$dset@$snap | ssh $dest "zfs receive -v -u -d jausoft_com/backup/jogamp.org"
+    if [ -z "$snap0" ] ; then
+        zfs send -R -D $src_pool/$dset@$snap | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
     else
-        zfs send -R -D -I @$snap0 $pool/$dset@$snap | ssh $dest "zfs receive -v -u -d jausoft_com/backup/jogamp.org"
+        zfs send -R -D -I @$snap0 $src_pool/$dset@$snap | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
     fi
 }
 
 #
-# all_zsync pool dest target-snapshot [incremental-start-snapshot]
+# all_zsync src_pool dest_pool dest_ssh target-snapshot [incremental-start-snapshot]
+#    Example: all_zsync jogamp_org jausoft_com root@jausoft.com snap02 snap01
 #
 function all_zsync()
 {
-    pool=$1
+    src_pool=$1
     shift
-    dest=$1
+    dest_pool=$1
+    shift
+    dest_ssh=$1
     shift
     snap=$1
     shift
     snap0=$1
     shift
-    one_zsync $pool $dest data $snap $snap0
-    one_zsync $pool $dest services $snap $snap0
-    one_zsync $pool $dest system $snap $snap0
-    one_zsync $pool $dest users $snap $snap0
+    one_zsync $src_pool $dest_pool $dest_ssh data $snap $snap0
+    one_zsync $src_pool $dest_pool $dest_ssh services $snap $snap0
+    one_zsync $src_pool $dest_pool $dest_ssh system $snap $snap0
+    one_zsync $src_pool $dest_pool $dest_ssh users $snap $snap0
 }
 
 #
-# do_zsync_initial pool dest
-#   Performs an initial sync of snapshot 'setup_complete'
+# do_zsync_initial src_pool dest_pool dest_ssh
+#    Performs an initial sync of snapshot 'setup_complete'
+#
+#    Example: do_zsync_initial jogamp_org jausoft_com root@jausoft.com
 #
 function do_zsync_initial()
 {
-    pool=$1
+    src_pool=$1
     shift
-    dest=$1
+    dest_pool=$1
+    shift
+    dest_ssh=$1
     shift
 
-    all_zsync $pool $dest setup_complete
+    all_zsync $src_pool $dest_pool $dest_ssh setup_complete
 
     echo DONE
 }
 
 #
-# do_zsync_increment pool dest
-#   Performs an incremental sync from 'setup_complete' up until '20130920'
+# do_zsync_increment src_pool dest_pool dest_ssh
+#    Performs an incremental sync from 'setup_complete' up until '20130920'
+#
+#    Example: do_zsync_increment jogamp_org jausoft_com root@jausoft.com
 #
 function do_zsync_increment()
 {
-    pool=$1
+    src_pool=$1
     shift
-    dest=$1
+    dest_pool=$1
+    shift
+    dest_ssh=$1
     shift
 
-    all_zsync $pool $dest 20130920 setup_complete
+    all_zsync $src_pool $dest_pool $dest_ssh 20130920 setup_complete
 
     echo DONE
 }
 
-pool=jogamp_org
-dest=root@jausoft.com
 
-logfile=`basename $0 .sh`-$pool_2_$dest.log
+src_pool=jogamp_org
+dest_pool=jausoft_com
+dest_ssh=root@jausoft.com
+#
+#src_pool=jausoft_com
+#dest_pool=jogamp_org
+#dest_ssh=root@jogamp.org
 
-#do_zsync_initial $pool $dest >& $logfile &
-do_zsync_increment $pool $dest >& $logfile &
+logfile=`basename $0 .sh`-"$src_pool"_2_"$dest_pool".log
+
+do_zsync_initial $src_pool $dest_pool $dest_ssh >& $logfile &
+#do_zsync_increment $src_pool $dest_pool $dest_ssh >& $logfile &
 disown $!
