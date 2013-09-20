@@ -5,7 +5,7 @@ ZFS send / receive ..
     Note: To avoid recursion of backups,
           the destination backup is in 'pool/backup' not in 'pool/data/backup' !
 
-    Example: ../../../backup/zsync-jogamp2jausoft.sh
+    Example: ../../../backup/zsync-pool2dest.sh
 
     On receiver:
         > zfs list
@@ -18,7 +18,7 @@ ZFS send / receive ..
         > zfs get compression jausoft_com/data/backup
         jausoft_com/data/backup  compression  gzip      local
 
-    On sender:
+    On sender (initial):
         test send:
             zfs send -Pvn -R -D tank/data@data_01 > /dev/null
 
@@ -27,6 +27,10 @@ ZFS send / receive ..
 
         the real thing ..
             zfs send -R -D tank/data@data_01 | ssh user@server.example.com "zfs receive -v -u -d pool/backup/jogamp.org"
+
+    On sender (incremental):
+        the real thing ..
+            zfs send -R -D -I data_01 tank/data@data_02 | ssh user@server.example.com "zfs receive -v -u -d pool/backup/jogamp.org"
 
     On receiver:
             zfs inherit mountpoint pool/backup/jogamp.org/data
