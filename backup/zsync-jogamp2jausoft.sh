@@ -20,6 +20,8 @@ function all_zsync()
 function do_zsync()
 {
     all_zsync setup_complete
+
+    echo DONE
 }
 
 do_zsync >& zsync-jogamp2jausoft.log &

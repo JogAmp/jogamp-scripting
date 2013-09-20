@@ -43,6 +43,8 @@ function do_rsync()
 
     my_rsync var/lib/awstats    $DEST2/var/lib/
     my_rsync usr/local/awstats  $DEST2/usr/local/
+
+    echo DONE
 }
 
 do_rsync >& rsync-jogamp2here.log &
