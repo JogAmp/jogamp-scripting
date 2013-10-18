@@ -1,8 +1,8 @@
 #! /bin/bash
 
 branch=rc
-tag_old=v2.0-rc9
-tag=v2.0-rc10
+tag_old=v2.0.2-rc12
+tag=v2.0.2
 
 sdir=`dirname $0`
 thisdir=`pwd`

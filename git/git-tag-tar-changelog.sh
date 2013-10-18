@@ -8,9 +8,9 @@ if [ -z "$artifacts" ] ; then
     exit 1
 fi
 
-branch=rc
-tag_old=v2.0-rc10
-tag=v2.0-rc11
+branch=master
+tag_old=v2.0.2
+tag=v2.1.0
 
 sdir=`dirname $0`
 thisdir=`pwd`
@@ -23,8 +23,10 @@ for i in gluegen joal joal-demos jogl jogl-demos jocl jocl-demos ; do
     cd $i
     git checkout $branch
     git pull jogamp $branch
+    #git tag -d $tag
     git tag -s -u 0x8ED60127 -m "$tag" $tag $sha
     git-new-milestone $i $tag_old $tag
+    git checkout master
     cd $thisdir
     echo done $i
     echo
