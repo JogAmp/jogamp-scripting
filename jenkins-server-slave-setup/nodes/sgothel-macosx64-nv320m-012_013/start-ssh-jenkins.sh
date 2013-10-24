@@ -15,6 +15,8 @@ function connect_12 {
   export TARGET_LEVEL=1.6
   export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
   
+  export GLUEGEN_PROPERTIES_FILE="/Users/jogamp/gluegen-clang.properties"
+
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
   java -version
@@ -38,6 +40,8 @@ function connect_13 {
   export SOURCE_LEVEL=1.6
   export TARGET_LEVEL=1.6
   export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export GLUEGEN_PROPERTIES_FILE="/Users/jogamp/gluegen-clang.properties"
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
