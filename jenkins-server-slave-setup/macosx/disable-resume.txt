@@ -1,0 +1,4 @@
+http://osxdaily.com/2011/07/31/disable-resume-specific-applications-mac-os-x-lion/
+    rm -rf ~/Library/Saved\ Application\ State/net.java.openjdk.cmd.savedState/*
+    chmod -w ~/Library/Saved\ Application\ State/net.java.openjdk.cmd.savedState
+

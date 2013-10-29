@@ -1,0 +1,7 @@
+http://osxdaily.com/2010/02/15/disable-the-crash-reporter-dialog-in-mac-os-x/
+
+Off
+    defaults write com.apple.CrashReporter DialogType none
+
+On
+    defaults write com.apple.CrashReporter DialogType crashreport
