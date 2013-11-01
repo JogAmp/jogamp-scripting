@@ -148,17 +148,17 @@ local THISDIR=`pwd`
 
 cd $wsdir/jar
 
-rm -rf util-jars
-mkdir -p util-jars
-mv jogl-test.jar junit.jar util-jars/
+rm -rf no-signing
+mkdir -p no-signing
+mv junit.jar no-signing/
 
 for i in *.jar ; do
     echo jarsigner -storetype pkcs12 -keystore $keystore $i \"$signarg\"
     jarsigner -storetype pkcs12 -keystore $keystore -storepass $storepass $i "$signarg"
 done
 
-mv util-jars/* .
-rm -rf util-jars
+mv no-signing/*jar .
+rm -rf no-signing
 
 if [ -e atomic ] ; then
     cd atomic
