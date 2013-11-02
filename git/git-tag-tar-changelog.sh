@@ -9,8 +9,8 @@ if [ -z "$artifacts" ] ; then
 fi
 
 branch=master
-tag_old=v2.1.0
-tag=v2.1.1
+tag_old=v2.1.1
+tag=v2.1.2
 
 sdir=`dirname $0`
 thisdir=`pwd`
