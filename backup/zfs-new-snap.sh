@@ -1,7 +1,8 @@
 #! /bin/bash
 
-pool=jausoft_com
-snap=20130920
+#pool=jausoft_com
+pool=jogamp_org
+snap=20131102
 
 zfs snapshot  $pool@$snap
 zfs snapshot -r $pool@$snap

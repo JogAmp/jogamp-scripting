@@ -68,10 +68,10 @@ function do_zsync_initial()
 }
 
 #
-# do_zsync_increment src_pool dest_pool dest_ssh
-#    Performs an incremental sync from 'setup_complete' up until '20130920'
+# do_zsync_increment src_pool dest_pool dest_ssh snapshot
+#    Performs an incremental sync from 'setup_complete' up until $snapshot
 #
-#    Example: do_zsync_increment jogamp_org jausoft_com root@jausoft.com
+#    Example: do_zsync_increment jogamp_org jausoft_com root@jausoft.com 20131102
 #
 function do_zsync_increment()
 {
@@ -81,8 +81,10 @@ function do_zsync_increment()
     shift
     dest_ssh=$1
     shift
+    snapshot=$1
+    shift
 
-    all_zsync $src_pool $dest_pool $dest_ssh 20130920 setup_complete
+    all_zsync $src_pool $dest_pool $dest_ssh $snapshot setup_complete
 
     echo DONE
 }
@@ -91,6 +93,7 @@ function do_zsync_increment()
 src_pool=jogamp_org
 dest_pool=jausoft_com
 dest_ssh=root@jausoft.com
+snapshot=20131102
 #
 #src_pool=jausoft_com
 #dest_pool=jogamp_org
@@ -98,6 +101,6 @@ dest_ssh=root@jausoft.com
 
 logfile=`basename $0 .sh`-"$src_pool"_2_"$dest_pool".log
 
-do_zsync_initial $src_pool $dest_pool $dest_ssh >& $logfile &
-#do_zsync_increment $src_pool $dest_pool $dest_ssh >& $logfile &
+#do_zsync_initial $src_pool $dest_pool $dest_ssh >& $logfile &
+do_zsync_increment $src_pool $dest_pool $dest_ssh $snapshot >& $logfile &
 disown $!
