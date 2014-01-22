@@ -96,6 +96,9 @@ wsdir_jars_repack  $wsdir/jocl-demos
 # sign it
 #
 wsdir_jars_sign    $wsdir $keystore $storepass $signarg
+wsdir_jars_sign    $wsdir/joal-demos $keystore $storepass $signarg
+wsdir_jars_sign    $wsdir/jogl-demos $keystore $storepass $signarg
+wsdir_jars_sign    $wsdir/jocl-demos $keystore $storepass $signarg
 
 #
 # pack200
