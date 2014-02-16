@@ -165,7 +165,7 @@ function promote-latest-builds() {
     prom_promote_module jocl $joclslave $dest
     
     cp -a $joclmaster/artifact.properties $dest/log/jocl-master.artifact.properties
-    cp -a $joclmaster/jocl-javadoc.7z $dest/archive/jocl-javadoc.7z
+    cp -a $joclmaster/javadoc.7z $dest/archive/jocl-javadoc.7z
     cd $dest/javadoc
     prom_extract ../archive/jocl-javadoc.7z jocl
     cd $rootdir
