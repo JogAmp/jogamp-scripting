@@ -27,56 +27,46 @@ fi
 
 info "using repository: ${REPOSITORY_ID} ${REPOSITORY_URL}"
 
-PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 CURRENT_DIR=`pwd` || exit 1
-
-PROJECT_LINE=`./make-list-projects.sh | grep -P "^${NAME}\s+"` || exit 1
-
-# Determine whether or not the project has native jars
-NATIVES=`echo "${PROJECT_LINE}" | awk -F: '{print $2}'` || exit 1
-NATIVES=`echo "${NATIVES}"      | tr -d ' '`            || exit 1
 
 cd "output/${NAME}/${VERSION}" || exit 1
 
 # Maintain a list of extra files, along with their classifiers, to deploy.
-DEPLOY_EXTRA_FILES=""
-DEPLOY_EXTRA_CLASSIFIERS=""
-DEPLOY_EXTRA_TYPES=""
+DEPLOY_FILES=""
+DEPLOY_CLASSIFIERS=""
+DEPLOY_TYPES=""
 
-# Deploy javadoc jar
-f="${NAME}-${VERSION}-javadoc.jar"
-info "adding file ${f}"
-DEPLOY_EXTRA_FILES="${f}"
-DEPLOY_EXTRA_CLASSIFIERS="javadoc"
-DEPLOY_EXTRA_TYPES="jar"
+IFS="
+"
 
-# Deploy source jar
-f="${NAME}-${VERSION}-sources.jar"
-info "adding file ${f}"
-DEPLOY_EXTRA_FILES="${DEPLOY_EXTRA_FILES},${f}"
-DEPLOY_EXTRA_CLASSIFIERS="${DEPLOY_EXTRA_CLASSIFIERS},sources"
-DEPLOY_EXTRA_TYPES="${DEPLOY_EXTRA_TYPES},jar"
+for LINE in `cat manifest.txt`
+do
+  if [ "${LINE}" = "${NAME}.jar" ]
+  then
+    true
+  else
+    CLASS=`echo ${LINE} | sed "s/^${NAME}-${VERSION}-//g; s/\.jar$//g"`
 
-# Deploy native jars into repository, if necessary.
-if [ "${NATIVES}" = "natives" ]
-then
-  for PLATFORM in ${PLATFORMS}
-  do
-    f="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
-    DEPLOY_EXTRA_FILES="${DEPLOY_EXTRA_FILES},${f}"
-    DEPLOY_EXTRA_CLASSIFIERS="${DEPLOY_EXTRA_CLASSIFIERS},natives-${PLATFORM}"
-    DEPLOY_EXTRA_TYPES="${DEPLOY_EXTRA_TYPES},jar"
-    info "adding file ${f}"
-  done
-fi
+    if [ ! -z "${DEPLOY_FILES}" ]
+    then
+      DEPLOY_FILES="${DEPLOY_FILES},${LINE}"
+      DEPLOY_CLASSIFIERS="${DEPLOY_CLASSIFIERS},${CLASS}"
+      DEPLOY_TYPES="${DEPLOY_TYPES},jar"
+    else
+      DEPLOY_FILES="${LINE}"
+      DEPLOY_CLASSIFIERS="${CLASS}"
+      DEPLOY_TYPES="jar"
+    fi
+  fi
+done
 
 # Deploy everything.
-mvn gpg:sign-and-deploy-file                  \
-  "-DpomFile=pom.xml"                         \
-  "-Dfile=${NAME}.jar"                        \
-  "-Dfiles=${DEPLOY_EXTRA_FILES}"             \
-  "-Dclassifiers=${DEPLOY_EXTRA_CLASSIFIERS}" \
-  "-Dtypes=${DEPLOY_EXTRA_TYPES}"             \
-  "-Durl=${REPOSITORY_URL}"                   \
+mvn gpg:sign-and-deploy-file            \
+  "-DpomFile=pom.xml"                   \
+  "-Dfile=${NAME}.jar"                  \
+  "-Dfiles=${DEPLOY_FILES}"             \
+  "-Dclassifiers=${DEPLOY_CLASSIFIERS}" \
+  "-Dtypes=${DEPLOY_TYPES}"             \
+  "-Durl=${REPOSITORY_URL}"             \
   "-DrepositoryId=${REPOSITORY_ID}"
 

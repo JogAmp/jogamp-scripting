@@ -11,7 +11,7 @@ copy()
   TARGET="$2"
 
   info "copy $1 $2.tmp" 1>&2
-  cp "$1" "$2.tmp" || exit 1
+  cp -n "$1" "$2.tmp" || exit 1
   info "rename $2.tmp $2" 1>&2
   mv "$2.tmp" "$2" || exit 1
 }
@@ -60,60 +60,84 @@ do
 
   # Determine whether or not the project has atomic jars
   ATOMICS=`echo "${PROJECT_LINE}" | awk -F: '{print $5}'` || exit 1
-  ATOMICS=`echo "${ATOMICS}"      | tr -d ' '`            || exit 1
+
+  # Keep a list of all files copied, for deployment later
+  MANIFEST_FILE="output/${NAME}/${VERSION}/manifest.txt"
 
   # Copy all native jars, if necessary
   if [ "${NATIVES}" = "natives" ]
   then
     for PLATFORM in ${PLATFORMS}
     do
+      OUTPUT_NAME="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
       SOURCE="${INPUT}/jar/${NAME}-natives-${PLATFORM}.jar"
-      TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-natives-${PLATFORM}.jar"
+      TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
       copy "${SOURCE}" "${TARGET}"
+      echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
     done
+  else
+    if [ "${NATIVES}" = "atomic-natives" ]
+    then
+      for PLATFORM in ${PLATFORMS}
+      do
+        OUTPUT_NAME="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
+        SOURCE="${INPUT}/jar/atomic/${NAME}-natives-${PLATFORM}.jar"
+        TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
+        copy "${SOURCE}" "${TARGET}"
+        echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
+      done
+    fi
   fi
 
   # Copy dummy jar, if necessary
   if [ "${DUMMY}" = "dummy-jar" ]
   then
+    OUTPUT_NAME="${NAME}.jar"
     SOURCE="empty.jar"
   else
     # Copy main jar
-    SOURCE="${INPUT}/jar/${NAME}.jar"
+    OUTPUT_NAME="${NAME}.jar"
+    SOURCE="${INPUT}/jar/${OUTPUT_NAME}"
   fi
-  TARGET="output/${NAME}/${VERSION}/${NAME}.jar"
+  TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
   copy "${SOURCE}" "${TARGET}"
+  echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
 
   # Copy dummy jars, if necessary
   if [ "${SRC_ZIP}" = "dummy-src" ]
   then
-      SOURCE="empty.jar"
+    OUTPUT_NAME="${NAME}-${VERSION}-sources.jar"
+    SOURCE="empty.jar"
   else
-      SOURCE="${INPUT}/${SRC_ZIP}"
+    SOURCE="${INPUT}/${SRC_ZIP}"
   fi
-  TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-sources.jar"
+  TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
   copy "${SOURCE}" "${TARGET}"
+  echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
 
   # Copy dummy jars to 'javadoc' jars, as we
   # don't publish real versions of these yet.
+  OUTPUT_NAME="${NAME}-${VERSION}-javadoc.jar"
   SOURCE="empty.jar"
-  TARGET="output/${NAME}/${VERSION}/${NAME}-${VERSION}-javadoc.jar"
+  TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
   copy "${SOURCE}" "${TARGET}"
+  echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
 
-  # Copy atomic jars, if necessary.
-  if [ "${ATOMICS}" = "atomics" ]
+  # Copy atomics, if necessary
+  if [ ! -z "${ATOMICS}" ]
   then
-    for JAR in ${INPUT}/jar/atomic/${NAME}-*.jar
+    info "atomics: ${ATOMICS}"
+    IFS=" "
+    for ATOMIC in ${ATOMICS}
     do
-      JAR_NAME=`basename "${JAR}"` || exit 1
-      JAR_NAME=`echo ${JAR_NAME} | sed "s/^${NAME}-//g"` || exit 1
-      JAR_NAME="${NAME}-${VERSION}-${JAR_NAME}"
-
-      SOURCE="${JAR}"
+      JAR_NAME="${NAME}-${VERSION}-${ATOMIC}.jar"
+      SOURCE="${INPUT}/jar/atomic/${NAME}-${ATOMIC}.jar"
       TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
       copy "${SOURCE}" "${TARGET}"
+      echo "${JAR_NAME}" >> "${MANIFEST_FILE}"
     done
+    IFS="
+"
   fi
-
 done
 
