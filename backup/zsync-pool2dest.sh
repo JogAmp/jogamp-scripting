@@ -14,14 +14,14 @@ function one_zsync()
     shift
     dset=$1
     shift
-    snap=$1
+    snapNow=$1
     shift
-    snap0=$1
+    snapPre=$1
     shift
-    if [ -z "$snap0" ] ; then
-        zfs send -R -D $src_pool/$dset@$snap | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
+    if [ -z "$snapPre" ] ; then
+        zfs send -R -D $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
     else
-        zfs send -R -D -I @$snap0 $src_pool/$dset@$snap | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
+        zfs send -R -D -I @$snapPre $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
     fi
 }
 
@@ -37,14 +37,14 @@ function all_zsync()
     shift
     dest_ssh=$1
     shift
-    snap=$1
+    snapNow=$1
     shift
-    snap0=$1
+    snapPre=$1
     shift
-    one_zsync $src_pool $dest_pool $dest_ssh data $snap $snap0
-    one_zsync $src_pool $dest_pool $dest_ssh services $snap $snap0
-    one_zsync $src_pool $dest_pool $dest_ssh system $snap $snap0
-    one_zsync $src_pool $dest_pool $dest_ssh users $snap $snap0
+    one_zsync $src_pool $dest_pool $dest_ssh data $snapNow $snapPre
+    one_zsync $src_pool $dest_pool $dest_ssh services $snapNow $snapPre
+    one_zsync $src_pool $dest_pool $dest_ssh system $snapNow $snapPre
+    one_zsync $src_pool $dest_pool $dest_ssh users $snapNow $snapPre
 }
 
 #
@@ -81,10 +81,12 @@ function do_zsync_increment()
     shift
     dest_ssh=$1
     shift
-    snapshot=$1
+    snapshot_now=$1
+    shift
+    snapshot_pre=$1
     shift
 
-    all_zsync $src_pool $dest_pool $dest_ssh $snapshot setup_complete
+    all_zsync $src_pool $dest_pool $dest_ssh $snapshot_now $snapshot_pre
 
     echo DONE
 }
@@ -93,7 +95,15 @@ function do_zsync_increment()
 src_pool=jogamp_org
 dest_pool=jausoft_com
 dest_ssh=root@jausoft.com
-snapshot=20131102
+#snapshot_pre=setup_complete
+#snapshot_now=20130920
+#snapshot_pre=20130920
+#snapshot_now=20131102
+#snapshot_pre=20131102
+#snapshot_now=20140225
+snapshot_pre=20140225
+snapshot_now=20140311
+
 #
 #src_pool=jausoft_com
 #dest_pool=jogamp_org
@@ -102,5 +112,5 @@ snapshot=20131102
 logfile=`basename $0 .sh`-"$src_pool"_2_"$dest_pool".log
 
 #do_zsync_initial $src_pool $dest_pool $dest_ssh >& $logfile &
-do_zsync_increment $src_pool $dest_pool $dest_ssh $snapshot >& $logfile &
+do_zsync_increment $src_pool $dest_pool $dest_ssh $snapshot_now $snapshot_pre >& $logfile &
 disown $!
