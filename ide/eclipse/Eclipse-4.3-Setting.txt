@@ -1,0 +1,9 @@
+- Change non static accesses to static members using declaring type
+- Change indirect accesses to static members to direct accesses (accesses through subtypes)
+- Add final modifier to private fields
+- Add final modifier to method parameters
+- Add final modifier to local variables
+- Remove unused imports
+- Remove unnecessary casts
+- Remove unnecessary '$NON-NLS$' tags
+- Remove trailing white spaces on all lines
