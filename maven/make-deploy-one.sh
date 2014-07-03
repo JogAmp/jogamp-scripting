@@ -36,9 +36,6 @@ DEPLOY_FILES=""
 DEPLOY_CLASSIFIERS=""
 DEPLOY_TYPES=""
 
-IFS="
-"
-
 for LINE in `cat manifest.txt`
 do
   if [ "${LINE}" = "${NAME}.jar" ]

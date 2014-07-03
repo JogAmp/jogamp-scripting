@@ -25,7 +25,7 @@ fi
 VERSION="$1"
 shift
 
-PROJECTS=`./make-list-projects.sh | awk -F: '{print $1}'` || exit 1
+PROJECTS=`ls projects` || exit 1
 
 for PROJECT in ${PROJECTS}
 do

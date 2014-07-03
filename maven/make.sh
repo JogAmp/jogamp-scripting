@@ -17,6 +17,7 @@ then
   exit 1
 fi
 
+./clean.sh                         || exit 1
 ./make-directories.sh "${VERSION}" || exit 1
 ./make-copy-jars.sh   "${VERSION}" || exit 1
 ./make-poms.sh        "${VERSION}" || exit 1
