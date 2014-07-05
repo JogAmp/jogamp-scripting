@@ -134,7 +134,7 @@ function prom_merge_modules() {
                         cp -av $k ../$mergefolder/$j.$k
                     fi
                 done
-                for k in \*-java-src.zip ; do
+                for k in `find . -maxdepth 1 -name \*-java-src.zip` ; do
                     if [ -e $k ] ; then
                         cp -av $k ../$mergefolder/
                     fi
