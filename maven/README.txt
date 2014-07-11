@@ -26,12 +26,12 @@ Instructions (deploying a release to Central)
 
   1. Obtain the jogamp-all-platforms.7z release for the version
      of jogamp you wish to deploy to Central. As an example, we'll
-     use 2.0-rc11. Unpack the 7z file to the 'input' subdirectory,
+     use 2.3.0. Unpack the 7z file to the 'input' subdirectory,
      creating it if it doesn't exist:
 
     $ mkdir input
     $ cd input
-    $ wget http://jogamp.org/deployment/v2.0-rc11/archive/jogamp-all-platforms.7z
+    $ wget http://jogamp.org/deployment/v2.3.0/archive/jogamp-all-platforms.7z
     $ 7z x jogamp-all-platforms.7z
 
   2. Switch back to the old directory:
@@ -77,7 +77,7 @@ Instructions (deploying a release to Central)
   4. Now, run make.sh with the desired version number to generate POM
      files and copy jar files to the correct places:
 
-      $ ./make.sh 2.0-rc11
+      $ ./make.sh 2.3.0
 
   5. The scripts will have created an 'output' directory, containing
      all the prepared releases. It's now necessary to deploy the releases,
@@ -117,11 +117,11 @@ Instructions (deploying a release to Central)
 
   6. Now we can deploy an individual project to the staging repository:
 
-      $ ./make-deploy-one.sh gluegen-rt-main 2.0-rc11
+      $ ./make-deploy-one.sh gluegen-rt-main 2.3.0
 
      Or deploy all of the projects defined in make-projects.txt:
 
-      $ ./make-deploy.sh 2.0-rc11
+      $ ./make-deploy.sh 2.3.0
 
      The scripts will upload all necessary jars, poms, signatures, etc.
 
@@ -203,11 +203,11 @@ files were deployed along with the main jar file for each project. Using
         -Dclassifier="natives-${PLATFORM}"
     done
 
-  Assuming version 2.0-rc11, this results in:
+  Assuming version 2.3.0, this results in:
 
-    gluegen-rt-2.0-rc11.jar
-    gluegen-rt-2.0-rc11-natives-linux-amd64.jar
-    gluegen-rt-2.0-rc11-natives-linux-i586.jar
+    gluegen-rt-2.3.0.jar
+    gluegen-rt-2.3.0-natives-linux-amd64.jar
+    gluegen-rt-2.3.0-natives-linux-i586.jar
     ...
 
 This results in a project with a main jar and a set of native jar
@@ -230,6 +230,29 @@ With that in mind, each part of Maven therefore has an associated
 "-main" project, meant to be used by end-users. This "-main" project,
 when added to the dependencies of any project, pulls in all of the
 real jogamp jars, native or otherwise.
+
+------------------------------------------------------------------------
+Test suite
+------------------------------------------------------------------------
+
+The scripts now include a basic test suite for checking that the
+produced packages actually work in Maven.
+
+Assuming that the packages have been created with the ./make.sh script
+above:
+
+  1. Generate project files for the tests:
+
+    $ ./make-tests.sh 2.3.0
+
+  2. Deploy packages to a local directory for the unit tests
+     to use:
+
+     $ ./make-tests-deploy.sh 2.3.0
+
+  3. Run the tests.
+
+    $ ./make-tests-run.sh
 
 ------------------------------------------------------------------------
 Notes

@@ -25,7 +25,7 @@ cat <<EOF
   <artifactId>newt</artifactId>
   <version>${VERSION}</version>
   <packaging>jar</packaging>
-  <name>JOGL</name>
+  <name>NEWT</name>
   <description>Java™ Binding for the OpenGL® API (NEWT atomic jar files)</description>
   <url>http://jogamp.org/jogl/www/</url>
 

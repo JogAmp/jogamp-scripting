@@ -1,0 +1,8 @@
+output
+tests-cache
+tests-repository
+tests/*/.*
+tests/*/pom.xml
+tests/.*
+tests/maven-settings.xml
+tests/pom.xml

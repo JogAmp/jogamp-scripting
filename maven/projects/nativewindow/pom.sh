@@ -25,7 +25,7 @@ cat <<EOF
   <artifactId>nativewindow</artifactId>
   <version>${VERSION}</version>
   <packaging>jar</packaging>
-  <name>JOGL</name>
+  <name>Nativewindow</name>
   <description>Java™ Binding for the OpenGL® API (Native window atomic jar files)</description>
   <url>http://jogamp.org/jogl/www/</url>
 
