@@ -5,6 +5,12 @@ info()
   echo "make-copy-jars-one: info: ${NAME}: $1" 1>&2
 }
 
+fatal()
+{
+  echo "make-copy-jars-one: fatal: ${NAME}: $1" 1>&2
+  exit 1
+}
+
 copy()
 {
   SOURCE="$1"
@@ -53,22 +59,21 @@ MANIFEST_FILE="output/${NAME}/${VERSION}/manifest.txt"
 #
 
 NATIVES=`cat projects/${NAME}/natives` || exit 1
-if [ "${NATIVES}" = "natives" ]
-then
-  info "natives: ${NATIVES}"
+case "${NATIVES}" in
+  "normal")
+    info "natives: normal"
 
-  for PLATFORM in ${PLATFORMS}
-  do
-    OUTPUT_NAME="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
-    SOURCE="${INPUT}/jar/${NAME}-natives-${PLATFORM}.jar"
-    TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
-    copy "${SOURCE}" "${TARGET}"
-    echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
-  done
-else
-  if [ "${NATIVES}" = "atomic-natives" ]
-  then
-    info "natives: ${NATIVES}"
+    for PLATFORM in ${PLATFORMS}
+    do
+      OUTPUT_NAME="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
+      SOURCE="${INPUT}/jar/${NAME}-natives-${PLATFORM}.jar"
+      TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
+      copy "${SOURCE}" "${TARGET}"
+      echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
+    done
+    ;;
+  "atomic")
+    info "natives: atomic-natives"
 
     for PLATFORM in ${PLATFORMS}
     do
@@ -78,27 +83,41 @@ else
       copy "${SOURCE}" "${TARGET}"
       echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
     done
-  else
+    ;;
+  "none")
     info "natives: not required"
-  fi
-fi
+    ;;
+  *)
+    fatal "unknown value in projects/${NAME}/natives - ${NATIVES}"
+    ;;
+esac
 
 #------------------------------------------------------------------------
-# Copy dummy code jars, if necessary.
+# Copy the correct jar file for the module.
 #
 
-DUMMY=`cat projects/${NAME}/dummy-jar` || exit 1
-if [ "${DUMMY}" = "dummy-jar" ]
-then
-  info "dummy-jar: required"
-  OUTPUT_NAME="${NAME}.jar"
-  SOURCE="empty.jar"
-else
-  info "dummy-jar: not required (copying main jar)"
-  # Copy main jar
-  OUTPUT_NAME="${NAME}.jar"
-  SOURCE="${INPUT}/jar/${OUTPUT_NAME}"
-fi
+MAIN_JAR=`cat projects/${NAME}/main-jar` || exit 1
+case "${MAIN_JAR}" in
+  "dummy")
+    info "main-jar: dummy (empty.jar)"
+    OUTPUT_NAME="${NAME}.jar"
+    SOURCE="empty.jar"
+    ;;
+  "atomic")
+    info "main-jar: atomic"
+    OUTPUT_NAME="${NAME}.jar"
+    SOURCE="${INPUT}/jar/atomic/${OUTPUT_NAME}"
+    ;;
+  "normal")
+    info "main-jar: normal"
+    OUTPUT_NAME="${NAME}.jar"
+    SOURCE="${INPUT}/jar/${OUTPUT_NAME}"
+    ;;
+  *)
+    fatal "unknown value in projects/${NAME}/main-jar - ${MAIN_JAR}"
+    ;;
+esac
+
 TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
 copy "${SOURCE}" "${TARGET}"
 echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
