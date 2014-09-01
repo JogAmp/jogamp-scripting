@@ -8,8 +8,8 @@ scp chuckslave@jogamp.org:/srv/jenkins/war/WEB-INF/slave.jar .
 
 function connect_1 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86/etc/profile.jre7
-  . /opt-linux-x86/etc/profile.j2se7
+  . /opt-linux-x86/etc/profile.jre8
+  . /opt-linux-x86/etc/profile.j2se8
 
   export SOURCE_LEVEL=1.6
   export TARGET_LEVEL=1.6
@@ -31,8 +31,8 @@ function connect_1 {
 
 function connect_2 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre7
-  . /opt-linux-x86_64/etc/profile.j2se7
+  . /opt-linux-x86_64/etc/profile.jre8
+  . /opt-linux-x86_64/etc/profile.j2se8
 
   export SOURCE_LEVEL=1.6
   export TARGET_LEVEL=1.6
@@ -54,8 +54,8 @@ function connect_2 {
 
 function connect_30 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre7
-  . /opt-linux-x86_64/etc/profile.j2se7
+  . /opt-linux-x86_64/etc/profile.jre8
+  . /opt-linux-x86_64/etc/profile.j2se8
 
   export SOURCE_LEVEL=1.6
   export TARGET_LEVEL=1.6
@@ -102,8 +102,8 @@ function connect_30 {
 
 function connect_31 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre7
-  . /opt-linux-x86_64/etc/profile.j2se7
+  . /opt-linux-x86_64/etc/profile.jre8
+  . /opt-linux-x86_64/etc/profile.j2se8
 
   export SOURCE_LEVEL=1.6
   export TARGET_LEVEL=1.6
@@ -151,8 +151,8 @@ function connect_31 {
 
 function connect_40 {
   . /opt-share/etc/profile.ant
-  . /opt-linux-x86_64/etc/profile.jre7
-  . /opt-linux-x86_64/etc/profile.j2se7
+  . /opt-linux-x86_64/etc/profile.jre8
+  . /opt-linux-x86_64/etc/profile.j2se8
 
     export NODE_LABEL=label/android-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7_Android

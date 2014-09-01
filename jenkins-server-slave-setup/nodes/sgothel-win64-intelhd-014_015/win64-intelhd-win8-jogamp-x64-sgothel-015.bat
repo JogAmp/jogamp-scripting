@@ -21,4 +21,4 @@ REM    -DuseKD=true
 REM    -Djogl.cg=1 -D-Dwindows.cg.lib=C:\Cg-2.2
 REM    -Dbuild.noarchives=true
 
-java -server -Xmx1024m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/win64-nvgtx460-win7-jogamp-x64-sgothel-011/slave-agent.jnlp
+java -server -Xmx1024m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/win64-intelhd-win8-jogamp-x64-sgothel-015/slave-agent.jnlp
