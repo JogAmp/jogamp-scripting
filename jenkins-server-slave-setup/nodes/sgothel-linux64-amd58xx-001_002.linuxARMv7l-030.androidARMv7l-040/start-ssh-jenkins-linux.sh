@@ -172,11 +172,13 @@ function connect_40 {
     export TARGET_ROOT=/data/projects
     export TARGET_ANT_HOME=/usr/share/ant
 
-    export NDK_ROOT=/opt-linux-x86/android-ndk
+    export NDK_ROOT=/opt-linux-x86_64/android-ndk
     export ANDROID_HOME=/opt-linux-x86/android-sdk-linux_x86
+    export ANDROID_BUILD_TOOLS_VERSION=21.1.2
 
     echo NDK_ROOT $NDK_ROOT
     echo ANDROID_HOME $ANDROID_HOME
+    echo ANDROID_BUILD_TOOLS_VERSION $ANDROID_BUILD_TOOLS_VERSION
 
     export ANDROID_VERSION=9
     export SOURCE_LEVEL=1.6
@@ -186,16 +188,17 @@ function connect_40 {
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
     #export GCC_VERSION=4.4.3
-    export GCC_VERSION=4.7
-    HOST_ARCH=linux-x86
+    #export GCC_VERSION=4.7
+    export GCC_VERSION=4.8
+    HOST_ARCH=linux-x86_64
     export TARGET_TRIPLE=arm-linux-androideabi
 
     export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
     export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
 
     # Need to add toolchain bins to the PATH. 
+    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
     export PATH_VANILLA=$PATH
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/17.0.0:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
     export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
@@ -216,6 +219,73 @@ function connect_40 {
 
 }
 
+function connect_41 {
+  . /opt-share/etc/profile.ant
+  . /opt-linux-x86_64/etc/profile.jre8
+  . /opt-linux-x86_64/etc/profile.j2se8
+
+    export NODE_LABEL=label/android-aarch64
+    HOST_ROOT=/home/jogamp/JogAmpSlaveArm64_Android
+    JENKINS_WS=$HOST_ROOT/workspace
+
+    export HOST_UID=jogamp
+    # jogamp02 - 10.1.0.122
+    export HOST_IP=10.1.0.122
+    export HOST_RSYNC_ROOT=ROOTDIR/$JENKINS_WS
+
+    export TARGET_UID=jogamp
+    export TARGET_IP=panda02
+    #export TARGET_IP=jautab03
+    #export TARGET_IP=jauphone04
+    export TARGET_ADB_PORT=5555
+    # needs executable bit (probably su)
+    export TARGET_ROOT=/data/projects
+    export TARGET_ANT_HOME=/usr/share/ant
+
+    export NDK_ROOT=/opt-linux-x86_64/android-ndk
+    export ANDROID_HOME=/opt-linux-x86/android-sdk-linux_x86
+    export ANDROID_BUILD_TOOLS_VERSION=21.1.2
+
+    echo NDK_ROOT $NDK_ROOT
+    echo ANDROID_HOME $ANDROID_HOME
+    echo ANDROID_BUILD_TOOLS_VERSION $ANDROID_BUILD_TOOLS_VERSION
+
+    export ANDROID_VERSION=21
+    export SOURCE_LEVEL=1.6
+    export TARGET_LEVEL=1.6
+    export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+    export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
+    export GCC_VERSION=4.9
+    HOST_ARCH=linux-x86_64
+    export TARGET_TRIPLE=aarch64-linux-android
+
+    export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
+    export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm64
+
+    # Need to add toolchain bins to the PATH. 
+    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
+    export PATH_VANILLA=$PATH
+
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml
+    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
+
+    #export JUNIT_DISABLED="true"
+    #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
+
+  java -version
+  sshpid=
+  while true ; do
+    if [ ! -z "$sshpid" ] ; then
+	kill -9 $sshpid
+    fi
+    ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6041:localhost:5555 -N &
+    sshpid=$!
+    java -server -Xmx512m -jar slave.jar -jnlpUrl https://jogamp.org/chuck/computer/androidArm64-jogamp-aarch64-sgothel-041/slave-agent.jnlp
+  done
+}
+
 connect_1 > linux64-AMD58xx-debian7-jogamp-x32-sgothel-001.log 2>&1 &
 disown $!
 
@@ -229,5 +299,8 @@ connect_31 > linuxARMv7hf-jogamp-arm32hf-sgothel-031.log 2>&1 &
 disown $!
 
 connect_40 > androidARMv7-jogamp-arm32-sgothel-040.log 2>&1 &
+disown $!
+
+connect_41 > androidArm64-jogamp-aarch64-sgothel-041.log 2>&1 &
 disown $!
 
