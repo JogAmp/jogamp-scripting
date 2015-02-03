@@ -32,7 +32,7 @@ function connect_12 {
 
 function connect_13 {
   . /opt-share/etc/profile.ant
-  JAVA_HOME=`/usr/libexec/java_home -version 1.7`
+  JAVA_HOME=`/usr/libexec/java_home -version 1.8`
   PATH=$JAVA_HOME/bin:$PATH
   export JAVA_HOME PATH
   export SOURCE_LEVEL=1.6
