@@ -1,3 +1,4 @@
+android-aarch64  : Android ARM AArch64
 android-armv6    : Android ARMv6
 linux-amd64      : Linux AMD64
 linux-armv6      : Linux ARMv6
