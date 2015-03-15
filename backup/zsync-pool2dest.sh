@@ -18,10 +18,16 @@ function one_zsync()
     shift
     snapPre=$1
     shift
+    #
+    # Due to issue 2210 <https://github.com/zfsonlinux/zfs/issues/2210>
+    # Cannot use deduplication reliably!
+    #
     if [ -z "$snapPre" ] ; then
-        zfs send -R -D $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
+        #zfs send -R -D $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
+        zfs send -R $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
     else
-        zfs send -R -D -I @$snapPre $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
+        #zfs send -R -D -I @$snapPre $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
+        zfs send -R -I @$snapPre $src_pool/$dset@$snapNow | ssh $dest_ssh "zfs receive -v -u -d $dest_pool/backup/$src_pool"
     fi
 }
 
@@ -95,22 +101,41 @@ function do_zsync_increment()
 src_pool=jogamp_org
 dest_pool=jausoft_com
 dest_ssh=root@jausoft.com
-#snapshot_pre=setup_complete
-#snapshot_now=20130920
-#snapshot_pre=20130920
-#snapshot_now=20131102
-#snapshot_pre=20131102
-#snapshot_now=20140225
-snapshot_pre=20140225
-snapshot_now=20140311
-
 #
 #src_pool=jausoft_com
 #dest_pool=jogamp_org
 #dest_ssh=root@jogamp.org
 
+# 
+# zfs set readonly=on $dest_pool/backup
+# zfs list -o name,readonly,compression $dest_pool
+#
+#
+
+#snapshot_pre=setup_complete
+#snapshot_now=20130920
+
+#snapshot_pre=20130920
+#snapshot_now=20131102
+
+#snapshot_pre=20131102
+#snapshot_now=20140225
+
+#snapshot_pre=20140225
+#snapshot_now=20140311
+
+#snapshot_pre=20140311
+#snapshot_now=20140411
+
+snapshot_pre=20140411
+snapshot_now=20150315
+
 logfile=`basename $0 .sh`-"$src_pool"_2_"$dest_pool".log
 
 #do_zsync_initial $src_pool $dest_pool $dest_ssh >& $logfile &
-do_zsync_increment $src_pool $dest_pool $dest_ssh $snapshot_now $snapshot_pre >& $logfile &
-disown $!
+#do_zsync_increment $src_pool $dest_pool $dest_ssh $snapshot_now $snapshot_pre >& $logfile &
+#disown $!
+
+#do_zsync_initial $src_pool $dest_pool $dest_ssh 2>&1 | tee $logfile
+do_zsync_increment $src_pool $dest_pool $dest_ssh $snapshot_now $snapshot_pre 2>&1 | tee $logfile
+

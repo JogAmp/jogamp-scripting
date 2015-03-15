@@ -207,6 +207,11 @@ Install:
                 - zfs create -o mountpoint=/data jogamp07/data
                 - zfs create -o compression=gzip jogamp07/data/backup
                 - zfs create -o mountpoint=/srv  jogamp07/services
+                - zfs create -o mountpoint=/data jogamp07/backup
+
+                - zfs set readonly=on jogamp07/backup
+
+                - zfs list -o name,readonly,compression
 
             Below is scripted in './zfs03-export_import.sh' (using jogamp07 as pool name)
 
@@ -316,6 +321,30 @@ Install:
             - zpool set cachefile=/etc/zfs/zpool.cache jogamp07
             - update-initramfs -u -k all
             - 
+
+            # zpool export jogamp07
+            : now export all other pools too
+            # zpool import -f -N jogamp07
+            : now import all other pools too
+            # zpool set cachefile=/etc/zfs/zpool.cache jogamp07
+            # mount -t zfs -o zfsutil jogamp07/system/debian7_01 /mnt/new
+            : do not mount any other filesystem
+            # cp /etc/zfs/zpool.cache /mnt/new/etc/zfs/zpool.cache
+            # umount /mnt/new
+            # update-initramfs -u -k all
+
+            # zpool export rpool
+            : now export all other pools too
+            # zpool import -d /dev/disk/by-id -f -N rpool
+            : now import all other pools too
+            # mount -t zfs -o zfsutil rpool/ROOT/debian-1 /root
+            : do not mount any other filesystem
+            # cp /etc/zfs/zpool.cache /root/etc/zfs/zpool.cache
+            # exit
+
+        2.10 Grub on target
+            cp -a /mnt/usbroot/etc/default/grub /etc/default/grub
+            apt-get install grub-pc grub-common grub-pc-bin grub2-common
 
 
         X.1 Skip: Grub 2.00 Derivates / Boot 

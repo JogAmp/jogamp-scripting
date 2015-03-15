@@ -10,4 +10,6 @@ zfs create -o mountpoint=/root jogamp07/users/root
 zfs create -o mountpoint=/data jogamp07/data
 zfs create -o compression=gzip jogamp07/data/backup
 zfs create -o mountpoint=/srv  jogamp07/services
+zfs create -o compression=gzip jogamp07/backup
 
+zfs set readonly=on jogamp07/backup
