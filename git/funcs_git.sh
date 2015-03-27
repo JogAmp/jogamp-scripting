@@ -14,8 +14,8 @@ function git-new-milestone() {
     mkdir -p ../archive/$new/ChangeLogs
 
     echo "Module $module - Tag $new"
-    git archive --format=tar --prefix=$module-$new/ $new | 7z a -si ../archive/$new/Sources/$module-$new.tar.7z
-#   git archive --format=tar --prefix=$module-$new/ $new | xz -z -9 > ../archive/$new/Sources/$module-$new.tar.xz
+#   git archive --format=tar --prefix=$module-$new/ $new | 7z a -si ../archive/$new/Sources/$module-$new.tar.7z
+    git archive --format=tar --prefix=$module-$new/ $new | xz -z -9 > ../archive/$new/Sources/$module-$new.tar.xz
 #   git archive --format=zip --prefix=$module-$new/ $new -o ../archive/$new/Sources/$module-$new.zip
     git log --no-merges $new ^$last > ../archive/$new/ChangeLogs/$module-ChangeLog-$new.txt
     git shortlog --no-merges $new ^$last > ../archive/$new/ChangeLogs/$module-ShortLog-$new.txt

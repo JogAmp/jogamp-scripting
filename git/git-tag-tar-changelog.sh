@@ -9,15 +9,15 @@ if [ -z "$artifacts" ] ; then
 fi
 
 branch=master
-tag_old=v2.1.1
-tag=v2.1.2
+tag_old=v2.3.0
+tag=v2.3.1
 
 sdir=`dirname $0`
 thisdir=`pwd`
 
 . $sdir/funcs_git.sh
 
-for i in gluegen joal joal-demos jogl jogl-demos jocl jocl-demos ; do
+for i in gluegen jcpp joal joal-demos jogl oculusvr-sdk jogl-demos jocl jocl-demos ; do
     sha=`grep $i.build.commit $artifacts | awk --field-separator "=" ' { print $2 } ' `
     echo $i sha $sha
     cd $i
