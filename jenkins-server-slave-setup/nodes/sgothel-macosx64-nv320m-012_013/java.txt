@@ -1,0 +1,23 @@
+java6 for 32bit builds: java_for_os_x_2013005_dp__11m4609.dmg
+
+See <https://jogamp.org/bugzilla/show_bug.cgi?id=1050#c8>:
+
+After installing Java6 (java_for_os_x_2013005_dp__11m4609.dmg)
+the Java6 default location was broken.
+
+I had to fix this manually:
+
+cd /System/Library/Frameworks/JavaVM.framework/
+rm CurrentJDK ; ln -s /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents CurrentJDK
+
+Now fix broken links: cacerts .. etc 
+  172  cd /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home/lib/security/
+  173  pwd
+  174  mv cacerts cacerts.orig
+  175  ls -la
+  176  mv blacklist blacklist.orig
+  177  mv trusted.libraries trusted.libraries.orig
+  178  cp -a /Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/jre/lib/security/blacklist .
+  179  cp -a /Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/jre/lib/security/cacerts .
+  180  cp -a /Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/jre/lib/security/trusted.libraries .
+

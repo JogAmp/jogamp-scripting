@@ -1,3 +1,11 @@
+Since OS X 10.10 we have to use Launchd to start jenkins as a user agent!
+
+See subdir 'launchd' for related plist and scripts.
+
++++
+
+Previous:
+
 mac has a feature called "security context" which causes the node to fail resolving domains after a while.
 see e.g: http://osdir.com/ml/unix-porting/2010-05/msg00000.html
 
