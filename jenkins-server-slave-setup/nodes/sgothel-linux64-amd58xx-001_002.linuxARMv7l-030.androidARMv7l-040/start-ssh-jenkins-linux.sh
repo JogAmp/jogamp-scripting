@@ -190,15 +190,15 @@ function connect_40 {
     #export GCC_VERSION=4.4.3
     #export GCC_VERSION=4.7
     export GCC_VERSION=4.8
-    HOST_ARCH=linux-x86_64
+    export HOST_ARCH=linux-x86_64
     export TARGET_TRIPLE=arm-linux-androideabi
 
     export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
     export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
 
     # Need to add toolchain bins to the PATH. 
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
     export PATH_VANILLA=$PATH
+    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
     export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
@@ -258,15 +258,15 @@ function connect_41 {
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
     export GCC_VERSION=4.9
-    HOST_ARCH=linux-x86_64
+    export HOST_ARCH=linux-x86_64
     export TARGET_TRIPLE=aarch64-linux-android
 
     export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
     export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm64
 
     # Need to add toolchain bins to the PATH. 
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
     export PATH_VANILLA=$PATH
+    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml
     export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
