@@ -1,3 +1,11 @@
+Current Java 6 for OSX (10.10):
+
+Java 6 for 32bit and 64bit builds on OSX 10.10: JavaForOSX2014-001.dmg
+    <https://support.apple.com/kb/DL1572?locale=en_US>
+
+Obsolete:
+===========
+
 java6 for 32bit builds: java_for_os_x_2013005_dp__11m4609.dmg
 
 See <https://jogamp.org/bugzilla/show_bug.cgi?id=1050#c8>:
@@ -7,8 +15,10 @@ the Java6 default location was broken.
 
 I had to fix this manually:
 
-cd /System/Library/Frameworks/JavaVM.framework/
+cd /System/Library/Frameworks/JavaVM.framework/Versions
 rm -f CurrentJDK ; ln -s /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents CurrentJDK
+
+cd /System/Library/Frameworks/JavaVM.framework
 rm -f Home ; ln -s /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home .
 rm -f Headers ; ln -s /Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/include Headers
 
