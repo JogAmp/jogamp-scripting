@@ -8,7 +8,9 @@ the Java6 default location was broken.
 I had to fix this manually:
 
 cd /System/Library/Frameworks/JavaVM.framework/
-rm CurrentJDK ; ln -s /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents CurrentJDK
+rm -f CurrentJDK ; ln -s /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents CurrentJDK
+rm -f Home ; ln -s /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home .
+rm -f Headers ; ln -s /Library/Java/JavaVirtualMachines/jdk1.7.0_80.jdk/Contents/Home/include Headers
 
 Now fix broken links: cacerts .. etc 
   172  cd /Library/Java/JavaVirtualMachines/1.6.0_65-b14-462.jdk/Contents/Home/lib/security/
