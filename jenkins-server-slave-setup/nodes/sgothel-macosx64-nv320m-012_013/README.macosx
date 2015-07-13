@@ -20,3 +20,25 @@ possible workarounds:
 
 (i tried the first option... lets see if it works)
 
++++
++++
++++
+
+Java 6 for 32bit and 64bit builds on OSX 10.10: JavaForOSX2014-001.dmg
+    <https://support.apple.com/kb/DL1572?locale=en_US>
+
++++
++++
++++
+
+Printer to file:
+
+As root:
+   cupsctl FileDevice=Yes
+   Enable 'FileDevice' in /private/etc/cups/cups-files.conf
+   killall -HUP cupsd
+   mkdir /data/lp
+   chown USER /data/lp
+   chmod ugo+rwx /data/lp
+   lpadmin -p lprint -E -v file:/data/lp/out.ps -P /Library/Printers/PPDs/Contents/Resources/HP\ LaserJet\ 4\ Plus.gz
+
