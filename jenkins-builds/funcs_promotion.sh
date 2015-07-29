@@ -337,8 +337,8 @@ function prom_make_fatjar() {
     zip -r ../../fat/jogamp-fat-java-src.zip .
     cd ../..
 
-    mkdir tmp/testjar
-    cd tmp/testjar
+    mkdir tmp/fattestjar
+    cd tmp/fattestjar
     fat_test_jar_modules="junit gluegen-test-util joal-test jogl-test jocl-test"
     for h in $fat_test_jar_modules ; do
         unzip ../../jar/$h.jar
@@ -346,8 +346,19 @@ function prom_make_fatjar() {
     done
     unzip $master_gluegen/dist/junit.jar
     rm -rf META-INF
-
     jar cfm ../../fat/jogamp-fat-test.jar $master_gluegen/dist/jogamp-fat-test.mf .
+    cd ../..
+
+    mkdir tmp/fattestjarsrc
+    cd tmp/fattestjarsrc
+    fat_test_java_src_modules="gluegen joal jogl jocl"
+    for i in $fat_java_src_modules ; do
+        if [ -e ../../tmp/$i-$masterpick/$i-test-java-src.zip ] ; then
+            unzip ../../tmp/$i-$masterpick/$i-test-java-src.zip
+        fi
+        rm -rf META-INF
+    done
+    zip -r ../../fat/jogamp-fat-test-java-src.zip .
     cd ../..
 
     mv fat jogamp-fat
