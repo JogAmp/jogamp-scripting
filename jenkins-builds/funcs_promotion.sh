@@ -13,6 +13,7 @@ function prom_setup() {
         mkdir $ldest/archive/jogamp-$i/test-results/
     done
     mkdir $ldest/jar
+    mkdir $ldest/fat
     mkdir $ldest/apk
     mkdir $ldest/jar/atomic
     mkdir $ldest/javadoc
@@ -263,7 +264,7 @@ function prom_promote_module() {
     done
     cd ..
     # copy the master pic JAR files
-    # 7z folder verfified above already
+    # 7z folder verified above already
     local zfile=archive/jogamp-$masterpick/$module-$masterpick.7z
     local zfolder=tmp/`basename $zfile .7z`
     if [ -e $zfolder/jar ] ; then
@@ -280,6 +281,78 @@ function prom_promote_module() {
     if [ -e $zfolder/resources ] ; then
         cp -av $zfolder/resources/* ./resources/
     fi
+
+    cd $lthisdir
+}
+
+# 
+# #1 destination folder of artifacts
+#
+# Example:
+# prom_make_fatjar tmp-archive
+#
+function prom_make_fatjar() {
+    # debug
+    # set -x
+
+    local destdir=$1
+
+    local lthisdir=`pwd`
+
+    local master_gluegen=../../tmp/gluegen-$masterpick
+
+    echo "INFO: Make Fat Jar"
+    cd $destdir
+
+    mkdir tmp/fatjar
+    cd tmp/fatjar
+    fat_native_modules="gluegen-rt-natives joal-natives jogl-all-natives jocl-natives"
+    for h in $fat_native_modules ; do
+        for i in $os_and_archs_minus_android ; do
+            unzip ../../jar/$h-$i.jar
+            rm -rf META-INF
+            mkdir -p natives/$i
+            for j in `find . -maxdepth 1 -name \*.so -o -name \*.dll -o -name \*.jnilib -o -name \*dylib` ; do
+                mv $j natives/$i/
+            done
+        done
+    done
+    #rm -rf jogamp/nativetag
+
+    fat_core_jar_modules="gluegen-rt joal jogl-all jocl"
+    for h in $fat_core_jar_modules ; do
+        unzip ../../jar/$h.jar
+        rm -rf META-INF
+    done
+    jar cfm ../../fat/jogamp-fat.jar $master_gluegen/dist/jogamp-fat.mf .
+    cd ../..
+
+    mkdir tmp/fatjarsrc
+    cd tmp/fatjarsrc
+    fat_java_src_modules="gluegen joal jogl jocl"
+    for i in $fat_java_src_modules ; do
+        unzip ../../tmp/$i-$masterpick/$i-java-src.zip
+        rm -rf META-INF
+    done
+    zip -r ../../fat/jogamp-fat-java-src.zip .
+    cd ../..
+
+    mkdir tmp/testjar
+    cd tmp/testjar
+    fat_test_jar_modules="junit gluegen-test-util joal-test jogl-test jocl-test"
+    for h in $fat_test_jar_modules ; do
+        unzip ../../jar/$h.jar
+        rm -rf META-INF
+    done
+    unzip $master_gluegen/dist/junit.jar
+    rm -rf META-INF
+
+    jar cfm ../../fat/jogamp-fat-test.jar $master_gluegen/dist/jogamp-fat-test.mf .
+    cd ../..
+
+    mv fat jogamp-fat
+    7z a -r archive/jogamp-fat-all.7z jogamp-fat
+    mv jogamp-fat fat
 
     cd $lthisdir
 }

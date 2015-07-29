@@ -22,7 +22,8 @@ fi
 
 version=autobuild
 
-sdir=`dirname $0`
+sdir_0=`dirname $0`
+sdir=`readlink -f $sdir_0`
 
 thisdir=`pwd`
 
@@ -34,8 +35,11 @@ logfile=$thisdir/`basename $0 .sh`.log
 archivedir=/srv/www/jogamp.org/deployment/archive/$branch
 rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch
 
-os_and_archs_minus_one="linux-i586 linux-armv6 linux-armv6hf android-armv6 android-aarch64 macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
+os_and_archs_minus_master_android="linux-i586 linux-armv6 linux-armv6hf macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
+os_and_archs_android="android-armv6 android-aarch64"
 masterpick="linux-amd64"
+os_and_archs_minus_one="$os_and_archs_minus_master_android $os_and_archs_android"
+os_and_archs_minus_android="$masterpick $os_and_archs_minus_master_android"
 os_and_archs="$masterpick $os_and_archs_minus_one"
 
 cd $rootdir
@@ -182,6 +186,11 @@ function promote-latest-builds() {
     cp -a $jocldemosslave/artifact.properties $dest/log/jocl-demos.artifact.properties
 
     prom_promote_demos jocl-demos slave $jocldemosslave $dest
+
+    echo
+    echo FAT JAR
+    echo
+    prom_make_fatjar $dest
 
     #########################################################
     ## Integrity Check, Cleanup, aggregation.properties
