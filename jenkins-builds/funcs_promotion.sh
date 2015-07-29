@@ -317,6 +317,16 @@ function prom_make_fatjar() {
             done
         done
     done
+    for i in $os_and_archs_minus_android ; do
+        if [ -e ../../jar/atomic/oculusvr-natives-$i.jar ] ; then
+            unzip ../../jar/atomic/oculusvr-natives-$i.jar
+            rm -rf META-INF
+            mkdir -p natives/$i
+            for j in `find . -maxdepth 1 -name \*.so -o -name \*.dll -o -name \*.jnilib -o -name \*dylib` ; do
+                mv $j natives/$i/
+            done
+        fi
+    done
     #rm -rf jogamp/nativetag
 
     fat_core_jar_modules="gluegen-rt joal jogl-all jocl"
@@ -324,6 +334,10 @@ function prom_make_fatjar() {
         unzip ../../jar/$h.jar
         rm -rf META-INF
     done
+    if [ -e ../../jar/atomic/oculusvr.jar ] ; then
+        unzip ../../jar/atomic/oculusvr.jar
+        rm -rf META-INF
+    fi
     jar cfm ../../fat/jogamp-fat.jar $master_gluegen/dist/jogamp-fat.mf .
     cd ../..
 
