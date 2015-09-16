@@ -128,18 +128,44 @@ Debian 7.00 (Wheezy)
         - ln -s /usr/share/gitweb DocumentRoot/git
         - cp srv/scm/gitweb.conf
 
-11 apache2
+11 Apache2 / Webservices
+
+11.1 generic
+    - apache2 and build ..
+        apt-get install apache2 mysql-server build-essential 
+
     - php
         apt-get install php5-pgsql php5-ldap php5-imap php5-odbc php5-dev php5-common php5 php5-mysql php5-gd php5-xmlrpc \
                         php5-xsl php5-cli php5-intl php5-pspell php5-snmp php5-sasl
+
+
+11.2 bugzilla
+    - Debian 7
+        apt-get install libgd-gd2-perl libgd-graph-perl libgd-tools libgdal-perl libgdal-dev libgdata-dev libgd2-xpm-dev
+
+        apt-get install libappconfig-perl libdate-calc-perl libtemplate-perl libmime-perl libdatetime-timezone-perl libdatetime-perl libemail-sender-perl libemail-mime-perl libemail-mime-modifier-perl libdbi-perl libdbd-mysql-perl libcgi-pm-perl libmath-random-isaac-perl libmath-random-isaac-xs-perl apache2-mpm-prefork libapache2-mod-perl2 libapache2-mod-perl2-dev libchart-perl libxml-perl libxml-twig-perl perlmagick libgd-graph-perl libtemplate-plugin-gd-perl libsoap-lite-perl libhtml-scrubber-perl libjson-rpc-perl libtheschwartz-perl libtest-taint-perl libauthen-radius-perl libfile-slurp-perl libencode-detect-perl libmodule-build-perl libnet-ldap-perl libauthen-sasl-perl libtemplate-perl-doc libfile-mimeinfo-perl libhtml-formattext-withlinks-perl libmysqlclient-dev lynx-cur graphviz python-sphinx libgd2-xpm-dev
 
     - misc for perl/bugzilla
         - Perl: redo init (find closest mirror ..)
             - perl -MCPAN -e shell
                 - o conf init
-        - Packages
-            - apt-get install libgd-gd2-perl libgd-graph-perl libgd-tools libgdal-perl libgdal-dev libgdata-dev libgd2-xpm-dev
 
+    - https://www.bugzilla.org/download/#stable
+
+11.3 mediawiki
+    - https://www.mediawiki.org/wiki/Download
+
+    - Vector skin (default):
+        vi wiki/skins/Vector/variables.less
+            // @html-font-size: 100%;
+            @html-font-size: 95%;
+
+    Extension mediawiki-bugzillareports
+        - https://www.mediawiki.org/wiki/Extension:Bugzilla_Reports
+        - https://www.mediawiki.org/wiki/Extension_talk:Bugzilla_Reports#Google_Code_Shutting_Down
+        - https://github.com/nakal/mediawiki-bugzillareports
+
+11.X Apache ..
     - Sync config files in /etc/apache2/ with: etc/apache2/apache2.diff
         - see also etc/apache2/mods-enabled.lst, etc ..
 
