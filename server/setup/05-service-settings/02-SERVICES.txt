@@ -133,6 +133,10 @@ Debian 7.00 (Wheezy)
             chown -R opendkim:opendkim /etc/opendkim
             chmod -R go-rwx /etc/opendkim
 
+        - add TXT dns entry default._domainkey.jogamp.org IN TXT "v=DKIM1; k=rsa; p=PUB-KEY"
+
+    - DMARC
+        - add TXT dns entry _dmarc.jogamp.org IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@jogamp.org; adkim=r; aspf=r; pct=100; rf=afrf; sp=none"
 
     /etc/init.d/sendmail start
     
