@@ -132,11 +132,11 @@ dnl define(`confCACERT', `/etc/ssl/local/ca-my.crt')dnl
 dnl define(`confCRL', `/etc/ssl/local/ca-my.crl')dnl
 dnl define(`confSERVER_CERT', `/etc/pki/tls/certs/sendmail.pem')dnl
 dnl define(`confSERVER_KEY', `/etc/pki/tls/certs/sendmail.pem')dnl
-define(`confCACERT', `/etc/ssl/local/thawte-SSL123_CA_Bundle.pem')dnl
-define(`confSERVER_CERT', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
-define(`confSERVER_KEY', `/etc/ssl/local/jogamp2013-hostkey.mail.pem')dnl
-define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
-define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2013-hostcert.pem')dnl
+define(`confCACERT', `/etc/ssl/local/thawte-ca-cert3-20151105.pem')dnl
+define(`confSERVER_CERT', `/etc/ssl/local/jogamp2016a-hostcert.pem')dnl
+define(`confSERVER_KEY', `/etc/ssl/local/jogamp2016a-hostkey.mail.pem')dnl
+define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2016a-hostcert.pem')dnl
+define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2016a-hostkey.mail.pem')dnl
 dnl #
 dnl define(`confTO_QUEUEWARN', `4h')dnl
 dnl define(`confTO_QUEUERETURN', `5d')dnl
@@ -180,6 +180,8 @@ dnl #
 dnl FEATURE(local_procmail, `/usr/lib/dovecot/dovecot-lda', `/usr/lib/dovecot/dovecot-lda -d $u')dnl
 dnl MODIFY_MAILER_FLAGS(`LOCAL', `-f')dnl
  
+INPUT_MAIL_FILTER(`opendkim', `S=inet:8891@localhost')
+
 dnl #
 dnl # The access db is the basis for most of sendmail's checking
 dnl # FEATURE(`access_db', , `skip')dnl

@@ -115,6 +115,25 @@ Debian 7.00 (Wheezy)
     - cd /etc/mail
         - make
 
+    - SPF
+      - add TXT dns entry jogamp.org IN TXT "v=spf1 mx a ptr:jogamp.org ip6:2a01:4f8:192:1164::2 -all"
+
+    - DKIM
+        https://dev.kafol.net/2013/01/dkim-spf-sendmail-for-multiple-domains.html
+            apt-get install opendkim
+            apt-get install opendkim-tools
+            vi /etc/opendkim.conf
+            mkdir /etc/opendkim/
+            mkdir /etc/opendkim/keys
+            mkdir /etc/opendkim/keys/jogamp.org
+            vi /etc/opendkim/TrustedHosts
+            vi /etc/opendkim/SigningTable
+            vi /etc/opendkim/KeyTable
+            opendkim-genkey -D /etc/opendkim/keys/jogamp.org -d jogamp.org -s default
+            chown -R opendkim:opendkim /etc/opendkim
+            chmod -R go-rwx /etc/opendkim
+
+
     /etc/init.d/sendmail start
     
 10 GIT
