@@ -1,5 +1,13 @@
   <!-- gluegen/pom.in -->
 
+  <dependencies>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>2.7.7</version>
+    </dependency>
+  </dependencies>
+
   <scm>
     <url>http://jogamp.org/git/?p=gluegen.git/</url>
     <connection>scm:git:http://jogamp.org/git/gluegen.git/</connection>
