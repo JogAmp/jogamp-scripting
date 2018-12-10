@@ -3,9 +3,10 @@ export JENKINS_HOME=/srv/jenkins
 export JENKINS_WAR=$JENKINS_HOME/jenkins.war
 export JENKINS_LOG=$JENKINS_HOME/jenkins.log
 
-#export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:bin/javac::")
-export JAVA_HOME=/opt-linux-x86_64/jre7
-JAVA=$JAVA_HOME/bin/java
+#export JAVAC_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
+export JRE_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
+#export JRE_HOME=/opt-linux-x86_64/jre8
+JAVA=$JRE_HOME/bin/java
 
 cd $JENKINS_HOME
 rm -rf war
