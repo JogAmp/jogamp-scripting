@@ -18,3 +18,6 @@ cd $JENKINS_HOME
 nohup nice $JAVA -server -Xmx1024m -jar $JENKINS_WAR --httpPort=8080 --prefix=/chuck > $JENKINS_LOG 2>&1 &
 # nohup nice $JAVA -server -Xmx1024m -jar $JENKINS_WAR --httpPort=-1 --httpsPort=8080 --prefix=/chuck > $JENKINS_LOG 2>&1 &
 
+#pre-seed current version of agent.jar
+curl -s -o $JENKINS_HOME/war/agent.jar https://jogamp.org/chuck/jnlpJars/agent.jar 
+
