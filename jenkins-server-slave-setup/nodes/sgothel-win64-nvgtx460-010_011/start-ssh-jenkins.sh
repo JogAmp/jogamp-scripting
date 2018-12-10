@@ -2,7 +2,8 @@
 
 cd ~/jenkins
 
-scp chuckslave@jogamp.org:/srv/jenkins/war/WEB-INF/slave.jar .
+#scp chuckslave@jogamp.org:/srv/jenkins/war/WEB-INF/slave.jar .
+curl -O https://jogamp.org/chuck/jnlpJars/agent.jar
 
 function connect_1 {
   sshpid=
@@ -29,8 +30,10 @@ function connect_2 {
 }
 
 
-connect_1 > win64-nvgtx460-win7-jogamp-x32-sgothel-010.log 2>&1 &
-disown $!
+#
+#connect_1 > win64-nvgtx460-win7-jogamp-x32-sgothel-010.log 2>&1 &
+#disown $!
+#
 
 connect_2 > win64-nvgtx460-win7-jogamp-x64-sgothel-011.log 2>&1 &
 disown $!
