@@ -35,7 +35,8 @@ logfile=$thisdir/`basename $0 .sh`.log
 archivedir=/srv/www/jogamp.org/deployment/archive/$branch
 rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch
 
-os_and_archs_minus_master_android="linux-i586 linux-armv6 linux-armv6hf macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
+#os_and_archs_minus_master_android="linux-i586 linux-armv6 linux-armv6hf macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
+os_and_archs_minus_master_android="linux-armv6hf macosx-universal windows-amd64"
 os_and_archs_android="android-armv6 android-aarch64"
 masterpick="linux-amd64"
 os_and_archs_minus_one="$os_and_archs_minus_master_android $os_and_archs_android"
