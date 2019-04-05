@@ -15,6 +15,9 @@ export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
 
 export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
+export SDKROOT=macosx10.11
+xcrun --show-sdk-path
+
 java -version
 which git
 ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6012:localhost:5555 -N &
