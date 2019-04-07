@@ -1,50 +1,49 @@
 
 http://crosstool-ng.org/
 
-1) Install crosstool-ng 1.18.0 for building crosstools
+0) Install crosstool-ng 1.24.0[-rc3] for building crosstools
 
- cd crosstool-ng-1.18.0/
- ./configure --prefix=/usr/local/cross
- ./configure --prefix=/usr/local/x-tools
+ apt-get install help2man python3-dev
+
+ cd crosstool-ng-1.24.0[-rc3]
+ ./configure --prefix=/usr/local
  make
- make install
+ sudo make install
 
-2) Build gcc 4.6.3 for armhf-unknown-linux-gnueabi  and armsf-unknown-linux-gnueabi
-    We assume the cross toolchain to be install in "/usr/local/x-tools/", i.e.
-        /usr/local/x-tools/armhf-unknown-linux-gnueabi
-        /usr/local/x-tools/armsf-unknown-linux-gnueabi
+1) Some local preparations
 
-    mkdir armhf-unknown-linux-gnueabi ; cd armhf-unknown-linux-gnueabi
-    ct-ng arm-unknown-linux-gnueabi
-    ct-ng menuconfig (copy/read the provided .config files)
-       - disable compiler: gcj, fortran
-       - target: suffix=hf
-       - target: float=hardware
+ # where the cross-tools will be build, aka cross-tools projects
+ mkdir /usr/local/projects/crosstool-ng-projects ; cd /usr/local/projects/crosstool-ng-projects
+
+ # where the cross-tools will be installed and run from
+ mkdir /usr/local/x-tools
+
+ export CT_PREFIX=/usr/local/x-tools
+
+2) Build for armv7-unknown-linux-gnueabihf
+
+    mkdir armv7-unknown-linux-gnueabihf ; cd armv7-unknown-linux-gnueabihf
+    
+    ct-ng armv7-rpi2-linux-gnueabihf 
+    ct-ng menuconfig
+    Target          : arm; Def Instr arm; EABI; ** Append 'hf' to tuple; 'v7' arch suffix; ** Combing Libs Single Dir; 
+                      MMU; Little-Endian; 32-bit; ** TUNE armv7; FPU ''; hardware FPU **
+    Toolchain       : Sysroot, 'unknown' Tuple's vendor, 
+    Languages       : C,C++
+    OS              : linux-4.20.8; Check Headers, build libs
+    Binutils        : binutils-2.32
+    Compiler        : gcc-8.3.0; static libstdc++
+    C library       : glibc-2.29
+    Debug tools     : duma-2_5_15 gdb-8.2.1 ltrace-0.7.3 strace-4.26
+    Companion libs  : expat-2.2.6 gettext-0.19.8.1 gmp-6.1.2 isl-0.20 libelf-0.8.13 libiconv-1.15 mpc-1.1.0 mpfr-4.0.2 ncurses-6.1
+    Companion tools : automake-1.16.1
+
     ct-ng build
 
-    mkdir armsf-unknown-linux-gnueabi ; cd armsf-unknown-linux-gnueabi
-    ct-ng arm-unknown-linux-gnueabi
-    ct-ng menuconfig (copy/read the provided .config files)
-       - disable compiler: gcj, fortran
-       - target: suffix=sf
-       - target: float=softfp
+3) Build for aarch64-unknown-linux-gnu
+
+    mkdir aarch64-unknown-linux-gnu ; cd aarch64-unknown-linux-gnu
+    
+    ct-ng aarch64-unknown-linux-gnu
     ct-ng build
 
-3) Install crosstool-ng 1.23 (tested using pre-release 1.22+git 4042269de621e166235308f139e89c92e379040d )
-   for building crosstools for aarch64
-
- git clone https://github.com/crosstool-ng/crosstool-ng
- cd crosstool-ng
- ./bootstrap
- ./configure --prefix=/usr/local/x-tools
- make
- make install
-
-4) Build gcc 4.8.5 for aarch64-unknown-linux-gnueabi 
-    We assume the cross toolchain to be install in "/usr/local/x-tools/", i.e.
-        /usr/local/x-tools/aarch64-unknown-linux-gnueabi
-
-    mkdir aarch64-unknown-linux-gnueabi ; cd aarch64-unknown-linux-gnueabi
-    ct-ng aarch64-unknown-linux-gnueabi
-    ct-ng menuconfig (copy/read the provided .config files)
-    ct-ng build
