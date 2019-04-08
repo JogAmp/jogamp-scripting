@@ -51,53 +51,6 @@ function connect_2 {
   done
 }
 
-function connect_30 {
-  . ./profile.ant
-  . ./profile.amd64.j2se8
-
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
-
-  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
-
-    export NODE_LABEL=label/linux-armv7-img
-    HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7
-    JENKINS_WS=$HOST_ROOT/workspace
-
-    # arm-linux-gnueabi == armel triplet
-    PATH=$JENKINS_NODE_STARTUP_DIR/toolchain/armsf-linux-gnueabi/bin:$PATH
-    export PATH
-
-    export HOST_UID=jogamp
-    export HOST_IP=jogamp02
-    export HOST_RSYNC_ROOT=ROOTDIR/$JENKINS_WS
-
-    export TARGET_UID=jogamp
-    export TARGET_IP=panda01
-    export TARGET_ROOT=/home/jogamp/JogAmpSlaveARMv7
-    export TARGET_ANT_HOME=/usr/share/ant
-
-    export TARGET_PLATFORM_ROOT=/opt-linux-armv6-armel
-    export TARGET_PLATFORM_LIBS=$TARGET_PLATFORM_ROOT/usr/lib
-    export TARGET_JAVA_LIBS=$TARGET_PLATFORM_ROOT/jre/lib/arm
-
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv6.xml
-
-    export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
-
-  java -version
-  sshpid=
-  while true ; do
-    if [ ! -z "$sshpid" ] ; then
-	kill -9 $sshpid
-    fi
-    ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6030:localhost:5555 -N &
-    sshpid=$!
-    java -server -Xmx512m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/linuxARMv7-jogamp-arm32-sgothel-030/slave-agent.jnlp
-  done
-}
-
 function connect_31 {
   . ./profile.ant
   . ./profile.amd64.j2se8
@@ -125,9 +78,10 @@ function connect_31 {
     export TARGET_ROOT=/home/jogamp/JogAmpSlaveARMv7hf
     export TARGET_ANT_HOME=/usr/share/ant
 
-    export TARGET_PLATFORM_ROOT=/opt-linux-armv6-armhf
-    export TARGET_PLATFORM_LIBS=$TARGET_PLATFORM_ROOT/usr/lib
-    export TARGET_JAVA_LIBS=$TARGET_PLATFORM_ROOT/jre/lib/arm
+    export TARGET_PLATFORM_SYSROOT=`gcc --print-sysroot`
+    export TARGET_PLATFORM_USRROOT=/opt-linux-armv6-armhf
+    export TARGET_PLATFORM_USRLIBS=$TARGET_PLATFORM_USRROOT/usr/lib
+    export TARGET_JAVA_LIBS=$TARGET_PLATFORM_USRROOT/jre/lib/arm
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-armv6hf.xml
 
@@ -145,6 +99,53 @@ function connect_31 {
   done
 }
 
+function connect_32 {
+  . ./profile.ant
+  . ./profile.amd64.j2se8
+
+  export SOURCE_LEVEL=1.6
+  export TARGET_LEVEL=1.6
+  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
+    export NODE_LABEL=label/linux-armv7hf-img
+    HOST_ROOT=/home/jogamp/JogAmpSlaveARM64
+    JENKINS_WS=$HOST_ROOT/workspace
+
+    # arm-linux-gnueabi == armel triplet
+    PATH=$JENKINS_NODE_STARTUP_DIR/toolchain/aarch64-linux-gnueabi/bin:$PATH
+    export PATH
+
+    export HOST_UID=jogamp
+    export HOST_IP=jogamp02
+    export HOST_RSYNC_ROOT=ROOTDIR/$JENKINS_WS
+
+    export TARGET_UID=jogamp
+    export TARGET_IP=panda01
+    export TARGET_ROOT=/home/jogamp/JogAmpSlaveARMv7hf
+    export TARGET_ANT_HOME=/usr/share/ant
+
+    export TARGET_PLATFORM_SYSROOT=`gcc --print-sysroot`
+    export TARGET_PLATFORM_USRROOT=/opt-linux-arm64
+    export TARGET_PLATFORM_USRLIBS=$TARGET_PLATFORM_USRROOT/usr/lib
+    export TARGET_JAVA_LIBS=$TARGET_PLATFORM_USRROOT/jre/lib/aarch64
+
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-linux-aarch64.xml
+
+    export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
+
+  java -version
+  sshpid=
+  while true ; do
+    if [ ! -z "$sshpid" ] ; then
+	kill -9 $sshpid
+    fi
+    ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6032:localhost:5555 -N &
+    sshpid=$!
+    java -server -Xmx512m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/linuxARM64-jogamp-aarch64-sgothel-032/slave-agent.jnlp
+  done
+}
 
 function connect_40 {
   . ./profile.ant
@@ -190,7 +191,7 @@ function connect_40 {
     export TARGET_TRIPLE=arm-linux-androideabi
 
     export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
-    export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
+    export TARGET_PLATFORM_SYSROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
 
     # Need to add toolchain bins to the PATH. 
     export PATH_VANILLA=$PATH
@@ -257,7 +258,7 @@ function connect_41 {
     export TARGET_TRIPLE=aarch64-linux-android
 
     export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
-    export TARGET_PLATFORM_ROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm64
+    export TARGET_PLATFORM_SYSROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm64
 
     # Need to add toolchain bins to the PATH. 
     export PATH_VANILLA=$PATH
@@ -287,10 +288,10 @@ function connect_41 {
 connect_2 > linux64-AMD58xx-debian7-jogamp-x64-sgothel-002.log 2>&1 &
 disown $!
 
-#connect_30 > linuxARMv7-jogamp-arm32-sgothel-030.log 2>&1 &
-#disown $!
-
 connect_31 > linuxARMv7hf-jogamp-arm32hf-sgothel-031.log 2>&1 &
+disown $!
+
+connect_32 > linuxARM64-jogamp-aarch64-sgothel-032.log 2>&1 &
 disown $!
 
 connect_40 > androidARMv7-jogamp-arm32-sgothel-040.log 2>&1 &
