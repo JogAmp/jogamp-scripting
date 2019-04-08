@@ -1,6 +1,15 @@
 
 http://crosstool-ng.org/
 
++++
+
+Distribution Compatibility Notes
+    C library       : glibc-2.24
+
+glibc-2.24 allows compatibility with Debian >= 9 
+
++++
+
 0) Install crosstool-ng 1.24.0[-rc3] for building crosstools
 
  apt-get install help2man python3-dev
@@ -33,7 +42,7 @@ http://crosstool-ng.org/
     OS              : linux-4.20.8; Check Headers, build libs
     Binutils        : binutils-2.32
     Compiler        : gcc-8.3.0; static libstdc++
-    C library       : glibc-2.29
+    C library       : glibc-2.24
     Debug tools     : duma-2_5_15 gdb-8.2.1 ltrace-0.7.3 strace-4.26
     Companion libs  : expat-2.2.6 gettext-0.19.8.1 gmp-6.1.2 isl-0.20 libelf-0.8.13 libiconv-1.15 mpc-1.1.0 mpfr-4.0.2 ncurses-6.1
     Companion tools : automake-1.16.1
@@ -45,5 +54,8 @@ http://crosstool-ng.org/
     mkdir aarch64-unknown-linux-gnu ; cd aarch64-unknown-linux-gnu
     
     ct-ng aarch64-unknown-linux-gnu
+    Binutils        : binutils-2.29.1
+    Compiler        : gcc-8.3.0; static libstdc++
+    C library       : glibc-2.24
     ct-ng build
 
