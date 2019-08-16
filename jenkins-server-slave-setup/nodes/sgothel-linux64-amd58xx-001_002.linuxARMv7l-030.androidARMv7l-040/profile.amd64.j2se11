@@ -10,7 +10,7 @@ unset TYA_LOGFILE
 
 export CLASSPATH=.
 
-#export JAVA_HOME=/opt-linux-x86_64/j2se8
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+#export JAVA_HOME=/opt-linux-x86_64/jdk11
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 export PATH=$JAVA_HOME/bin:$PATH

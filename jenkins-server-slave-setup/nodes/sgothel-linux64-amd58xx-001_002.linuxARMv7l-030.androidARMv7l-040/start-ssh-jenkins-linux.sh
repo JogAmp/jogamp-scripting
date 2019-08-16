@@ -9,11 +9,11 @@ curl -O https://jogamp.org/chuck/jnlpJars/agent.jar
 
 function connect_1 {
   . ./profile.ant
-  . ./profile.i386.j2se8
+  . ./profile.i386.j2se11
 
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+  export SOURCE_LEVEL=1.8
+  export TARGET_LEVEL=1.8
+  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -31,11 +31,11 @@ function connect_1 {
 
 function connect_2 {
   . ./profile.ant
-  . ./profile.amd64.j2se8
+  . ./profile.amd64.j2se11
 
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+  export SOURCE_LEVEL=1.8
+  export TARGET_LEVEL=1.8
+  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -53,11 +53,11 @@ function connect_2 {
 
 function connect_31 {
   . ./profile.ant
-  . ./profile.amd64.j2se8
+  . ./profile.amd64.j2se11
 
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+  export SOURCE_LEVEL=1.8
+  export TARGET_LEVEL=1.8
+  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -101,11 +101,11 @@ function connect_31 {
 
 function connect_32 {
   . ./profile.ant
-  . ./profile.amd64.j2se8
+  . ./profile.amd64.j2se11
 
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+  export SOURCE_LEVEL=1.8
+  export TARGET_LEVEL=1.8
+  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -149,7 +149,7 @@ function connect_32 {
 
 function connect_40 {
   . ./profile.ant
-  . ./profile.amd64.j2se8
+  . ./profile.amd64.j2se11
 
     export NODE_LABEL=label/android-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7_Android
@@ -170,23 +170,21 @@ function connect_40 {
     export TARGET_ANT_HOME=/usr/share/ant
 
     export NDK_ROOT=/opt-linux-x86_64/android-ndk
-    export ANDROID_HOME=/opt-linux-x86/android-sdk-linux_x86
+    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
     export ANDROID_BUILD_TOOLS_VERSION=21.1.2
 
     echo NDK_ROOT $NDK_ROOT
     echo ANDROID_HOME $ANDROID_HOME
     echo ANDROID_BUILD_TOOLS_VERSION $ANDROID_BUILD_TOOLS_VERSION
 
-    export ANDROID_VERSION=9
-    export SOURCE_LEVEL=1.6
-    export TARGET_LEVEL=1.6
-    export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+    export ANDROID_VERSION=24
+    export SOURCE_LEVEL=1.8
+    export TARGET_LEVEL=1.8
+    export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
-    #export GCC_VERSION=4.4.3
-    #export GCC_VERSION=4.7
-    export GCC_VERSION=4.8
+    export GCC_VERSION=4.9
     export HOST_ARCH=linux-x86_64
     export TARGET_TRIPLE=arm-linux-androideabi
 
@@ -195,6 +193,7 @@ function connect_40 {
 
     # Need to add toolchain bins to the PATH. 
     export PATH_VANILLA=$PATH
+    # TODO: Check/Replace $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION for aapt, dx, dexdump, zipalign etc
     export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
@@ -218,7 +217,7 @@ function connect_40 {
 
 function connect_41 {
   . ./profile.ant
-  . ./profile.amd64.j2se8
+  . ./profile.amd64.j2se11
 
     export NODE_LABEL=label/android-aarch64
     HOST_ROOT=/home/jogamp/JogAmpSlaveArm64_Android
@@ -239,17 +238,17 @@ function connect_41 {
     export TARGET_ANT_HOME=/usr/share/ant
 
     export NDK_ROOT=/opt-linux-x86_64/android-ndk
-    export ANDROID_HOME=/opt-linux-x86/android-sdk-linux_x86
+    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
     export ANDROID_BUILD_TOOLS_VERSION=21.1.2
 
     echo NDK_ROOT $NDK_ROOT
     echo ANDROID_HOME $ANDROID_HOME
     echo ANDROID_BUILD_TOOLS_VERSION $ANDROID_BUILD_TOOLS_VERSION
 
-    export ANDROID_VERSION=21
-    export SOURCE_LEVEL=1.6
-    export TARGET_LEVEL=1.6
-    export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
+    export ANDROID_VERSION=24
+    export SOURCE_LEVEL=1.8
+    export TARGET_LEVEL=1.8
+    export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -262,6 +261,7 @@ function connect_41 {
 
     # Need to add toolchain bins to the PATH. 
     export PATH_VANILLA=$PATH
+    # TODO: Check/Replace $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION for aapt, dx, dexdump, zipalign etc
     export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
 
     export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml

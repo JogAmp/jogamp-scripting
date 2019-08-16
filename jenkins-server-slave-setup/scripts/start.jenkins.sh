@@ -18,11 +18,14 @@ cd $JENKINS_HOME
 nohup nice $JAVA -server -Xmx1024m -jar $JENKINS_WAR --httpPort=8080 --prefix=/chuck > $JENKINS_LOG 2>&1 &
 # nohup nice $JAVA -server -Xmx1024m -jar $JENKINS_WAR --httpPort=-1 --httpsPort=8080 --prefix=/chuck > $JENKINS_LOG 2>&1 &
 
-sleep 9s
 #pre-seed current version of agent.jar
+rm -f $JENKINS_HOME/war/agent.jar
+sleep 9s
 curl -s -o $JENKINS_HOME/war/agent.jar https://jogamp.org/chuck/jnlpJars/agent.jar 
 
 if [ ! -e $JENKINS_HOME/war/agent.jar ] ; then
     echo failure to copy agent.jar into deflated war folder!
+else
+    ls -la $JENKINS_HOME/war/agent.jar
 fi
 
