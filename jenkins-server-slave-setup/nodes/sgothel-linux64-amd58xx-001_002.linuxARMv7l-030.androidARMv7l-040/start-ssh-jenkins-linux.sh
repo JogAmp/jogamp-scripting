@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# Bug 1386: Mesa 18.3.6 hardware renderer (Intel/AMD) freezes after native parenting
+export LIBGL_ALWAYS_SOFTWARE=true
+
 cd ~/jenkins
 
 JENKINS_NODE_STARTUP_DIR=`pwd`
