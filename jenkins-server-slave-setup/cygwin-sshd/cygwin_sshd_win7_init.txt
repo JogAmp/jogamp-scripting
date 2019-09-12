@@ -8,8 +8,8 @@ where [2] was really helpfull.
 
 The following is based on [2] and we should be able to config it easily.
 
-Install Cygwin / OpenSSH - ssh daemon/service
-==============================================
+Install Cygwin / OpenSSH - ssh daemon or service
+================================================
 
 In the following writing we will use single quotes
 to quote names, ie 'sshd', or 'jogamp'.
@@ -60,13 +60,17 @@ please:
     - LOGIN TO WINDOWS AS USER 'jogamp'
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-4) Install latest cygwin >= 1.7.5-1 as user 'jogamp'
-    - http://www.cygwin.com/
+4) Install latest 64bit cygwin >= 3.0.7 as user 'jogamp'
+    - Download from https://cygwin.com/setup-x86_64.exe
+    - Validate the signature https://cygwin.com/setup-x86_64.exe.sig
+      using pubkey https://cygwin.com/key/pubring.asc
+    - Run setup-x86_64.exe
     - Answer: For All users
-    - Default location C:\cygwin
+    - Default location C:\cygwin64
     - Add:
         - git
-        - openssh
+        - openssh, rsync
+        - p7zip, xz, unzip, zip
         - vim
         - ..
         - maybe: EVERYTHING but sources !

@@ -7,7 +7,7 @@ Please read cygwin_sshd_win7_init.txt first!
 configure the ssh deamon, sshd:
     - Start cygwin shell as Administrator:
         - start cmd.exe
-            - runas /user:Administrator c:\cygwin\Cygwin.bat
+            - runas /user:Administrator c:\cygwin64\Cygwin.bat
 
                 - 7.1) to configure account 'cyg_server' run the following commands
                   you might want to put it in a shell script, e.g. setup-cyg_server.sh
