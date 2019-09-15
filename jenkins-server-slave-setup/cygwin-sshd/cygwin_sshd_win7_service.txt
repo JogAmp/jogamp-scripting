@@ -24,6 +24,13 @@ configure the ssh deamon, sshd:
 
                     - Answer the followup questions as follows:
                         - Any 'overwrite file': yes (happens if you retry configuration)
+                        - Install sshd as a service? no
+                        - Should StrictModes be used? no
+                        - Do you want to install sshd as a service: no
+                        - Obsolete: Should privilige seperation be used: no
+
+                    - Answer the followup questions as follows:
+                        - Any 'overwrite file': yes (happens if you retry configuration)
                         - Should privilige seperation be used: yes
                         - Do you want to install sshd as a service: yes
                         - Enter the value of CYGWIN for the daemon: [] (nothing, just press return)
