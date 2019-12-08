@@ -14,6 +14,8 @@ function connect_1 {
   . ./profile.ant
   . ./profile.i386.j2se11
 
+  export LIBGL_ALWAYS_SOFTWARE=true
+
   export SOURCE_LEVEL=1.8
   export TARGET_LEVEL=1.8
   export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
@@ -35,6 +37,8 @@ function connect_1 {
 function connect_2 {
   . ./profile.ant
   . ./profile.amd64.j2se11
+
+  export LIBGL_ALWAYS_SOFTWARE=true
 
   export SOURCE_LEVEL=1.8
   export TARGET_LEVEL=1.8
