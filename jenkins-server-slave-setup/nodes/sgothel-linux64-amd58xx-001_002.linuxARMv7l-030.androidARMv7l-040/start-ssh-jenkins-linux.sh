@@ -158,6 +158,26 @@ function connect_40 {
   . ./profile.ant
   . ./profile.amd64.j2se11
 
+    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
+    export ANDROID_API_LEVEL=24
+    export ANDROID_HOST_TAG=linux-x86_64
+    export ANDROID_ABI=armeabi-v7a
+
+    if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
+        . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
+    else
+        echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
+        exit 1
+    fi
+
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
+    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
+
+    export PATH_VANILLA=$PATH
+    export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
+    echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
+    echo clang `which clang` 2>&1 | tee -a ${LOGF}
+
     export NODE_LABEL=label/android-armv7-img
     HOST_ROOT=/home/jogamp/JogAmpSlaveARMv7_Android
     JENKINS_WS=$HOST_ROOT/workspace
@@ -176,35 +196,11 @@ function connect_40 {
     export TARGET_ROOT=/data/projects
     export TARGET_ANT_HOME=/usr/share/ant
 
-    export NDK_ROOT=/opt-linux-x86_64/android-ndk
-    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
-    export ANDROID_BUILD_TOOLS_VERSION=21.1.2
-
-    echo NDK_ROOT $NDK_ROOT
-    echo ANDROID_HOME $ANDROID_HOME
-    echo ANDROID_BUILD_TOOLS_VERSION $ANDROID_BUILD_TOOLS_VERSION
-
-    export ANDROID_VERSION=24
     export SOURCE_LEVEL=1.8
     export TARGET_LEVEL=1.8
     export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
-
-    export GCC_VERSION=4.9
-    export HOST_ARCH=linux-x86_64
-    export TARGET_TRIPLE=arm-linux-androideabi
-
-    export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
-    export TARGET_PLATFORM_SYSROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm
-
-    # Need to add toolchain bins to the PATH. 
-    export PATH_VANILLA=$PATH
-    # TODO: Check/Replace $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION for aapt, dx, dexdump, zipalign etc
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
-
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-armv6.xml
-    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
 
     #export JUNIT_DISABLED="true"
     #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
@@ -226,6 +222,26 @@ function connect_41 {
   . ./profile.ant
   . ./profile.amd64.j2se11
 
+    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
+    export ANDROID_API_LEVEL=24
+    export ANDROID_HOST_TAG=linux-x86_64
+    export ANDROID_ABI=arm64-v8a
+
+    if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
+        . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
+    else
+        echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
+        exit 1
+    fi
+
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml
+    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
+
+    export PATH_VANILLA=$PATH
+    export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
+    echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
+    echo clang `which clang` 2>&1 | tee -a ${LOGF}
+
     export NODE_LABEL=label/android-aarch64
     HOST_ROOT=/home/jogamp/JogAmpSlaveArm64_Android
     JENKINS_WS=$HOST_ROOT/workspace
@@ -244,35 +260,11 @@ function connect_41 {
     export TARGET_ROOT=/data/projects
     export TARGET_ANT_HOME=/usr/share/ant
 
-    export NDK_ROOT=/opt-linux-x86_64/android-ndk
-    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
-    export ANDROID_BUILD_TOOLS_VERSION=21.1.2
-
-    echo NDK_ROOT $NDK_ROOT
-    echo ANDROID_HOME $ANDROID_HOME
-    echo ANDROID_BUILD_TOOLS_VERSION $ANDROID_BUILD_TOOLS_VERSION
-
-    export ANDROID_VERSION=24
     export SOURCE_LEVEL=1.8
     export TARGET_LEVEL=1.8
     export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
-
-    export GCC_VERSION=4.9
-    export HOST_ARCH=linux-x86_64
-    export TARGET_TRIPLE=aarch64-linux-android
-
-    export NDK_TOOLCHAIN_ROOT=$NDK_ROOT/toolchains/${TARGET_TRIPLE}-${GCC_VERSION}/prebuilt/${HOST_ARCH}
-    export TARGET_PLATFORM_SYSROOT=${NDK_ROOT}/platforms/android-${ANDROID_VERSION}/arch-arm64
-
-    # Need to add toolchain bins to the PATH. 
-    export PATH_VANILLA=$PATH
-    # TODO: Check/Replace $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION for aapt, dx, dexdump, zipalign etc
-    export PATH="$NDK_TOOLCHAIN_ROOT/$TARGET_TRIPLE/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH"
-
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml
-    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
 
     #export JUNIT_DISABLED="true"
     #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"

@@ -7,11 +7,11 @@ curl -o agent-013.jar https://jogamp.org/chuck/jnlpJars/agent.jar
 
 . ./profile.ant
 JAVA_HOME=`/usr/libexec/java_home -version 11`
-PATH=$JAVA_HOME/bin:$PATH
+PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
 export JAVA_HOME PATH
 export SOURCE_LEVEL=1.8
 export TARGET_LEVEL=1.8
-export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
+export TARGET_RT_JAR=/usr/local/jre1.8.0_212/lib/rt.jar
 
 export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
