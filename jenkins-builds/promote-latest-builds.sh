@@ -31,6 +31,7 @@ logfile=$thisdir/`basename $0 .sh`.log
 
 . $sdir/funcs_promotion.sh
 . $sdir/../deployment/funcs_jnlp_relocate.sh
+. $sdir/../deployment/funcs_jars_pack_sign.sh
 
 archivedir=/srv/www/jogamp.org/deployment/archive/$branch
 rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch
@@ -265,6 +266,13 @@ function promote-latest-builds() {
     cp -av ../util/unsigned/junit.* jar/
 
     local OK=1
+    grep WARNING $logfile && OK=0
+    if [ $OK -eq 0 ] ; then
+        echo WARNING occured - please check $logfile for WARNING
+    else
+        echo NO ERRORS detected
+    fi
+    OK=1
     grep ERROR $logfile && OK=0
     if [ $OK -eq 0 ] ; then
         echo ERRORS occured - please check $logfile for ERROR

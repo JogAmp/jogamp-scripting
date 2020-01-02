@@ -127,8 +127,14 @@ function prom_merge_modules() {
         for j in $modules ; do
             local modulefolder=`find . -name $j\*$i`
             if [ -z "$modulefolder" ] ; then
-                echo "ERROR: No module/platform extracted folder module $j, platform $i"
-                exit 1
+                if [ "$masterpick" = "$i" ] ; then
+                    echo "ERROR: No masterpick module/platform extracted folder module $j, platform $i"
+                    exit 1
+                else
+                    # continue with next module/platform tuple ..
+                    echo "WARNING: No module/platform extracted folder module $j, platform $i"
+                    continue
+                fi
             fi
             cd $modulefolder
             if [ "$masterpick" = "$i" ] ; then
@@ -225,8 +231,14 @@ function prom_promote_module() {
     for i in $os_and_archs ; do
         local sfile=`find $lthisdir/$sourcedir -name $module\*$i.7z`
         if [ -z "$sfile" ] ; then
-            echo "ERROR: No platform 7z file for module $module, platform $i, sdir $sourcedir"
-            exit 1
+            if [ "$masterpick" = "$i" ] ; then
+                echo "ERROR: No masterpick platform 7z file for module $module, platform $i, sdir $sourcedir"
+                exit 1
+            else
+                # continue with next module/platform tuple ..
+                echo "WARNING: No platform 7z file for module $module, platform $i, sdir $sourcedir"
+                continue
+            fi
         fi
         local zfile=archive/jogamp-$i/$module-$i.7z
 
@@ -246,16 +258,20 @@ function prom_promote_module() {
         # 7z folder verfified above already
         local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
-        for j in `find $zfolder/jar -maxdepth 1 -name \*.jar` ; do
-            cp -av $j ./jar/
-        done
-        for j in `find $zfolder/jar -maxdepth 1 -name \*.apk` ; do
-            cp -av $j ./apk/
-        done
-        if [ -e $zfolder/jar/atomic ] ; then
-            for j in $zfolder/jar/atomic/*.jar ; do
-                cp -av $j ./jar/atomic/
+        if [ -e $zfolder ] ; then
+            for j in `find $zfolder/jar -maxdepth 1 -name \*.jar` ; do
+                cp -av $j ./jar/
             done
+            for j in `find $zfolder/jar -maxdepth 1 -name \*.apk` ; do
+                cp -av $j ./apk/
+            done
+            if [ -e $zfolder/jar/atomic ] ; then
+                for j in $zfolder/jar/atomic/*.jar ; do
+                    cp -av $j ./jar/atomic/
+                done
+            fi
+        else
+            echo "WARNING: No platform 7z folder for module $module, platform $i"
         fi
     done
     # move unsigned APKs in seperate folder
@@ -311,12 +327,16 @@ function prom_make_fatjar() {
     fat_native_modules="gluegen-rt-natives joal-natives jogl-all-natives jocl-natives"
     for h in $fat_native_modules ; do
         for i in $os_and_archs_fatpack ; do
-            unzip ../../jar/$h-$i.jar
-            rm -rf META-INF
-            mkdir -p natives/$i
-            for j in `find . -maxdepth 1 -name \*.so -o -name \*.dll -o -name \*.jnilib -o -name \*dylib` ; do
-                mv $j natives/$i/
-            done
+            if [ -e ../../jar/$h-$i.jar ] ; then
+                unzip ../../jar/$h-$i.jar
+                rm -rf META-INF
+                mkdir -p natives/$i
+                for j in `find . -maxdepth 1 -name \*.symbols -o -name \*.a -o -name \*.so -o -name \*.dll -o -name \*.jnilib -o -name \*dylib` ; do
+                    mv $j natives/$i/
+                done
+            else
+                echo "WARNING: No native jar file for module $h, platform $i (fat)"
+            fi
         done
     done
     for i in $os_and_archs_fatpack ; do
