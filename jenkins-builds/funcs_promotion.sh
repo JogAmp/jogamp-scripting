@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 function prom_setup() {
     local ldest=$1
     shift
@@ -464,6 +463,8 @@ function prom_extract() {
         echo OK 7z file $zfile $*
         if [ ! -z "$*" ] ; then
             chmod 755 $*
+            find $*  -type d -exec chmod 0755 \{\} \;
+            find $*  -type f -exec chmod 0644 \{\} \;
         fi
     fi
 }

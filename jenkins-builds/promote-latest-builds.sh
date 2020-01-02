@@ -85,16 +85,8 @@ function promote-latest-builds() {
     cp -a $gluegenmaster/javadoc.7z $dest/archive/gluegen-javadoc.7z
     cd $dest/javadoc
     echo "INFO: gluegen master gluegen-javadoc 7z"
-    # FIXME
-    ls -la ../archive/gluegen-javadoc.7z
     prom_extract ../archive/gluegen-javadoc.7z gluegen
-    # FIXME
-    pwd
-    ls -la
     cd $rootdir
-    # FIXME
-    pwd
-    ls -la
 
     joalslave=`prom_lslatest joal-b`
     bjoalslave=`prom_buildnumber_2 $joalslave`
