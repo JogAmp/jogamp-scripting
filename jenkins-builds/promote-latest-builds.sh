@@ -236,8 +236,6 @@ function promote-latest-builds() {
 
     prom_merge_modules $dest gluegen joal jogl jocl
 
-    sha512sum -b $dest/*.7z > $dest/sha512sum.txt
-
     prom_cleanup $dest
 
     uri=gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
@@ -249,14 +247,14 @@ function promote-latest-builds() {
 
     cd $wsdir
 
-    copy_relocate_jnlps_base  $version $url $wsdir
-    copy_relocate_jnlps_demos $version $url $wsdir joal-demos
-    copy_relocate_jnlps_demos $version $url $wsdir jogl-demos
-    copy_relocate_jnlps_demos $version $url $wsdir jocl-demos
-
-    if [ $secure -ne 1 ] ; then
-        remove_security_tag_jnlps $wsdir
-    fi
+    #copy_relocate_jnlps_base  $version $url $wsdir
+    #copy_relocate_jnlps_demos $version $url $wsdir joal-demos
+    #copy_relocate_jnlps_demos $version $url $wsdir jogl-demos
+    #copy_relocate_jnlps_demos $version $url $wsdir jocl-demos
+    #
+    #if [ $secure -ne 1 ] ; then
+    #    remove_security_tag_jnlps $wsdir
+    #fi
 
     echo
     echo Aggregation folder $wsdir for URL $url
@@ -264,6 +262,8 @@ function promote-latest-builds() {
 
     cp -av ../util/unsigned/applet-launcher.jar jar/
     cp -av ../util/unsigned/junit.* jar/
+
+    sha512sum -b apk/*.apk archive/*.7z fat/*.zip fat/*.jar jar/*.jar jar/atomic/*.jar > sha512sum.txt
 
     local OK=1
     grep WARNING $logfile && OK=0
