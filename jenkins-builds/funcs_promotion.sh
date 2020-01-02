@@ -56,9 +56,11 @@ function prom_verify_artifacts() {
     shift
 
     local OK=0
-    diff -w $artia $artib && OK=1
+    grep -v ".build.sha.natives" $artia > $artia.no-build_sha_natives
+    grep -v ".build.sha.natives" $artib > $artib.no-build_sha_natives
+    diff -w $artia.no-build_sha_natives $artib.no-build_sha_natives_natives && OK=1
     if [ $OK -eq 0 ] ; then
-        echo "ERROR: $name artifacts differ $artia and $artib"
+        echo "ERROR: $name artifacts differ $artia and $artib no-build_sha_natives"
     fi
 }
 
