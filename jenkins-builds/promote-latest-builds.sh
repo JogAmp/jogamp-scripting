@@ -235,6 +235,8 @@ function promote-latest-builds() {
 
     prom_merge_modules $dest gluegen joal jogl jocl
 
+    sha512sum -b $dest/*.7z > $dest/sha512sum.txt
+
     prom_cleanup $dest
 
     uri=gluegen_$bgluegenslave-joal_$bjoalslave-jogl_$bjoglslave-jocl_$bjoclslave
