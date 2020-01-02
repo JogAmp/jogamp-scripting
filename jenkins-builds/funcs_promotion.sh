@@ -240,7 +240,7 @@ function prom_promote_module() {
         prom_verify_artifacts $module log/$module.artifact.properties tmp/$zfolder/artifact.properties
     done
     # copy the platform JAR files from each platform 7z folder
-    for i in $os_and_archs_minus_one ; do
+    for i in $os_and_archs_minus_master ; do
         # 7z folder verfified above already
         local zfile=archive/jogamp-$i/$module-$i.7z
         local zfolder=tmp/`basename $zfile .7z`
@@ -308,7 +308,7 @@ function prom_make_fatjar() {
     cd tmp/fatjar
     fat_native_modules="gluegen-rt-natives joal-natives jogl-all-natives jocl-natives"
     for h in $fat_native_modules ; do
-        for i in $os_and_archs_minus_android ; do
+        for i in $os_and_archs_fatpack ; do
             unzip ../../jar/$h-$i.jar
             rm -rf META-INF
             mkdir -p natives/$i
@@ -317,7 +317,7 @@ function prom_make_fatjar() {
             done
         done
     done
-    for i in $os_and_archs_minus_android ; do
+    for i in $os_and_archs_fatpack ; do
         if [ -e ../../jar/atomic/oculusvr-natives-$i.jar ] ; then
             unzip ../../jar/atomic/oculusvr-natives-$i.jar
             rm -rf META-INF
