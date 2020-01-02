@@ -15,7 +15,7 @@ export TARGET_RT_JAR=/usr/local/jre1.8.0_212/lib/rt.jar
 
 export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-ios-aarch64.xml
 
-export SDKROOT=iphoneos12.2
+export SDKROOT=iphoneos13.2
 xcrun --show-sdk-path
 
 export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
