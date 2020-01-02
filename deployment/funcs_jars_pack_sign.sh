@@ -12,6 +12,34 @@
 #
 PACK200_OPTIONS="--segment-limit=-1"
 
+function pack200_repack_jar() {
+
+  local jarfile=$1
+  shift
+
+  if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+    echo pack200 --repack $PACK200_OPTIONS $jarfile
+    pack200 --repack $PACK200_OPTIONS $jarfile
+  fi
+
+}
+
+function pack200_pack_jar() {
+
+  local jarfile=$1
+  shift
+
+  if [ -z "$JOGAMP_DEPLOYMENT_NO_REPACK" ] ; then
+    if [[ $jarfile != *"natives"* ]] ; then
+      echo gzip -9 $jarfile to $jarfile.gz
+      gzip -9 -cv $jarfile > $jarfile.gz
+      echo pack200 -E9 $PACK200_OPTIONS $jarfile.pack.gz $jarfile
+      pack200 -E9 $PACK200_OPTIONS $jarfile.pack.gz $jarfile
+    fi
+  fi
+
+}
+
 function wsdir_jars_repack() {
 
 local wsdir=$1
