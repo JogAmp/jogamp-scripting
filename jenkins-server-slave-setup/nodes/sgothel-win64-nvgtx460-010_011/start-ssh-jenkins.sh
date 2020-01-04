@@ -13,7 +13,7 @@ function connect_1 {
     fi
     ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6010:localhost:5555 -N &
     sshpid=$!
-    ./win64-nvgtx460-win7-jogamp-x32-sgothel-010.bat
+    ./win32-windows-jogamp-x32-sgothel-010.bat
   done
 }
 
@@ -30,10 +30,10 @@ function connect_2 {
 }
 
 
-#
-#connect_1 > win64-nvgtx460-win7-jogamp-x32-sgothel-010.log 2>&1 &
-#disown $!
-#
+
+connect_1 > win32-windows-jogamp-x32-sgothel-010.log 2>&1 &
+disown $!
+
 
 connect_2 > win64-nvgtx460-win7-jogamp-x64-sgothel-011.log 2>&1 &
 disown $!

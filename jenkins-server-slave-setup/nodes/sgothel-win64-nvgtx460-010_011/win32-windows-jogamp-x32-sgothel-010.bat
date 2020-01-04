@@ -1,7 +1,7 @@
 set J2RE_HOME=c:\jre-11.0.4+11_x32
 set JAVA_HOME=c:\jdk-11.0.4+11_x32
 set ANT_PATH=C:\apache-ant-1.10.5
-set GIT_PATH=C:\cygwin\bin
+set GIT_PATH=C:\cygwin64\bin
 set SEVENZIP=C:\Program Files\7-Zip
 
 set CMAKE_PATH=C:\cmake-3.15.2-win32-x86
@@ -21,4 +21,5 @@ REM    -DuseKD=true
 REM    -Djogl.cg=1 -D-Dwindows.cg.lib=C:\Cg-2.2
 REM    -Dbuild.noarchives=true
 
-java  -server -Xmx1024m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/win64-nvgtx460-win7-jogamp-x32-sgothel-010/slave-agent.jnlp
+REM java  -server -Xmx1024m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/win32-windows-jogamp-x32-sgothel-010/slave-agent.jnlp
+java  -server -Xmx1024m -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/win32-windows-jogamp-x32-sgothel-010/slave-agent.jnlp
