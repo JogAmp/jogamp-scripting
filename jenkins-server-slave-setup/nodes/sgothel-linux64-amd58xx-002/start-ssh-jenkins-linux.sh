@@ -30,7 +30,8 @@ function connect_1 {
     fi
     ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6001:localhost:5555 -N &
     sshpid=$!
-    java -server -Xmx512m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/linux32-debian-jogamp-x32-sgothel-001/slave-agent.jnlp
+    # java -server -Xmx512m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/linux32-debian-jogamp-x32-sgothel-001/slave-agent.jnlp
+    java -server -Xmx512m -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/linux32-debian-jogamp-x32-sgothel-001/slave-agent.jnlp
   done
 }
 
