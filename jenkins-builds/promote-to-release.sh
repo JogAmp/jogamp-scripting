@@ -3,7 +3,8 @@
 ##
 #
 # Will promote an aggregated/archived folder to a webstart folder.
-#   - cd root-dir ; cp -a rel-aggregation-dir -> rel-storage-dir/version ; ln -s rel-storage-dir/version .
+#   - cd root-dir ; cp -a rel-aggregation-dir -> rel-storage-dir/version ; \
+#     ln -s rel-storage-dir/version . ; ln -s $version jogamp-next
 #
 # promote-to-release.sh <version> <root-dir> <rel-aggregation-dir> <rel-storage-dir> <url-base>
 # eg.
@@ -80,5 +81,7 @@ cd $rootdir
 
 cp -a $relaggregationdir $relstoragedir/$version 2>&1 | tee $logfile
 ln -s $relstoragedir/$version . 2>&1 | tee $logfile
+rm -f jogamp-next 2>&1 | tee $logfile
+ln -s $version jogamp-next 2>&1 | tee $logfile
 
 
