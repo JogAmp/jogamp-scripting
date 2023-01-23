@@ -164,26 +164,39 @@ Debian 7.00 (Wheezy)
 
 11.2 bugzilla
     - Debian 7
-        Squash that - DO NOT INSTALL SYSTEM WIDE modules:
-            apt-get install libgd-gd2-perl libgd-graph-perl libgd-tools libgdal-perl libgdal-dev libgdata-dev libgd2-xpm-dev
-            apt-get install libappconfig-perl libdate-calc-perl libtemplate-perl libmime-perl libdatetime-timezone-perl libdatetime-perl libemail-sender-perl libemail-mime-perl libemail-mime-modifier-perl libdbi-perl libdbd-mysql-perl libcgi-pm-perl libmath-random-isaac-perl libmath-random-isaac-xs-perl apache2-mpm-prefork libapache2-mod-perl2 libapache2-mod-perl2-dev libchart-perl libxml-perl libxml-twig-perl perlmagick libgd-graph-perl libtemplate-plugin-gd-perl libsoap-lite-perl libhtml-scrubber-perl libjson-rpc-perl libtheschwartz-perl libtest-taint-perl libauthen-radius-perl libfile-slurp-perl libencode-detect-perl libmodule-build-perl libnet-ldap-perl libauthen-sasl-perl libtemplate-perl-doc libfile-mimeinfo-perl libhtml-formattext-withlinks-perl libmysqlclient-dev lynx-cur graphviz python-sphinx libgd2-xpm-dev
 
-        Ensure the following are NOT installed:
-            dpkg -P libjson-any-perl libcgi-application-plugin-json-perl libcgi-application-extra-plugin-bundle-perl libjson-perl
+      Install
+        apt-get install libapache2-mod-perl2-dev libapache2-mod-perl2
+        apt-get install libgd-dev libgd3
+        apt install libgdbm-dev libgdbm6
+        apt-get install libdbd-mysql-perl
+        libcgi-pm-perl libcgi-fast-perl libcgi-session-perl libfcgi-perl
+        libemail-mime-perl libemail-sender-perl
+        libtemplate-perl libhtml-template-perl
+        libjson-perl libjson-xs-perl
+        libmath-bigint-perl libmath-random-isaac-perl libmath-random-isaac-xs-perl
 
-        I had to remove system wide perl modules .. collision .. why o why
-        i.e. how to enforce bugzilla to use bugzilla/lib installed modules only?
-
-    - misc for perl/bugzilla
+    - As User: misc for perl/bugzilla
         - Perl: redo init (find closest mirror ..)
             - perl -MCPAN -e shell
                 - o conf init
 
+      a2enmod rewrite
+      a2enmod expires
+
+      As User:
       See https://bugzilla.readthedocs.org/en/5.0/installing/linux.html#perl-modules
       ./checksetup.pl --check-modules
+      /usr/bin/perl install-module.pl --all
       /usr/bin/perl install-module.pl --upgrade-all
       ./checksetup.pl --check-modules
       ./checksetup.pl
+
+      # bugzilla folder must be owned by webrunner (suexec)
+      chown -R webrunner:webrunner .
+
+      systemctl restart apache2
+      /etc/init.d/apache2 restart
 
     - https://www.bugzilla.org/download/#stable
 
