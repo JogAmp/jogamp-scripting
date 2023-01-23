@@ -34,12 +34,15 @@ logfile=$thisdir/`basename $0 .sh`.log
 . $sdir/../deployment/funcs_jars_pack_sign.sh
 
 archivedir=/srv/www/jogamp.org/deployment/archive/$branch
-rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch
+rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch/last
 
 #os_and_archs_fatpack_minus_master="linux-i586 linux-armv6 linux-armv6hf macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
-os_and_archs_fatpack_minus_master="linux-i586 linux-armv6hf linux-aarch64 macosx-universal windows-amd64 windows-i586"
-os_and_archs_android="android-armv6 android-aarch64 android-x86"
-os_and_archs_ios="ios-amd64 ios-arm64"
+#os_and_archs_fatpack_minus_master="linux-i586 linux-armv6hf linux-aarch64 macosx-universal windows-amd64 windows-i586"
+#os_and_archs_android="android-armv6 android-aarch64 android-x86"
+#os_and_archs_ios="ios-amd64 ios-arm64"
+os_and_archs_fatpack_minus_master="linux-aarch64 macosx-universal windows-amd64"
+os_and_archs_android="android-armv6"
+os_and_archs_ios=""
 masterpick="linux-amd64"
 os_and_archs_minus_master="$os_and_archs_fatpack_minus_master $os_and_archs_android $os_and_archs_ios"
 os_and_archs_fatpack="$masterpick $os_and_archs_fatpack_minus_master"
@@ -69,7 +72,7 @@ function promote-latest-builds() {
 
     gluegenslave=`prom_lslatest gluegen-b`
     bgluegenslave=`prom_buildnumber_2 $gluegenslave`
-    gluegenmaster=`prom_lslatest gluegen-master-b`
+    gluegenmaster=`prom_lslatest gluegen_onmaster-b`
     bgluegenmaster=`prom_buildnumber_3 $gluegenmaster`
     echo
     echo GLUEGEN
@@ -90,7 +93,7 @@ function promote-latest-builds() {
 
     joalslave=`prom_lslatest joal-b`
     bjoalslave=`prom_buildnumber_2 $joalslave`
-    joalmaster=`prom_lslatest joal-master-b`
+    joalmaster=`prom_lslatest joal_onmaster-b`
     bjoalmaster=`prom_buildnumber_3 $joalmaster`
     echo
     echo JOAL
@@ -110,7 +113,7 @@ function promote-latest-builds() {
 
     joaldemosslave=`prom_lslatest joal-demos-b`
     bjoaldemosslave=`prom_buildnumber_3 $joaldemosslave`
-    joaldemosmaster=`prom_lslatest joal-demos-master-b`
+    joaldemosmaster=`prom_lslatest joal-demos_onmaster-b`
     bjoaldemosmaster=`prom_buildnumber_4 $joaldemosmaster`
     echo
     echo JOAL DEMOS
@@ -125,7 +128,7 @@ function promote-latest-builds() {
 
     joglslave=`prom_lslatest jogl-b`
     bjoglslave=`prom_buildnumber_2 $joglslave`
-    joglmaster=`prom_lslatest jogl-master-b`
+    joglmaster=`prom_lslatest jogl_onmaster-b`
     bjoglmaster=`prom_buildnumber_3 $joglmaster`
     echo
     echo JOGL
@@ -145,7 +148,7 @@ function promote-latest-builds() {
 
     jogldemosslave=`prom_lslatest jogl-demos-b`
     bjogldemosslave=`prom_buildnumber_3 $jogldemosslave`
-    jogldemosmaster=`prom_lslatest jogl-demos-master-b`
+    jogldemosmaster=`prom_lslatest jogl-demos_onmaster-b`
     bjogldemosmaster=`prom_buildnumber_4 $jogldemosmaster`
     echo
     echo JOGL DEMOS
@@ -164,7 +167,7 @@ function promote-latest-builds() {
 
     joclslave=`prom_lslatest jocl-b`
     bjoclslave=`prom_buildnumber_2 $joclslave`
-    joclmaster=`prom_lslatest jocl-master-b`
+    joclmaster=`prom_lslatest jocl_onmaster-b`
     bjoclmaster=`prom_buildnumber_3 $joclmaster`
     echo
     echo JOCL
