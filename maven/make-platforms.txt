@@ -1,5 +1,6 @@
 android-aarch64  : Android ARM AArch64
 linux-amd64      : Linux AMD64
+linux-armv6hf    : Linux ARMv6hf
 linux-aarch64    : Linux ARM AArch64
 macosx-universal : Mac OS X Universal
 windows-amd64    : Windows AMD64
