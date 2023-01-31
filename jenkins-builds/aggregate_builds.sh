@@ -8,7 +8,7 @@ mkdir -p ${dest_root}
 
 modules="gluegen joal joal-demos jogl jogl-demos jocl jocl-demos"
 modules_master="gluegen_onmaster joal_onmaster jogl_onmaster jogl-demos_onmaster jocl_onmaster"
-nodes="android-arm64 linux-arm64 linux-x86_64 macos-x86_64 windows-x86_64 linux-x86_64-master-001"
+nodes="android-arm64 linux-arm32 linux-arm64 linux-x86_64 macos-x86_64 windows-x86_64 linux-x86_64-master-001"
 
 this_dir=`pwd`
 
