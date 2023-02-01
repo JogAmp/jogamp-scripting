@@ -1,9 +1,9 @@
 #! /bin/bash
 
-plain_version=2.4.0-rc-20230201
+plain_version=2.4.0
 version=v${plain_version}
 rootdir=/srv/www/jogamp.org/deployment
-adir=archive/master/gluegen_951-joal_669-jogl_1518-jocl_1158
+adir=archive/master/gluegen_952-joal_670-jogl_1519-jocl_1159
 sdir=archive/rc
 urlb=https://jogamp.org/deployment
 
