@@ -25,14 +25,9 @@ function maven_it() {
     echo "Using version ${version}"
     echo "Using logfile ${logfile}"
 
-    cd
-    cd jogamp-scripting
-    git pull
-    cd maven
-
+    rm -rf input
     mkdir -p input
     cd input
-    rm -rf *
     ln -s $archive .
     7z x jogamp-all-platforms.7z 
     cd ..
