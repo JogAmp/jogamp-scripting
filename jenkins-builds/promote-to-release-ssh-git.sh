@@ -1,6 +1,7 @@
 #! /bin/bash
 
-version=v2.4.0-rc-20230201
+plain_version=2.4.0-rc-20230201
+version=v${plain_version}
 rootdir=/srv/www/jogamp.org/deployment
 adir=archive/master/gluegen_951-joal_669-jogl_1518-jocl_1158
 sdir=archive/rc
@@ -29,7 +30,7 @@ scp sha512sum.txt.sig jogamp@jogamp.org:$rootdir/$sdir/$version/
 
 ssh jogamp@jogamp.org "\
     cd /home/jogamp/builds/jogamp-scripting/maven ; \
-    ./make-all-jogamp.sh $rootdir/$sdir/$version/archive/jogamp-all-platforms.7z $version ; \
+    ./make-all-jogamp.sh $rootdir/$sdir/$version/archive/jogamp-all-platforms.7z ${plain_version} ; \
 "
 
 }
