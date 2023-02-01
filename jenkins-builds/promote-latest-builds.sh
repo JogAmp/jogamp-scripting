@@ -276,16 +276,16 @@ function promote-latest-builds() {
     local OK=1
     grep WARNING $logfile && OK=0
     if [ $OK -eq 0 ] ; then
-        echo WARNING occured - please check $logfile for WARNING
+        echo Warnings occured - please check $logfile for WARNING
     else
-        echo NO ERRORS detected
+        echo No warnings detected
     fi
     OK=1
     grep ERROR $logfile && OK=0
     if [ $OK -eq 0 ] ; then
-        echo ERRORS occured - please check $logfile for ERROR
+        echo Errors occured - please check $logfile for ERROR
     else
-        echo NO ERRORS detected
+        echo No errors detected
     fi
 
     mv $logfile $wsdir/log/
