@@ -6,7 +6,7 @@ adir=archive/master/gluegen_951-joal_669-jogl_1518-jocl_1158
 sdir=archive/rc
 urlb=https://jogamp.org/deployment
 
-logfile=`basename $0 .sh`.log
+logfile=`basename $0 .sh`.${version}.log
 
 function deploy_it() {
 
