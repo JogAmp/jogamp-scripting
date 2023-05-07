@@ -199,6 +199,11 @@ function promote-latest-builds() {
     prom_promote_demos jocl-demos slave $jocldemosslave $dest
 
     echo
+    echo Fix log and archive mods
+    echo
+    find $dest/log $dest/archive -type f -exec chmod 0644 \{\} \;
+
+    echo
     echo FAT JAR
     echo
     prom_make_fatjar $dest
