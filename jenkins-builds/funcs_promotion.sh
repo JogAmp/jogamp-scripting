@@ -280,12 +280,15 @@ function prom_promote_module() {
         mv -v $i unsigned/`basename $i -unsigned.apk`.apk
     done
     cd ..
-    # copy the master pic JAR files
+    # copy the master pic JAR files, incl. *-java-src.zip files
     # 7z folder verified above already
     local zfile=archive/jogamp-$masterpick/$module-$masterpick.7z
     local zfolder=tmp/`basename $zfile .7z`
     if [ -e $zfolder/jar ] ; then
         for j in $zfolder/jar/*.jar ; do
+            cp -av $j ./jar/
+        done
+        for j in `find $zfolder/jar -maxdepth 1 -name \*-java-src.zip` ; do
             cp -av $j ./jar/
         done
         if [ -e $zfolder/jar/atomic ] ; then
@@ -364,7 +367,7 @@ function prom_make_fatjar() {
 
     mkdir tmp/fatjarsrc
     cd tmp/fatjarsrc
-    fat_java_src_modules="gluegen joal jogl jocl"
+    fat_java_src_modules="gluegen jar/joal jar/jogl jar/jocl"
     for i in $fat_java_src_modules ; do
         unzip ../../tmp/$i-$masterpick/$i-java-src.zip
         rm -rf META-INF
@@ -386,7 +389,6 @@ function prom_make_fatjar() {
 
     mkdir tmp/fattestjarsrc
     cd tmp/fattestjarsrc
-    fat_test_java_src_modules="gluegen joal jogl jocl"
     for i in $fat_java_src_modules ; do
         if [ -e ../../tmp/$i-$masterpick/$i-test-java-src.zip ] ; then
             unzip ../../tmp/$i-$masterpick/$i-test-java-src.zip
@@ -395,6 +397,9 @@ function prom_make_fatjar() {
     done
     zip -r ../../fat/jogamp-fat-test-java-src.zip .
     cd ../..
+
+    cp -a ./tmp/jogl-$masterpick/jar/jogl-demos.jar ./fat/
+    cp -a ./tmp/jogl-$masterpick/jar/jogl-demos-java-src.zip ./fat/
 
     mv fat jogamp-fat
     7z a -r archive/jogamp-fat-all.7z jogamp-fat
