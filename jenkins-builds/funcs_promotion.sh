@@ -245,7 +245,7 @@ function prom_promote_module() {
         cp -a $lthisdir/$sourcedir/$module*$i-test-results-*.7z archive/jogamp-$i/test-results/
         local sfolder=`basename $sfile .7z`
         local zfolder=`basename $zfile .7z`
-        echo "INFO: extract $module $i - $zfile -> tmp/$zfolder"
+        echo "INFO: Extract $module $i - $zfile -> tmp/$zfolder"
         cd tmp
         prom_extract ../$zfile $sfolder
         mv -v $sfolder $zfolder
@@ -429,7 +429,7 @@ function prom_promote_demos() {
     fi
     local sfolder=`basename $sfile .7z`
     local zfolder=$module
-    echo "INFO: extract $module - $sfile -> tmp/$zfolder"
+    echo "INFO: Extract $module - $sfile -> tmp/$zfolder"
     cd tmp
     prom_extract $sfile $sfolder
     mv -v $sfolder $zfolder
@@ -476,7 +476,7 @@ function prom_cleanup() {
     local lthisdir=`pwd`
     cd $destdir
 
-    echo "INFO: delete tmp folder"
+    echo "INFO: Delete tmp folder"
     rm -rf tmp
 
     # remove the platform 7z files of the local archive folder
@@ -504,7 +504,7 @@ function prom_integrity_check() {
     cd $tmpdir
     for i in `find $lthisdir/$destdir/$jardir -name \*.jar -o -name \*.apk` ; do
         local bname=`basename $i`
-        echo -n "INFO: integrity check - $i - $bname - "
+        echo -n "INFO: Integrity check - $i - $bname - "
         local OK=0
         jar xvf $i >& $bname.log && OK=1
         if [ $OK -eq 0 ] ; then
