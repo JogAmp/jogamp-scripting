@@ -367,9 +367,9 @@ function prom_make_fatjar() {
 
     mkdir tmp/fatjarsrc
     cd tmp/fatjarsrc
-    fat_java_src_modules="gluegen jar/joal jar/jogl jar/jocl"
+    fat_java_src_modules="gluegen joal jogl jocl"
     for i in $fat_java_src_modules ; do
-        unzip ../../tmp/$i-$masterpick/$i-java-src.zip
+        unzip ../../tmp/$i-$masterpick/jar/$i-java-src.zip
         rm -rf META-INF
     done
     zip -r ../../fat/jogamp-fat-java-src.zip .
@@ -390,8 +390,8 @@ function prom_make_fatjar() {
     mkdir tmp/fattestjarsrc
     cd tmp/fattestjarsrc
     for i in $fat_java_src_modules ; do
-        if [ -e ../../tmp/$i-$masterpick/$i-test-java-src.zip ] ; then
-            unzip ../../tmp/$i-$masterpick/$i-test-java-src.zip
+        if [ -e ../../tmp/$i-$masterpick/jar/$i-test-java-src.zip ] ; then
+            unzip ../../tmp/$i-$masterpick/jar/$i-test-java-src.zip
         fi
         rm -rf META-INF
     done
