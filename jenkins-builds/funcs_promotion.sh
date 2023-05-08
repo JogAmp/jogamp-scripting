@@ -212,7 +212,7 @@ function prom_merge_modules() {
 #
 function prom_promote_module() {
     # debug
-    set -x
+    # set -x
 
     local module=$1
     shift
@@ -313,7 +313,7 @@ function prom_promote_module() {
 #
 function prom_make_fatjar() {
     # debug
-    set -x
+    # set -x
 
     local destdir=$1
 
@@ -482,7 +482,7 @@ function prom_cleanup() {
     cd $destdir
 
     echo "INFO: Delete tmp folder"
-    #rm -rf tmp
+    rm -rf tmp
 
     # remove the platform 7z files of the local archive folder
     # and merge the test-results
