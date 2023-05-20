@@ -171,3 +171,23 @@ else
   info "atomics: no atomics required"
 fi
 
+#------------------------------------------------------------------------
+# Copy extras, if necessary
+#
+
+EXTRAS=`cat projects/${NAME}/extras` || exit 1
+if [ ! -z "${EXTRAS}" ]
+then
+  info "extras: ${EXTRAS}"
+  for EXTRA in ${EXTRAS}
+  do
+    JAR_NAME="${NAME}-${VERSION}-${EXTRA}.jar"
+    SOURCE="${INPUT}/jar/${NAME}-${EXTRA}.jar"
+    TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
+    copy "${SOURCE}" "${TARGET}"
+    echo "${JAR_NAME}" >> "${MANIFEST_FILE}"
+  done
+else
+  info "extras: no extras required"
+fi
+
