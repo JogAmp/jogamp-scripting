@@ -137,7 +137,7 @@ function prom_merge_modules() {
             fi
             cd $modulefolder
             if [ "$masterpick" = "$i" ] ; then
-                for k in artifact.properties LICENSE.txt README.txt ; do
+                for k in artifact.properties LICENSE.txt README.md README.txt ; do
                     if [ -e $k ] ; then
                         cp -av $k ../$mergefolder/$j.$k
                     fi
