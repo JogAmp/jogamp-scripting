@@ -155,39 +155,47 @@ echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
 # Copy atomics, if necessary
 #
 
-ATOMICS=`cat projects/${NAME}/atomics` || exit 1
-if [ ! -z "${ATOMICS}" ]
-then
-  info "atomics: ${ATOMICS}"
-  for ATOMIC in ${ATOMICS}
-  do
-    JAR_NAME="${NAME}-${VERSION}-${ATOMIC}.jar"
-    SOURCE="${INPUT}/jar/atomic/${NAME}-${ATOMIC}.jar"
-    TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
-    copy "${SOURCE}" "${TARGET}"
-    echo "${JAR_NAME}" >> "${MANIFEST_FILE}"
-  done
+if [ -e projects/${NAME}/atomics ] ; then
+    ATOMICS=`cat projects/${NAME}/atomics` || exit 1
+    if [ ! -z "${ATOMICS}" ]
+    then
+      info "atomics: ${ATOMICS}"
+      for ATOMIC in ${ATOMICS}
+      do
+        JAR_NAME="${NAME}-${VERSION}-${ATOMIC}.jar"
+        SOURCE="${INPUT}/jar/atomic/${NAME}-${ATOMIC}.jar"
+        TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
+        copy "${SOURCE}" "${TARGET}"
+        echo "${JAR_NAME}" >> "${MANIFEST_FILE}"
+      done
+    else
+      info "atomics: no atomics required for ${NAME}"
+    fi
 else
-  info "atomics: no atomics required"
+  info "atomics: no atomics desired for ${NAME}"
 fi
 
 #------------------------------------------------------------------------
 # Copy extras, if necessary
 #
 
-EXTRAS=`cat projects/${NAME}/extras` || exit 1
-if [ ! -z "${EXTRAS}" ]
-then
-  info "extras: ${EXTRAS}"
-  for EXTRA in ${EXTRAS}
-  do
-    JAR_NAME="${NAME}-${VERSION}-${EXTRA}.jar"
-    SOURCE="${INPUT}/jar/${NAME}-${EXTRA}.jar"
-    TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
-    copy "${SOURCE}" "${TARGET}"
-    echo "${JAR_NAME}" >> "${MANIFEST_FILE}"
-  done
+if [ -e projects/${NAME}/extras ] ; then
+    EXTRAS=`cat projects/${NAME}/extras` || exit 1
+    if [ ! -z "${EXTRAS}" ]
+    then
+      info "extras: ${EXTRAS}"
+      for EXTRA in ${EXTRAS}
+      do
+        JAR_NAME="${NAME}-${VERSION}-${EXTRA}.jar"
+        SOURCE="${INPUT}/jar/${NAME}-${EXTRA}.jar"
+        TARGET="output/${NAME}/${VERSION}/${JAR_NAME}"
+        copy "${SOURCE}" "${TARGET}"
+        echo "${JAR_NAME}" >> "${MANIFEST_FILE}"
+      done
+    else
+      info "extras: no extras required for ${NAME}"
+    fi
 else
-  info "extras: no extras required"
+  info "extras: no extras desired for ${NAME}"
 fi
 
