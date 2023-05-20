@@ -398,7 +398,7 @@ function prom_make_fatjar() {
     zip -r ../../fat/jogamp-fat-test-java-src.zip .
     cd ../..
 
-    cp -a ./tmp/jogl-$masterpick/jar/atomic/jogl-fonts-p0.jar ./fat/
+    cp -a ./tmp/jogl-$masterpick/jar/jogl-fonts-p0.jar ./fat/
     cp -a ./tmp/jogl-$masterpick/jar/jogl-demos.jar ./fat/
     cp -a ./tmp/jogl-$masterpick/jar/jogl-demos-java-src.zip ./fat/
 
