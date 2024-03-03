@@ -102,6 +102,8 @@ define(`confPRIVACY_FLAGS',dnl
 `needmailhelo,needexpnhelo,needvrfyhelo,restrictqrun,restrictexpand,nobodyreturn,authwarnings')dnl
 dnl # define(`confPRIVACY_FLAGS', `authwarnings,needmailhelo,novrfy,noexpn,noetrn,noverb,restrictqrun')dnl
 
+include(`/etc/mail/tls/starttls.m4')dnl
+
 dnl define(`confAUTH_OPTIONS', `A')dnl
 dnl #
 dnl # The following allows relaying if the user authenticates, and disallows
@@ -127,16 +129,18 @@ dnl #     cd /usr/share/ssl/certs; make sendmail.pem
 dnl # Complete usage:
 dnl #     make -C /usr/share/ssl/certs usage
 dnl #
-define(`confCACERT_PATH', `/etc/ssl/local')dnl
+define(`confCACERT_PATH', `/etc/ssl/certs')dnl
+define(`confDH_PARAMETERS',`/etc/ssl/local/dhparams-4096.pem')dnl
 dnl define(`confCACERT', `/etc/ssl/local/ca-my.crt')dnl
 dnl define(`confCRL', `/etc/ssl/local/ca-my.crl')dnl
 dnl define(`confSERVER_CERT', `/etc/pki/tls/certs/sendmail.pem')dnl
 dnl define(`confSERVER_KEY', `/etc/pki/tls/certs/sendmail.pem')dnl
-define(`confCACERT', `/etc/ssl/local/thawte-ca-cert3-20151105.pem')dnl
-define(`confSERVER_CERT', `/etc/ssl/local/jogamp2016a-hostcert.pem')dnl
-define(`confSERVER_KEY', `/etc/ssl/local/jogamp2016a-hostkey.mail.pem')dnl
-define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2016a-hostcert.pem')dnl
-define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2016a-hostkey.mail.pem')dnl
+dnl define(`confCACERT', `/etc/ssl/local/thawte-ca-cert5-20181102.pem')dnl
+define(`confCACERT', `/etc/ssl/local/jogamp2025a.org.ca.pem')dnl
+define(`confSERVER_CERT', `/etc/ssl/local/jogamp2025a.org.crt.pem')dnl
+define(`confSERVER_KEY', `/etc/ssl/local/jogamp2025a.org.key.mail.pem')dnl
+define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2025a.org.crt.pem')dnl
+define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2025a.org.key.mail.pem')dnl
 dnl #
 dnl define(`confTO_QUEUEWARN', `4h')dnl
 dnl define(`confTO_QUEUERETURN', `5d')dnl
