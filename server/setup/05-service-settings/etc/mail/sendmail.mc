@@ -168,6 +168,26 @@ dnl FEATURE(`allmasquerade')dnl
 FEATURE(`masquerade_envelope')dnl
 FEATURE(`masquerade_entire_domain')dnl
 
+dnl #
+dnl # RECEIVED_HEADER: Hide authenticated sender details
+dnl #
+define(`confRECEIVED_HEADER', `$?{auth_type}(from $j) by $j ($v/$Z)$|
+    $?sfrom $s $.$?_($?s$|from $.$_)
+    $.by $j ($v/$Z)$?r with $r$. id $i$?{tls_version}
+    (version=${tls_version} cipher=${cipher} bits=${cipher_bits} verify=${verify})$.$?u
+    for $u; $|;
+    $.$b$.')dnl
+dnl #
+dnl # Original RECEIVED_HEADER
+dnl #
+dnl # $?sfrom $s $.$?_($?s$|from $.$_)
+dnl # $.$?{auth_type}(authenticated$?{auth_ssf} bits=${auth_ssf}$.)
+dnl # $.by $j ($v/$Z)$?r with $r$. id $i$?{tls_version}
+dnl # (version=${tls_version} cipher=${cipher} bits=${cipher_bits} verify=${verify})$.$?u
+dnl # for $u; $|;
+dnl # $.$b
+dnl #
+
 dnl # use /etc/mail/local-host-names
 FEATURE(`use_cw_file')dnl
 dnl
