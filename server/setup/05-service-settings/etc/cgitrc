@@ -1,0 +1,95 @@
+#
+# cgit config
+# see cgitrc(5) for details
+
+css=/cgit-css/cgit.css
+logo=/images/jogamp_symbols/website_final_blue_jogamp_346x70pel.png
+favicon=/SocialCoding/logo_symbol_finals/website_final_blue_favicon_symbol_16x16pel.ico
+
+logo-link=https://jogamp.org
+
+# Following lines work with the above Apache config
+#css=/cgit-css/cgit.css
+#logo=/cgit-css/cgit.png
+
+# Allow http transport git clone
+enable-http-clone=1
+
+# if you do not want that webcrawler (like google) index your site
+#robots=noindex, nofollow
+
+source-filter=/srv/www/cgit/filters/syntax-highlighting.sh
+
+# Format markdown, restructuredtext, manpages, text files, and html files
+# through the right converters
+about-filter=/srv/www/cgit/filters/about-formatting.sh
+
+# if cgit messes up links, use a virtual-root. For example, cgit.example.org/ has this value:
+virtual-root=/cgit/
+
+# Enable caching of up to 1000 output entries
+cache-size=1000
+
+# Specify some default clone urls using macro expansion
+# clone-url=https://jogamp.org/cgit/$CGIT_REPO_URL git://jogamp.org/srv/scm/$CGIT_REPO_URL
+clone-url=git://jogamp.org/srv/scm/$CGIT_REPO_URL
+
+# Show extra links for each repository on the index page
+enable-index-links=1
+
+# Enable ASCII art commit history graph on the log pages
+enable-commit-graph=1
+
+# Show number of affected files per commit on the log pages
+enable-log-filecount=1
+
+# Show number of added/removed lines per commit on the log pages
+enable-log-linecount=1
+
+# Enable statistics per week, month and quarter
+max-stats=quarter
+
+# Set the title and heading of the repository index page
+root-title=JogAmp Git Repositories
+
+# Set a subheading for the repository index page
+root-desc=tracking our artifacts, decentralised 
+
+# Include some more info about example.com on the index page
+#root-readme=/srv/www/jogamp.org
+
+enable-index-owner=0
+enable-git-config=1
+
+readme=:README.md
+readme=:readme.md
+readme=:README.mkd
+readme=:readme.mkd
+readme=:README.rst
+readme=:readme.rst
+readme=:README.html
+readme=:readme.html
+readme=:README.htm
+readme=:readme.htm
+readme=:README.txt
+readme=:readme.txt
+readme=:README
+readme=:readme
+readme=:INSTALL.md
+readme=:install.md
+readme=:INSTALL.mkd
+readme=:install.mkd
+readme=:INSTALL.rst
+readme=:install.rst
+readme=:INSTALL.html
+readme=:install.html
+readme=:INSTALL.htm
+readme=:install.htm
+readme=:INSTALL.txt
+readme=:install.txt
+readme=:INSTALL
+readme=:install
+
+repo.snapshots=0
+
+scan-path=/srv/scm/
