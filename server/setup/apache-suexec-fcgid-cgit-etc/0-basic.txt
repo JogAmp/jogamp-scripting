@@ -1,0 +1,89 @@
+Apache2: Installing suexec + fcgid
+===================================
+
+/etc/php/7.0/apache2/php.ini /etc/php/7.0/cgi/php.ini
+=====================================================
+Temp Folder:
+
+sys_temp_dir = "/var/tmp"
+upload_tmp_dir = "/var/tmp"
+upload_max_filesize = 256M
+post_max_size = 256M
+
+Enable opcache:
+
+[opcache]
+; Determines if Zend OPCache is enabled
+opcache.enable=1
+..
+
+See php.ini
+Both php.ini (apache2 and cgi) shall be equal
+
+suexec
+========
+apt-get install apache2-suexec-custom
+
+groupadd webrunner
+useradd -s /bin/false -d /srv/www -g webrunner webrunner
+
+# adding webrunner group to apache2's www-data UID allows access 
+# to chown -R webrunner:webrunner /srv/www/<bla>
+usermod -a -G webrunner www-data
+
+/etc/apache2/suexec/www-data
++++
+/srv/www
+public_html/cgi-bin
++++
+
+cp -a /etc/apache2/suexec/www-data /etc/apache2/suexec/webrunner
+
+php7.0-cgi + libapache2-mod-fcgid
+======================================
+apt-get install php7.0-cgi libapache2-mod-fcgid libfcgi-perl
+
+a2dismod php7.0
+
+a2enmod rewrite
+a2enmod suexec
+a2enmod include
+a2enmod fcgid 
+
+cd /etc/apache2/mods-enabled/
+rm php7.0.*
+
+dpkg -P libapache2-mod-php7.3
+
+mkdir /srv/www/scripts
+
+/srv/www/scripts/php7.0-wrapper
++++
+#!/bin/sh
+PHPRC=/etc/php/7.0/cgi
+export PHPRC
+export PHP_FCGI_MAX_REQUESTS=5000
+export PHP_FCGI_CHILDREN=8
+exec /usr/lib/cgi-bin/php7.0
++++
+
+chmod 755 /srv/www/scripts/php7.0-wrapper
+chown -R webrunner:webrunner /srv/www/scripts
+
+/etc/apache2/sites-enabled/0xy-z.conf
+
+<VirtualHost *:80>
+    SuexecUserGroup webrunner webrunner
+
+    <Directory /srv/www/jordan>
+        Options +Indexes +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+
+        AddHandler fcgid-script .php
+        FcgidWrapper /srv/www/scripts/php7.0-wrapper .php
+    </Directory>
+
+
+systemctl restart apache2
+/etc/init.d/apache2 restart
+
+

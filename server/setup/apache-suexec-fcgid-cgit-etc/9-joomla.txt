@@ -1,0 +1,14 @@
+=============
+
+CREATE USER 'joomla'@'localhost' IDENTIFIED VIA mysql_native_password USING '***';
+GRANT USAGE ON *.* TO 'joomla'@'localhost' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+CREATE DATABASE IF NOT EXISTS `joomla`;
+GRANT ALL PRIVILEGES ON `joomla`.* TO 'joomla'@'localhost';
+
+mv htaccess.txt .htaccess
+chgrp -R www-data .
+
++++
+
+SEO: Use URL Rewriting
+Robots: No Index, follow

@@ -1,0 +1,42 @@
+
+apt-get install cgit highlight
+
+cp -a /usr/lib/cgit /srv/www/
+chown -R webrunner:webrunner /srv/www/cgit
+
+vi /srv/www/cgit/cgitrc
+cp /srv/www/cgit/cgitrc /etc
+chown -R webrunner:webrunner /srv/www/cgit
+
+cd /srv/www/jogamp.org/
+mv git git-old    
+mkdir git
+ln -s /srv/www/cgit cgit
+chown -R webrunner:webrunner git cgit
+
+Normal:
+    ScriptAlias /cgit/ "/srv/www/cgit/cgit.cgi/"
+    #RedirectMatch ^/cgit$ /cgit/
+    Alias /cgit-css "/usr/share/cgit/"
+    <Directory "/srv/www/cgit/">
+       AllowOverride None
+       Options ExecCGI FollowSymlinks
+       Require all granted
+    </Directory>
+    <Directory "/srv/www/jogamp.org/git">
+        Include sites-available/gitweb-to-cgit-rel.conf
+    </Directory>
+
+SSL:
+    ScriptAlias /cgit/ "/srv/www/cgit/cgit.cgi/"
+    #RedirectMatch ^/cgit$ /cgit/
+    Alias /cgit-css "/usr/share/cgit/"
+    <Directory "/srv/www/cgit/">
+       AllowOverride None
+       Options ExecCGI FollowSymlinks
+       Require all granted
+    </Directory>
+    <Directory "/srv/www/jogamp.org/git">
+        Include sites-available/gitweb-to-cgit-rel_ssl.conf
+    </Directory>
+
