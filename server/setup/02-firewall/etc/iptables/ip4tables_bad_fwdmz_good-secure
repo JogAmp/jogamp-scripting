@@ -18,15 +18,16 @@ IP_EXTERN_GW=$( /sbin/ip -o -f inet route show dev $ETH_EXTERN | grep default | 
 
 IPTABLES=/sbin/iptables
 
-if [ "$action" != "start" -a "$action" != "stop" ] ; then
-        echo usage $0 \( start \| stop \)
+if [ "$action" != "start" -a "$action" != "stop" -a "$action" != "restart" ] ; then
+        echo usage $0 \( start \| stop \| restart \)
         echo
-        echo    $0 start
-        echo    $0 stop
-        exit 1
-fi
 
-if [ "$action" = "stop" ] ; then
+elif [ "$action" = "restart" ] ; then
+        $0 stop
+        $0 start
+
+elif [ "$action" = "stop" ] ; then
+
         echo "IPTABLES rules down" 
 
         $IPTABLES -F acl_external_input
@@ -48,10 +49,8 @@ if [ "$action" = "stop" ] ; then
         $IPTABLES -P INPUT   ACCEPT
         $IPTABLES -P FORWARD ACCEPT
 
-        exit 0
-fi
+elif [ "$action" = "start" ] ; then
 
-if [ "$action" = "start" ] ; then
         echo "IPTABLES rules up" 
 
         # Anti-spoofing 
@@ -160,6 +159,11 @@ if [ "$action" = "start" ] ; then
         #
         # acl_extern_
         #
+
+        ipaddr_file=$(dirname $0)/badbots_ipaddr.txt
+        for ipaddr in `awk -e ' { i=index($1,"#"); if ( 0 == i ) { print $1; } } ' $ipaddr_file` ; do
+            $IPTABLES -p all -A acl_external_input -s $ipaddr -j RETURN
+        done
 
         #
         # Allow fragments (second etc. parts of a huge packet ..)
@@ -280,7 +284,7 @@ if [ "$action" = "start" ] ; then
         #
         $IPTABLES -p udp -A acl_srv_connect -i $ETH_EXTERN --dport mdns        -s $IP_EXTERN_SELF  -j ACCEPT # 
         $IPTABLES -p udp -A acl_srv_connect -i $ETH_EXTERN --dport bootps:tftp -s $IP_EXTERN_GW    -j ACCEPT #
-        $IPTABLES -p tcp -A acl_srv_connect -i $ETH_EXTERN --dport bootps:69   -s $IP_EXTERN_GW    -j ACCEPT #
+        $IPTABLES -p tcp -A acl_srv_connect -i $ETH_EXTERN --dport 67:69       -s $IP_EXTERN_GW    -j ACCEPT #
 
         # DNS
         #
@@ -290,6 +294,11 @@ if [ "$action" = "start" ] ; then
         # $IPTABLES -p udp -A acl_srv_connect        --dport domain                            -j ACCEPT
         # $IPTABLES -p tcp -A acl_srv_connect        --dport netbios-ns:netbios-ssn            -j ACCEPT
         # $IPTABLES -p udp -A acl_srv_connect        --dport netbios-ns:netbios-ssn            -j ACCEPT
+
+        # iperf
+        #
+        #$IPTABLES -p tcp  -A acl_srv_connect         --dport 5001                              -j ACCEPT
+        #$IPTABLES -p udp  -A acl_srv_connect         --dport 5001                              -j ACCEPT
 
         #
         # acl_srv_connect Allow * to answer,
