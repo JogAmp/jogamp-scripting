@@ -36,6 +36,7 @@ elif [ "$action" = "stop" ] ; then
         $IPTABLES -F acl_srv_shared
         $IPTABLES -F acl_srv_email
         $IPTABLES -F acl_srv_login_sec
+        $IPTABLES -F log_and_drop
         $IPTABLES -F INPUT
         $IPTABLES -F FORWARD
 
@@ -45,6 +46,7 @@ elif [ "$action" = "stop" ] ; then
         $IPTABLES -X acl_srv_shared
         $IPTABLES -X acl_srv_email
         $IPTABLES -X acl_srv_login_sec
+        $IPTABLES -X log_and_drop
 
         $IPTABLES -P INPUT   ACCEPT
         $IPTABLES -P FORWARD ACCEPT
@@ -96,6 +98,7 @@ elif [ "$action" = "start" ] ; then
         $IPTABLES -N acl_srv_shared
         $IPTABLES -N acl_srv_email
         $IPTABLES -N acl_srv_login_sec
+        $IPTABLES -N log_and_drop
 
         ###################################################################
         ###################################################################
@@ -160,9 +163,12 @@ elif [ "$action" = "start" ] ; then
         # acl_extern_
         #
 
+        $IPTABLES -p all -A log_and_drop -m limit --limit 1/s -j LOG --log-level debug --log-prefix "FW4-FWD: drop acl_ext input "
+        $IPTABLES -p all -A log_and_drop -j DROP
+
         ipaddr_file=$(dirname $0)/badbots_ipaddr.txt
         for ipaddr in `awk -e ' { i=index($1,"#"); if ( 0 == i ) { print $1; } } ' $ipaddr_file` ; do
-            $IPTABLES -p all -A acl_external_input -s $ipaddr -j RETURN
+            $IPTABLES -p all -A acl_external_input -s $ipaddr -j log_and_drop
         done
 
         #
