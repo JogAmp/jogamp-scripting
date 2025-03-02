@@ -129,18 +129,30 @@ dnl #     cd /usr/share/ssl/certs; make sendmail.pem
 dnl # Complete usage:
 dnl #     make -C /usr/share/ssl/certs usage
 dnl #
-define(`confCACERT_PATH', `/etc/ssl/certs')dnl
 define(`confDH_PARAMETERS',`/etc/ssl/local/dhparams-4096.pem')dnl
 dnl define(`confCACERT', `/etc/ssl/local/ca-my.crt')dnl
 dnl define(`confCRL', `/etc/ssl/local/ca-my.crl')dnl
 dnl define(`confSERVER_CERT', `/etc/pki/tls/certs/sendmail.pem')dnl
 dnl define(`confSERVER_KEY', `/etc/pki/tls/certs/sendmail.pem')dnl
 dnl define(`confCACERT', `/etc/ssl/local/thawte-ca-cert5-20181102.pem')dnl
-define(`confCACERT', `/etc/ssl/local/jogamp2025a.org.ca.pem')dnl
-define(`confSERVER_CERT', `/etc/ssl/local/jogamp2025a.org.crt.pem')dnl
-define(`confSERVER_KEY', `/etc/ssl/local/jogamp2025a.org.key.mail.pem')dnl
-define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2025a.org.crt.pem')dnl
-define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2025a.org.key.mail.pem')dnl
+
+dnl define(`confCACERT_PATH', `/etc/ssl/certs')dnl
+dnl define(`confCACERT', `/etc/ssl/local/jogamp2025a.org.ca.pem')dnl
+dnl define(`confSERVER_CERT', `/etc/ssl/local/jogamp2025a.org.crt.pem')dnl
+dnl define(`confSERVER_KEY', `/etc/ssl/local/jogamp2025a.org.key.mail.pem')dnl
+dnl define(`confCLIENT_CERT', `/etc/ssl/local/jogamp2025a.org.crt.pem')dnl
+dnl define(`confCLIENT_KEY', `/etc/ssl/local/jogamp2025a.org.key.mail.pem')dnl
+
+define(`CERT_DIR', `/etc/letsencrypt/live/jogamp.org')
+define(`confCACERT_PATH', `CERT_DIR')
+define(`confCACERT', `CERT_DIR/fullchain.pem')
+define(`confSERVER_CERT', `CERT_DIR/cert.pem')
+define(`confSERVER_KEY', `CERT_DIR/privkey.pem')
+define(`confCLIENT_CERT', `CERT_DIR/cert.pem')
+define(`confCLIENT_KEY', `CERT_DIR/privkey.pem')
+
+define(`confDONT_BLAME_SENDMAIL',`groupreadablekeyfile')dnl
+
 dnl #
 dnl define(`confTO_QUEUEWARN', `4h')dnl
 dnl define(`confTO_QUEUERETURN', `5d')dnl
