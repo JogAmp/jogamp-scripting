@@ -12,7 +12,7 @@ curl -O https://jogamp.org/chuck/jnlpJars/agent.jar
 
 function connect_2 {
   . ./profile.ant
-  . ./profile.amd64.java17
+  . ./profile.amd64.java21
 
   export LIBGL_ALWAYS_SOFTWARE=true
 
@@ -39,7 +39,7 @@ function connect_2 {
 
 function connect_31 {
   . ./profile.ant
-  . ./profile.amd64.j2se17
+  . ./profile.amd64.java21
 
   export SOURCE_LEVEL=1.8
   export TARGET_LEVEL=1.8
@@ -77,7 +77,7 @@ function connect_31 {
 
 function connect_32 {
   . ./profile.ant
-  . ./profile.amd64.java17
+  . ./profile.amd64.java21
 
   export SOURCE_LEVEL=1.8
   export TARGET_LEVEL=1.8
@@ -116,7 +116,7 @@ function connect_32 {
 
 function connect_41 {
   . ./profile.ant
-  . ./profile.amd64.java17
+  . ./profile.amd64.java21
 
     export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
     export ANDROID_API_LEVEL=24

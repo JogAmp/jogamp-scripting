@@ -6,7 +6,7 @@ cd /Users/jogamp/jenkins
 curl -o agent-012.jar https://jogamp.org/chuck/jnlpJars/agent.jar
 
 . ./profile.ant
-JAVA_HOME=`/usr/libexec/java_home -version 17`
+JAVA_HOME=`/usr/libexec/java_home -version 21`
 PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
 export JAVA_HOME PATH
 export SOURCE_LEVEL=1.8
