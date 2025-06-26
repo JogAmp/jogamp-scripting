@@ -16,10 +16,6 @@ function connect_2 {
 
   export LIBGL_ALWAYS_SOFTWARE=true
 
-  export SOURCE_LEVEL=1.8
-  export TARGET_LEVEL=1.8
-  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
-
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
   java -version
@@ -40,10 +36,6 @@ function connect_2 {
 function connect_31 {
   . ./profile.ant
   . ./profile.amd64.java21
-
-  export SOURCE_LEVEL=1.8
-  export TARGET_LEVEL=1.8
-  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -78,10 +70,6 @@ function connect_31 {
 function connect_32 {
   . ./profile.ant
   . ./profile.amd64.java21
-
-  export SOURCE_LEVEL=1.8
-  export TARGET_LEVEL=1.8
-  export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -138,10 +126,6 @@ function connect_41 {
     echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
     echo clang `which clang` 2>&1 | tee -a ${LOGF}
 
-    export SOURCE_LEVEL=1.8
-    export TARGET_LEVEL=1.8
-    export TARGET_RT_JAR=/opt-share/jre1.8.0_212/lib/rt.jar
-
     export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
     #export JUNIT_DISABLED="true"
@@ -162,6 +146,50 @@ function connect_41 {
   done
 }
 
+function connect_43 {
+  . ./profile.ant
+  . ./profile.amd64.java21
+
+    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
+    export ANDROID_API_LEVEL=24
+    export ANDROID_HOST_TAG=linux-x86_64
+    export ANDROID_ABI=x86_64
+
+    if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
+        . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
+    else
+        echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
+        exit 1
+    fi
+
+    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-x86_64.xml
+    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
+
+    export PATH_VANILLA=$PATH
+    export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
+    echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
+    echo clang `which clang` 2>&1 | tee -a ${LOGF}
+
+    export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
+    #export JUNIT_DISABLED="true"
+    #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
+
+  java -version
+  sshpid=
+  while true ; do
+    if [ ! -z "$sshpid" ] ; then
+        kill -9 $sshpid
+    fi
+    if [ -e stop_node ] ; then
+        exit 1
+    fi
+    ssh -o "ServerAliveInterval 30" -o "ServerAliveCountMax 5" -o "TCPKeepAlive yes" chuckslave@jogamp.org -L 6043:localhost:5555 -N &
+    sshpid=$!
+    java -server -Xmx512m -XX:+UseCompressedOops -jar agent.jar -jnlpUrl https://jogamp.org/chuck/computer/android-x86_64-jau-043/slave-agent.jnlp
+  done
+}
+
 connect_2 > linux-x86_64-jau-002.log 2>&1 &
 disown $!
 
@@ -172,5 +200,8 @@ connect_31 > linux-arm32-armv7hf-jau-031.log 2>&1 &
 disown $!
 
 connect_41 > android-arm64-aarch64-jau-041.log 2>&1 &
+disown $!
+
+connect_43 > android-x86_64-jau-043.log 2>&1 &
 disown $!
 

@@ -9,9 +9,6 @@ curl -o agent-012.jar https://jogamp.org/chuck/jnlpJars/agent.jar
 JAVA_HOME=`/usr/libexec/java_home -version 21`
 PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
 export JAVA_HOME PATH
-export SOURCE_LEVEL=1.8
-export TARGET_LEVEL=1.8
-export TARGET_RT_JAR=/usr/local/jre1.8.0_212/lib/rt.jar
 
 export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 

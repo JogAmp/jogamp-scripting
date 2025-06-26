@@ -9,10 +9,6 @@ set CMAKE_C_COMPILER=c:\mingw64\bin\gcc
 
 set PATH=%J2RE_HOME%\bin;%JAVA_HOME%\bin;%ANT_PATH%\bin;c:\mingw64\bin;%CMAKE_PATH%\bin;%GIT_PATH%;%SEVENZIP%;%PATH%
 
-set SOURCE_LEVEL=1.8
-set TARGET_LEVEL=1.8
-set TARGET_RT_JAR=C:\jre1.8.0_212\lib\rt.jar
-
 set JOGAMP_JAR_CODEBASE=Codebase: *.jogamp.org
 
 REM    -Dc.compiler.debug=true 
