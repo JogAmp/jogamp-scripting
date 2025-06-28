@@ -14,6 +14,10 @@ function connect_2 {
   . ./profile.ant
   . ./profile.amd64.java21
 
+  export LC_MEASUREMENT=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
+
   export LIBGL_ALWAYS_SOFTWARE=true
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
@@ -36,6 +40,10 @@ function connect_2 {
 function connect_31 {
   . ./profile.ant
   . ./profile.amd64.java21
+
+  export LC_MEASUREMENT=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -70,6 +78,10 @@ function connect_31 {
 function connect_32 {
   . ./profile.ant
   . ./profile.amd64.java21
+
+  export LC_MEASUREMENT=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -106,30 +118,34 @@ function connect_41 {
   . ./profile.ant
   . ./profile.amd64.java21
 
-    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
-    export ANDROID_API_LEVEL=24
-    export ANDROID_HOST_TAG=linux-x86_64
-    export ANDROID_ABI=arm64-v8a
+  export LC_MEASUREMENT=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
 
-    if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
-        . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
-    else
-        echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
-        exit 1
-    fi
+  export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
+  export ANDROID_API_LEVEL=24
+  export ANDROID_HOST_TAG=linux-x86_64
+  export ANDROID_ABI=arm64-v8a
 
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml
-    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
+  if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
+      . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
+  else
+      echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
+      exit 1
+  fi
 
-    export PATH_VANILLA=$PATH
-    export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
-    echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
-    echo clang `which clang` 2>&1 | tee -a ${LOGF}
+  export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-aarch64.xml
+  export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
 
-    export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+  export PATH_VANILLA=$PATH
+  export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
+  echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
+  echo clang `which clang` 2>&1 | tee -a ${LOGF}
 
-    #export JUNIT_DISABLED="true"
-    #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
+  #export JUNIT_DISABLED="true"
+  #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
 
   java -version
   sshpid=
@@ -150,30 +166,34 @@ function connect_43 {
   . ./profile.ant
   . ./profile.amd64.java21
 
-    export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
-    export ANDROID_API_LEVEL=24
-    export ANDROID_HOST_TAG=linux-x86_64
-    export ANDROID_ABI=x86_64
+  export LC_MEASUREMENT=en_US.UTF-8
+  export LC_ALL=en_US.UTF-8
+  export LANG=en_US.UTF-8
 
-    if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
-        . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
-    else
-        echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
-        exit 1
-    fi
+  export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
+  export ANDROID_API_LEVEL=24
+  export ANDROID_HOST_TAG=linux-x86_64
+  export ANDROID_ABI=x86_64
 
-    export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-x86_64.xml
-    export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
+  if [ -e ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh ] ; then
+      . ${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh
+  else
+      echo "${JENKINS_NODE_STARTUP_DIR}/setenv-android-tools.sh doesn't exist!"
+      exit 1
+  fi
 
-    export PATH_VANILLA=$PATH
-    export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
-    echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
-    echo clang `which clang` 2>&1 | tee -a ${LOGF}
+  export GLUEGEN_CPPTASKS_FILE=make/lib/gluegen-cpptasks-android-x86_64.xml
+  export GLUEGEN_PROPERTIES_FILE=/home/jogamp/android/gluegen.properties # for key signing props
 
-    export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+  export PATH_VANILLA=$PATH
+  export PATH=${ANDROID_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_NAME}/bin:${ANDROID_TOOLCHAIN_ROOT}/bin:${ANDROID_HOME}/platform-tools:${ANDROID_BUILDTOOLS_ROOT}:${PATH}
+  echo PATH ${PATH} 2>&1 | tee -a ${LOGF}
+  echo clang `which clang` 2>&1 | tee -a ${LOGF}
 
-    #export JUNIT_DISABLED="true"
-    #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
+  export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
+
+  #export JUNIT_DISABLED="true"
+  #export JUNIT_RUN_ARG0="-Dnewt.test.Screen.disableScreenMode"
 
   java -version
   sshpid=
