@@ -163,8 +163,11 @@ function prom_merge_modules() {
                     for l in `find jar -maxdepth 1 -name \*natives\*` ; do
                         cp -av $l ../$mergefolder/jar/
                     done
+                    mkdir -p ../$mergefolder/apk
                     for l in `find jar -maxdepth 1 -name \*.apk` ; do
-                        mkdir -p ../$mergefolder/apk
+                        cp -av $l ../$mergefolder/apk/
+                    done
+                    for l in `find jar -maxdepth 1 -name \*.apk.idsig` ; do
                         cp -av $l ../$mergefolder/apk/
                     done
                     if [ -e jar/atomic ] ; then
@@ -262,6 +265,9 @@ function prom_promote_module() {
                 cp -av $j ./jar/
             done
             for j in `find $zfolder/jar -maxdepth 1 -name \*.apk` ; do
+                cp -av $j ./apk/
+            done
+            for j in `find $zfolder/jar -maxdepth 1 -name \*.apk.idsig` ; do
                 cp -av $j ./apk/
             done
             if [ -e $zfolder/jar/atomic ] ; then
