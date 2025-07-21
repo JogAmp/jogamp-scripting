@@ -48,6 +48,9 @@ then
   exit 1
 fi
 
+ANDROID_SUFFIX="-android"
+NAME_BASE=${NAME%"$ANDROID_SUFFIX"}
+
 # Produce platform list
 PLATFORMS=`cat make-platforms.txt | awk '{print $1}'` || exit 1
 
@@ -66,9 +69,17 @@ case "${NATIVES}" in
     for PLATFORM in ${PLATFORMS}
     do
       OUTPUT_NAME="${NAME}-${VERSION}-natives-${PLATFORM}.jar"
-      SOURCE="${INPUT}/jar/${NAME}-natives-${PLATFORM}.jar"
       TARGET="output/${NAME}/${VERSION}/${OUTPUT_NAME}"
-      copy "${SOURCE}" "${TARGET}"
+      SOURCE1="${INPUT}/jar/${NAME}-natives-${PLATFORM}.jar"
+      SOURCE2="${INPUT}/jar/${NAME_BASE}-natives-${PLATFORM}.jar"
+      if [ -e "${SOURCE1}" ] ; then
+          copy "${SOURCE1}" "${TARGET}"
+      elif [ -e "${SOURCE2}" ] ; then
+          copy "${SOURCE2}" "${TARGET}"
+      else
+          echo "Error: Neither ${SOURCE1} of ${NAME} nor ${SOURCE2} of ${NAME_BASE} exists."
+          exit 1
+      fi
       echo "${OUTPUT_NAME}" >> "${MANIFEST_FILE}"
     done
     ;;
