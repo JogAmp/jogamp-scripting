@@ -1,4 +1,5 @@
 android-aarch64  : Android ARM AArch64
+android-x86_64   : Android x86_64
 linux-amd64      : Linux AMD64
 linux-armv6hf    : Linux ARMv6hf
 linux-aarch64    : Linux ARM AArch64

@@ -38,10 +38,10 @@ rootdir=/srv/www/jogamp.org/deployment/autobuilds/$branch/last
 
 #os_and_archs_fatpack_minus_master="linux-i586 linux-armv6 linux-armv6hf macosx-universal windows-amd64 windows-i586 solaris-i586 solaris-amd64"
 #os_and_archs_fatpack_minus_master="linux-i586 linux-armv6hf linux-aarch64 macosx-universal windows-amd64 windows-i586"
-#os_and_archs_android="android-armv6 android-aarch64 android-x86"
+#os_and_archs_android="android-armv6 android-aarch64 android-x86 android-x86_64"
 #os_and_archs_ios="ios-amd64 ios-arm64"
 os_and_archs_fatpack_minus_master="linux-armv6hf linux-aarch64 macosx-universal windows-amd64"
-os_and_archs_android="android-aarch64"
+os_and_archs_android="android-aarch64 android-x86_64"
 os_and_archs_ios=""
 masterpick="linux-amd64"
 os_and_archs_minus_master="$os_and_archs_fatpack_minus_master $os_and_archs_android $os_and_archs_ios"
