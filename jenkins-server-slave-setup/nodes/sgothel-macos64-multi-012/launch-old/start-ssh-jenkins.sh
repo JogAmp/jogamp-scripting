@@ -11,9 +11,6 @@ function connect_12 {
   export JAVA_HOME PATH
   #JAVA7_EXE=`/usr/libexec/java_home -version 1.7.0_12`/bin/java
   #export JAVA7_EXE
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
   
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
@@ -35,9 +32,6 @@ function connect_13 {
   JAVA_HOME=`/usr/libexec/java_home -version 1.8`
   PATH=$JAVA_HOME/bin:$PATH
   export JAVA_HOME PATH
-  export SOURCE_LEVEL=1.6
-  export TARGET_LEVEL=1.6
-  export TARGET_RT_JAR=/opt-share/jre1.6.0_30/lib/rt.jar
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 
