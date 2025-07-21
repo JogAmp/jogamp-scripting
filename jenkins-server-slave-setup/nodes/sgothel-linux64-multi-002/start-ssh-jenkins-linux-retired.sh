@@ -43,7 +43,6 @@ function connect_40 {
   . ./profile.amd64.j2se11
 
     export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
-    export ANDROID_API_LEVEL=24
     export ANDROID_HOST_TAG=linux-x86_64
     export ANDROID_ABI=armeabi-v7a
 
@@ -92,7 +91,6 @@ function connect_42 {
   . ./profile.amd64.j2se11
 
     export ANDROID_HOME=/opt-linux-x86_64/android-sdk-linux_x86_64
-    export ANDROID_API_LEVEL=24
     export ANDROID_HOST_TAG=linux-x86_64
     export ANDROID_ABI=x86
 
