@@ -187,8 +187,9 @@ Debian 7.00 (Wheezy)
       As User:
       See https://bugzilla.readthedocs.org/en/5.0/installing/linux.html#perl-modules
       ./checksetup.pl --check-modules
+      rm -rf lib
       /usr/bin/perl install-module.pl --all
-      /usr/bin/perl install-module.pl --upgrade-all
+      #/usr/bin/perl install-module.pl --upgrade-all
       ./checksetup.pl --check-modules
       ./checksetup.pl
 
@@ -199,6 +200,32 @@ Debian 7.00 (Wheezy)
       /etc/init.d/apache2 restart
 
     - https://www.bugzilla.org/download/#stable
+
+11.2.1 bugzilla upgrade
+    - prep bugzilla
+      - set parameters shutdown
+      - backup database
+    - cd bugzilla
+    - chown -R user:user .
+    - as user
+      - we use git remote https://github.com/bugzilla/bugzilla
+      - git status
+        - ensure all your local changes are committed for later?
+        - or squash your local changes
+      - git fetch --all
+      - git checkout --track -b release-5.2-stable origin/release-5.2-stable
+
+      - ./checksetup.pl
+        rm -rf lib
+        /usr/bin/perl install-module.pl --all
+        #/usr/bin/perl install-module.pl --upgrade-all
+        ./checksetup.pl --check-modules
+
+        # for bugzilla upgrade to 5.2 / mariadb
+        ./contrib/recode.pl --guess --charset=utf8
+
+        ./checksetup.pl
+
 
 11.3 mediawiki
     - https://www.mediawiki.org/wiki/Download
