@@ -53,6 +53,21 @@ Debian 12.00
           rm -rf /var/lib/mysql/*
           apt-get install libmariadb-dev-compat mariadb-server mariadb-client
 
+        - MariaDB + ZFS Performance
+          - zfs create -o mountpoint=/var/lib/mysql -o recordsize=16K jogamp_org/mysql
+          - /etc/mysql/my.cnf
+            [mysqld]
+            #
+            # * InnoDB on ZFS
+            #   https://shatteredsilicon.net/mysql-mariadb-innodb-on-zfs/
+            #
+            # innodb_log_write_ahead_size = 16384 (adjusted)
+            innodb_log_write_ahead_size = 4096
+            innodb_doublewrite = 0
+            # innodb_checksum_algorithm = none (no more supported)
+            innodb_flush_neighbors = 0
+            innodb_use_native_aio = 0
+
     - Services
         - mv /data/backup/srv/* /srv/
 
