@@ -1,6 +1,6 @@
 All template files are .. underneath in ./etc
 
-Debian 7.00 (Wheezy)
+Debian 12.00
 
 01 stop all running services ..
     /etc/init.d/apache2 stop
@@ -29,7 +29,8 @@ Debian 7.00 (Wheezy)
     - Old Logs
         - mv /data/backup/var/log /var/log/old_logs
 
-    - MySQL
+    - MySQL (MariaDB)
+        - apt-get install libmariadb-dev-compat mariadb-server mariadb-client
         - old server: backup DB
           - run backup-mysql.sh on old server, result is e.g. backup-mysqldb-20130605162509.sql
           - !!! strip all system-DB's (schema's) from the backup,
@@ -50,7 +51,7 @@ Debian 7.00 (Wheezy)
         - if things go wrong: re-install mysql
           dpkg -P mysql-server mysql-server-5.5 mysql-server-core-5.5
           rm -rf /var/lib/mysql/*
-          apt-get install mysql-server mysql-server-5.5 mysql-server-core-5.5
+          apt-get install libmariadb-dev-compat mariadb-server mariadb-client
 
     - Services
         - mv /data/backup/srv/* /srv/
@@ -163,18 +164,13 @@ Debian 7.00 (Wheezy)
 
 
 11.2 bugzilla
-    - Debian 7
+    - Debian 12
 
       Install
         apt-get install libapache2-mod-perl2-dev libapache2-mod-perl2
+        apt-get install libmariadb-dev-compat mariadb-server mariadb-client
         apt-get install libgd-dev libgd3
         apt install libgdbm-dev libgdbm6
-        apt-get install libdbd-mysql-perl
-        libcgi-pm-perl libcgi-fast-perl libcgi-session-perl libfcgi-perl
-        libemail-mime-perl libemail-sender-perl
-        libtemplate-perl libhtml-template-perl
-        libjson-perl libjson-xs-perl
-        libmath-bigint-perl libmath-random-isaac-perl libmath-random-isaac-xs-perl
 
     - As User: misc for perl/bugzilla
         - Perl: redo init (find closest mirror ..)
