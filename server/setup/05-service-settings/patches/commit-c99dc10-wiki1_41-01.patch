@@ -1,0 +1,53 @@
+From c99dc10554ce3796856239f29ca8531d4f20fc95 Mon Sep 17 00:00:00 2001
+From: Sven Göthel <sgothel@jausoft.com>
+Date: Thu, 28 Aug 2025 23:59:37 +0200
+Subject: Fix for MediaWiki 1.41: Replace use of deprecated
+ MWHttpRequest::factory (T324918)
+
+See https://phabricator.wikimedia.org/T324918
+
+Replace `MWHttpRequest::factory(` w/ `MediaWikiServices::getInstance()->getHttpRequestFactory()->create(`.
+
+diff --git a/BugzillaQuery.class.php b/BugzillaQuery.class.php
+index 7e3094b..d348661 100644
+--- a/BugzillaQuery.class.php
++++ b/BugzillaQuery.class.php
+@@ -3,6 +3,8 @@
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ 
++use MediaWiki\MediaWikiServices;
++
+ // Factory class
+ class BugzillaQuery
+ {
+@@ -276,7 +278,8 @@ class BugzillaRESTQuery extends BugzillaBaseQuery
+     {
+ 
+         // Add the requested query options to the request
+-        $ua = MWHttpRequest::factory($this->url . '?'
++        $ua = MediaWikiServices::getInstance()->getHttpRequestFactory()
++			  ->create($this->url . '?'
+             . $this->_build_querystring($this->options),
+             [
+                 'method' => 'GET',
+@@ -353,7 +356,8 @@ class BugzillaJSONRPCQuery extends BugzillaBaseQuery
+         $query = json_encode($params, true);
+         $url = $this->url . "?method=$method&params=[" . urlencode($query) . "]";
+ 
+-        $req = MWHttpRequest::factory($url, array(
++        $req = MediaWikiServices::getInstance()->getHttpRequestFactory()
++			  ->create($url, array(
+                 'sslVerifyHost' => false,
+                 'sslVerifyCert' => false
+             )
+@@ -412,7 +416,8 @@ class BugzillaXMLRPCQuery extends BugzillaBaseQuery
+ </methodCall>
+ X;
+ 
+-        $ua = MWHttpRequest::factory($this->url, [
++        $ua = MediaWikiServices::getInstance()->getHttpRequestFactory()
++			  ->create($this->url, [
+             'method' => 'POST',
+             'follow_redirects' => true,
+             // TODO: Not sure if I should do this

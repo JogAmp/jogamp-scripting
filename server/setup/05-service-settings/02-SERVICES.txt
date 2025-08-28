@@ -173,10 +173,8 @@ Debian 12.00
     - apache2 and build ..
         apt-get install apache2 mysql-server build-essential 
 
-    - php
-        apt-get install php5-pgsql php5-ldap php5-imap php5-odbc php5-dev php5-common php5 php5-mysql php5-gd php5-xmlrpc \
-                        php5-xsl php5-cli php5-intl php5-pspell php5-snmp php5-sasl
-
+    - php 8.2
+      - apt install php8.2 php8.2-apcu php8.2-bcmath php8.2-bz2 php8.2-cgi php8.2-cli php8.2-common php8.2-curl php8.2-gd php8.2-gmp php8.2-imagick php8.2-intl php8.2-ldap php8.2-mbstring php8.2-mysql php8.2-opcache php8.2-phpdbg php8.2-readline php8.2-xml php8.2-zip
 
 11.2 bugzilla
     - Debian 12
@@ -236,6 +234,7 @@ Debian 12.00
         ./contrib/recode.pl --guess --charset=utf8
 
         ./checksetup.pl
+    - chown -R webrunner:webrunner .
 
 
 11.3 mediawiki
@@ -246,10 +245,75 @@ Debian 12.00
             // @html-font-size: 100%;
             @html-font-size: 95%;
 
-    Extension mediawiki-bugzillareports
-        - https://www.mediawiki.org/wiki/Extension:Bugzilla_Reports
-        - https://www.mediawiki.org/wiki/Extension_talk:Bugzilla_Reports#Google_Code_Shutting_Down
-        - https://github.com/nakal/mediawiki-bugzillareports
+    - git install
+      - cd <webroot>
+      - chown -R user:user .
+      - git clone --recurse-submodules https://gerrit.wikimedia.org/r/mediawiki/core.git mediawiki-git
+      - ln -s mediawiki-git wiki
+      - Edit LocalSettings.php
+      - chown -R webrunner:webrunner .
+      - chmod 400 LocalSettings.php
+
+    Bugzilla Extension
+     - https://github.com/mozilla/mediawiki-bugzilla
+       - was: https://github.com/nakal/mediawiki-bugzillareports
+     - See also
+       - https://www.mediawiki.org/wiki/Extension:Bugzilla_Reports
+       - https://www.mediawiki.org/wiki/Extension_talk:Bugzilla_Reports#Google_Code_Shutting_Down
+      - cd extensions
+      - git pull https://github.com/mozilla/mediawiki-bugzilla Bugzilla
+
+11.3.1 mediawiki upgrade
+    - cd wiki
+    - chown -R user:user .
+    - as user
+      - Bugzilla https://github.com/mozilla/mediawiki-bugzilla
+        - cd extensions/Bugzilla
+        - if moving from master to main
+          - git checkout --track -b main origin/main
+        - git pull
+        - Patch for MediaWiki 1.41
+          - Apply commit-c99dc10-wiki1_41-01.patch
+            - git checkout -b wiki_fix_1_41
+            - git am commit-c99dc10-wiki1_41-01.patch
+
+      - we use git remote https://gerrit.wikimedia.org/r/mediawiki/core.git
+      - git status
+        - ensure all your local changes are committed for later?
+        - or squash your local changes
+      - git fetch --all
+
+      - See upgrade script in scripts/wiki_toversion.sh
+        - scripts/wiki_toversion.sh REL1_42
+        - scripts/wiki_toversion.sh REL1_43
+        - scripts/wiki_toversion.sh REL1_44
+
+      - Upgrade to 1.40
+        - git checkout --track -b REL1_40 origin/REL1_40
+        - git submodule update --recursive
+        - **** DISABLE ALL Skins but Vector ****
+        - php8.2 maintenance/run.php update
+        - chown -R webrunner:webrunner .
+
+      ...
+
+      - Upgrade to 1.41
+        - git checkout --track -b REL1_41 origin/REL1_41
+        - git submodule update --recursive
+        - **** Apply Bugzilla, see above ****
+        - php maintenance/runScript.php maintenance/update.php
+        - chown -R webrunner:webrunner .
+
+      ... 
+
+      - Upgrade to 1.44
+        - git checkout --track -b REL1_44 origin/REL1_44
+        - git submodule update --recursive
+        - php8.2 maintenance/run.php update
+        - chown -R webrunner:webrunner .
+
+    - chown -R webrunner:webrunner .
+    - chmod 400 LocalSettings.php
 
 11.X Apache ..
     - Sync config files in /etc/apache2/ with: etc/apache2/apache2.diff
