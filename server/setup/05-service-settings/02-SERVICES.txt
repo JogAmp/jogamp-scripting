@@ -254,7 +254,15 @@ Debian 12.00
       - chown -R webrunner:webrunner .
       - chmod 400 LocalSettings.php
 
-    Bugzilla Extension
+    - Caching Setup in LocalSettings.php
+        $wgUseFileCache = true; // default: false
+        $wgFileCacheDirectory = "$IP/images/cache"; // default: "{$wgUploadDirectory}/cache" which equals to "$IP/images/cache"
+
+        ## Shared memory settings
+        $wgMainCacheType = CACHE_ACCEL;
+        $wgMemCachedServers = array();
+
+    - Bugzilla Extension
      - https://github.com/mozilla/mediawiki-bugzilla
        - was: https://github.com/nakal/mediawiki-bugzillareports
      - See also
