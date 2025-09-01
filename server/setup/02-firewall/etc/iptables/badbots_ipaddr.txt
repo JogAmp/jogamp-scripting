@@ -1,2 +1,8 @@
 47.76.209.138   # Alibaba Cloud HK
 47.76.99.127    # Alibaba Cloud HK
+47.76.220.119   # Alibaba Cloud HK https://www.abuseipdb.com/check/47.76.220.119
+80.94.95.209    # https://www.abuseipdb.com/check/80.94.95.209
+# 8.210.30.40     # AlibabaCloud_HK .. but too many ip
+8.210.0.0/16    # AlibabaCloud_HK
+# 47.243.251.69   # ALIBABA-CLOUD---HK .. but too many ip
+47.243.0.0/16   # ALIBABA-CLOUD---HK
