@@ -158,8 +158,10 @@ dnl define(`confTO_QUEUEWARN', `4h')dnl
 dnl define(`confTO_QUEUERETURN', `5d')dnl
 dnl define(`confQUEUE_LA', `12')dnl
 dnl define(`confREFUSE_LA', `18')dnl
-define(`confQUEUE_LA', `12')dnl
-define(`confREFUSE_LA', `18')dnl
+dnl # confQUEUE_LA Default values is (8 * numproc) = 64
+dnl # confREFUSE_LA Default values is (12 * numproc) = 96
+define(`confQUEUE_LA', `64')dnl
+define(`confREFUSE_LA', `96')dnl
 define(`confTO_IDENT', `0')dnl
 
 dnl #
