@@ -1,6 +1,4 @@
-------------------------------------------------------------------------
-Maven deployment scripts
-------------------------------------------------------------------------
+# Maven deployment scripts
 
 The purpose of these scripts is to produce a set of PGP-signed jars and
 POM files for deployment to Maven Central.
@@ -20,9 +18,22 @@ account on one of the large Java "forges". The most-used one seems to be
 Sonatype. See the repository usage guide [1] for details on getting an
 account.
 
-------------------------------------------------------------------------
-Instructions (deploying a release to Central)
-------------------------------------------------------------------------
+## Prerequisites
+
+Close `maven-wagon` branch [wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
+and install locally via 
+
+```
+mvn install -Dmaven.test.skip
+```
+
+This satisfies out dependencies to `wagon-ssh-external` version `3.5.4-SNAPSHOT`,
+as this version contains a required patch to allow processing relative file names.
+
+- [patch](https://github.com/sgothel/maven-wagon/commit/e8ffd1535177b3aa00c4f726d92d957aa29cab31)
+- [merge request](https://github.com/apache/maven-wagon/pull/817)
+
+## Instructions (deploying a release to Central)
 
   1. Obtain the jogamp-all-platforms.7z release for the version
      of jogamp you wish to deploy to Central. As an example, we'll
@@ -152,9 +163,7 @@ Instructions (deploying a release to Central)
 
      If there are still more projects to release, return to step 6.
 
-------------------------------------------------------------------------
-Projects
-------------------------------------------------------------------------
+## Projects
 
 The way that Maven works demanded a certain structure to the projects
 produced. The requirements were:
@@ -194,6 +203,7 @@ files were deployed along with the main jar file for each project. Using
   "gluegen-rt-natives-${OS}-${ARCH}.jar". We use "classifiers" to
   get Maven to "deploy" jar files with the correct names:
 
+```
     PLATFORMS="linux-amd64 linux-i586 ..."
     for PLATFORM in ${PLATFORMS}
     do
@@ -202,13 +212,14 @@ files were deployed along with the main jar file for each project. Using
         -Dfile="gluegen-rt-${VERSION}-natives-${PLATFORM}.jar \
         -Dclassifier="natives-${PLATFORM}"
     done
+```
 
   Assuming version 2.3.0, this results in:
 
-    gluegen-rt-2.3.0.jar
-    gluegen-rt-2.3.0-natives-linux-amd64.jar
-    gluegen-rt-2.3.0-natives-linux-i586.jar
-    ...
+  - gluegen-rt-2.3.0.jar
+  - gluegen-rt-2.3.0-natives-linux-amd64.jar
+  - gluegen-rt-2.3.0-natives-linux-i586.jar
+  - ...
 
 This results in a project with a main jar and a set of native jar
 files, each with the correct name and version. As the native jar
@@ -231,9 +242,7 @@ With that in mind, each part of Maven therefore has an associated
 when added to the dependencies of any project, pulls in all of the
 real jogamp jars, native or otherwise.
 
-------------------------------------------------------------------------
-Test suite
-------------------------------------------------------------------------
+## Test suite
 
 The scripts now include a basic test suite for checking that the
 produced packages actually work in Maven.
@@ -254,9 +263,7 @@ above:
 
     $ ./make-tests-run.sh
 
-------------------------------------------------------------------------
-Notes
-------------------------------------------------------------------------
+## Notes
 
 We're currently uploading empty jar files for the "sources" and
 "javadoc" jars required by Central. The rules state that these
@@ -264,18 +271,17 @@ files are required unconditionally, but may be empty in the case
 that there aren't sources or javadoc. It'd be nice to provide real
 sources and javadoc one day.
 
-------------------------------------------------------------------------
-Footnotes
-------------------------------------------------------------------------
+## Footnotes
 
-[0] http://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html
+[0] [Invoking GPG](http://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html)
 
-[1] https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+[1] [Sonatype OSS Maven Repo Guide](https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide)
 
 [2] Sonatype seems to have the restriction that it's only possible to
     deploy one 'artifactId' at a time - that translates to deploying one
     jogamp project at a time.
 
-[3] https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html
+[3] [Maven Deploy Plugin](https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html)
 
-[4] http://www.jcraft.com/jsch/
+[4] `maven-wagon` branch [wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
+

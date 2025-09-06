@@ -119,7 +119,7 @@ cat <<EOF
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh-external</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.4-SNAPSHOT</version>
       </extension>
     </extensions>
   </build>

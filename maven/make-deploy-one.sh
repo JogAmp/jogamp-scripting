@@ -58,6 +58,14 @@ do
 done
 
 # Deploy everything.
+
+# which mvn
+# mvn --version
+# echo "NAME: ${NAME}"
+# echo "DEPLOY_FILES: ${DEPLOY_FILES}"
+# echo "REPOSITORY_URL: ${REPOSITORY_URL}"
+# echo "REPOSITORY_ID: ${REPOSITORY_ID}"
+
 mvn gpg:sign-and-deploy-file            \
   "-DpomFile=pom.xml"                   \
   "-Dfile=${NAME}.jar"                  \
