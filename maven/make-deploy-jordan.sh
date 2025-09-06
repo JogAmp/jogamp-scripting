@@ -5,7 +5,7 @@ export REPOSITORY_URL="scpexe://jordan/srv/www/jordan/deployment/maven/"
 #export REPOSITORY_URL="file:///net/jordan/srv/www/jordan/deployment/maven/"
 export REPOSITORY_ID="jordan-mirror"
 
-./make-deploy.sh $*
+time ./make-deploy.sh $*
 
 #./make-deploy-one.sh gluegen $*
 #./make-deploy-one.sh gluegen-rt $*
