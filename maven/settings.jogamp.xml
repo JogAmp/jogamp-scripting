@@ -1,0 +1,97 @@
+<settings>
+  <pluginGroups>
+    <pluginGroup>org.jenkins-ci.tools</pluginGroup>
+  </pluginGroups>
+
+  <profiles>
+    <profile>
+      <id>jogamp-mirror</id>
+      <activation>
+        <activeByDefault>false</activeByDefault> <!-- change this to false, if you don't like to have it on per default -->
+        <property>
+          <name>repositoryId</name>
+          <value>jogamp-mirror</value>
+        </property>
+      </activation>
+      <properties>
+        <gpg.useagent>true</gpg.useagent>
+        <gpg.keyname>JogAmp Maven Deployment</gpg.keyname>
+        <gpg.bestPractices>true</gpg.bestPractices>
+      </properties>
+      <repositories>
+        <repository>
+          <id>jogamp-mirror</id>
+          <name>jogamp mirror</name>
+          <url>https://jogamp.org/deployment/maven/</url>
+          <layout>default</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>jogamp-sonatype</id>
+      <activation>
+        <activeByDefault>false</activeByDefault> <!-- change this to false, if you don't like to have it on per default -->
+        <property>
+          <name>repositoryId</name>
+          <value>jogamp-sonatype</value>
+        </property>
+      </activation>
+      <properties>
+        <gpg.useagent>true</gpg.useagent>
+        <gpg.keyname>JogAmp Maven Deployment</gpg.keyname>
+        <gpg.bestPractices>true</gpg.bestPractices>
+      </properties>
+      <repositories>
+        <repository>
+          <id>jogamp-sonatype</id>
+          <name>jogamp sonatype</name>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+          <layout>default</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>jordan-mirror</id>
+      <activation>
+        <activeByDefault>false</activeByDefault> <!-- change this to false, if you don't like to have it on per default -->
+        <property>
+          <name>repositoryId</name>
+          <value>jordan-mirror</value>
+        </property>
+      </activation>
+      <properties>
+        <gpg.useagent>true</gpg.useagent>
+        <gpg.keyname>JogAmp Maven Deployment</gpg.keyname>
+        <gpg.bestPractices>true</gpg.bestPractices>
+      </properties>
+      <repositories>
+        <repository>
+          <id>jordan-mirror</id>
+          <name>jordan mirror</name>
+          <url>http://jordan.goethel.localnet/deployment/maven/</url>
+          <layout>default</layout>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>jogamp-sonatype</id>
+      <username>USERNAME</username>
+      <password>PASSWORD</password>
+    </server>
+    <server>
+      <id>jogamp-mirror</id>
+      <username>jogamp</username>
+      <password></password>
+    </server>
+    <server>
+      <id>jordan-mirror</id>
+      <username>sven</username>
+      <password></password>
+    </server>
+  </servers>
+
+</settings>
+

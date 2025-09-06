@@ -21,7 +21,7 @@ account.
 ## Prerequisites
 
 Close `maven-wagon` branch [wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
-and install locally via 
+and install locally via
 
 ```
 mvn install -Dmaven.test.skip
@@ -49,82 +49,79 @@ as this version contains a required patch to allow processing relative file name
 
     $ cd ..
 
-  3. The Central repository requires PGP signatures on all files
+  3. Maven [$HOME/.m2/settings.xml](settings.jogamp.xml) excerpt
+
+```
+     <?xml version="1.0" encoding="UTF-8"?>
+     <settings
+       xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+       ... >
+       <profiles>
+         <profile>
+           <id>jogamp-sonatype</id>
+           <activation>
+             <activeByDefault>false</activeByDefault> <!-- change this to false, if you don't like to have it on per default -->
+             <property>
+               <name>repositoryId</name>
+               <value>jogamp-sonatype</value>
+             </property>
+           </activation>
+           <properties>
+             <gpg.useagent>true</gpg.useagent>
+             <gpg.keyname>JogAmp Maven Deployment</gpg.keyname>
+             <gpg.bestPractices>true</gpg.bestPractices>
+           </properties>
+           <repositories>
+             <repository>
+               <id>jogamp-sonatype</id>
+               <name>jogamp sonatype</name>
+               <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+               <layout>default</layout>
+             </repository>
+           </repositories>
+         </profile>
+       </profiles>
+       <servers>
+         <server>
+           <id>jogamp-sonatype</id>
+           <username>USERNAME</username>
+           <password>PASSWORD</password>
+         </server>
+       </servers>
+
+     </settings>
+```
+
+
+  4. The Central repository requires PGP signatures on all files
      deployed to the repository. Because we'll be signing a lot
      of files, we need this to occur in the most automated manner
      possible. Therefore, we need to tell Maven which PGP key to
      use and also to tell it to use any running PGP agent we have.
-     To do this, we have to add a profile to $HOME/.m2/settings.xml
+     To do this, we have to add a profile to [$HOME/.m2/settings.xml](settings.jogamp.xml)
      that sets various properties that tell the PGP plugin what
-     to do. My settings.xml looks something like:
+     to do.
 
-     <?xml version="1.0" encoding="UTF-8"?>
-     <settings
-       xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-       <profiles>
-         <profile>
-           <id>jogamp-deployment</id>
-           <properties>
-             <gpg.useagent>true</gpg.useagent>
-             <gpg.keyname>jogamp.com (Release signing key)</gpg.keyname>
-           </properties>
-         </profile>
-       </profiles>
-       <activeProfiles>
-         <activeProfile>jogamp-deployment</activeProfile>
-       </activeProfiles>
-     </settings>
+    I've defined a new profile called `jogamp-sonatype`,
+    which is enabled if the `repositoryId` equals `jogamp-sonatype`.
 
-    That is, I've defined a new profile called "jogamp-deployment"
-    that enables the use of a PGP agent, and uses the string
-    "jogamp.com (Release signing key)" to tell PGP which key to use.
+    This profile enables the use of a PGP agent, and uses the string
+    `JogAmp Maven Deployment` to tell PGP which key to use.
     You can obviously use the fingerprint of the key here too
     (or anything else that uniquely identifies it).
 
     See: http://www.sonatype.com/books/mvnref-book/reference/profiles.html
 
-  4. Now, run make.sh with the desired version number to generate POM
+  5. Now, run make.sh with the desired version number to generate POM
      files and copy jar files to the correct places:
 
       $ ./make.sh 2.3.0
 
-  5. The scripts will have created an 'output' directory, containing
+  6. The scripts will have created an 'output' directory, containing
      all the prepared releases. It's now necessary to deploy the releases,
      one at a time [2]. Assuming that our Sonatype username is 'jogamp'
-     and our password is '********', we now need to edit settings.xml
-     to tell Maven to use them both:
-
-     <?xml version="1.0" encoding="UTF-8"?>
-     <settings
-       xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-       <profiles>
-         <profile>
-           <id>jogamp-deployment</id>
-           <properties>
-             <gpg.useagent>true</gpg.useagent>
-             <gpg.keyname>jogamp.com (Release signing key)</gpg.keyname>
-           </properties>
-         </profile>
-       </profiles>
-       <activeProfiles>
-         <activeProfile>jogamp-deployment</activeProfile>
-       </activeProfiles>
-      <servers>
-        <server>
-          <id>sonatype-nexus-staging</id>
-          <username>jogamp</username>
-          <password>********</password>
-        </server>
-      </servers>
-     </settings>
-
-     That is, we define a new server called 'sonatype-nexus-staging' (this
-     is the name that the scripts use to refer to the remote repository),
-     and state that it wants username 'jogamp' and password '********'.
+     and our password is `********`, we need to edit settings.xml
+     to tell Maven to use them both, see `server` id `jogamp-sonatype` above.
 
   6. Now we can deploy an individual project to the staging repository:
 

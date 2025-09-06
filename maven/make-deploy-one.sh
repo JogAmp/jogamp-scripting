@@ -18,9 +18,7 @@ shift
 
 if [ -z "${REPOSITORY_URL}" -o -z "${REPOSITORY_ID}" ] ; then
   REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-  REPOSITORY_ID="sonatype-nexus-staging"
-  # REPOSITORY_URL="scpexe://jogamp.org/home/mraynsford/repository/"
-  # REPOSITORY_ID="jogamp-test-mirror"
+  REPOSITORY_ID="jogamp-sonatype"
   # REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
   # REPOSITORY_ID="jogamp-mirror"
 fi
@@ -59,8 +57,9 @@ done
 
 # Deploy everything.
 
-# which mvn
-# mvn --version
+which mvn
+mvn --version
+
 # echo "NAME: ${NAME}"
 # echo "DEPLOY_FILES: ${DEPLOY_FILES}"
 # echo "REPOSITORY_URL: ${REPOSITORY_URL}"

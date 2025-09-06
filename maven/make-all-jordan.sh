@@ -32,7 +32,7 @@ function maven_it() {
     7z x jogamp-all-platforms.7z
     cd ..
 
-    ./make.sh ${version} && ./make-deploy-jogamp.sh ${version}
+    ./make.sh ${version} && ./make-deploy-jordan.sh ${version}
 }
 
 maven_it 2>&1 | tee ${logfile}
