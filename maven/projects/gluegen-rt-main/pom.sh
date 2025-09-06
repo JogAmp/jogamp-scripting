@@ -118,8 +118,8 @@ cat <<EOF
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>2.4</version>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>3.5.3</version>
       </extension>
     </extensions>
   </build>
