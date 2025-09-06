@@ -102,15 +102,15 @@ as this version contains a required patch to allow processing relative file name
      that sets various properties that tell the PGP plugin what
      to do.
 
-    I've defined a new profile called `jogamp-sonatype`,
-    which is enabled if the `repositoryId` equals `jogamp-sonatype`.
+     I've defined a new profile called `jogamp-sonatype`,
+     which is enabled if the `repositoryId` equals `jogamp-sonatype`.
 
-    This profile enables the use of a PGP agent, and uses the string
-    `JogAmp Maven Deployment` to tell PGP which key to use.
-    You can obviously use the fingerprint of the key here too
-    (or anything else that uniquely identifies it).
+     This profile enables the use of a PGP agent, and uses the string
+     `JogAmp Maven Deployment` to tell PGP which key to use.
+     You can obviously use the fingerprint of the key here too
+     (or anything else that uniquely identifies it).
 
-    See: http://www.sonatype.com/books/mvnref-book/reference/profiles.html
+     See: http://www.sonatype.com/books/mvnref-book/reference/profiles.html
 
   5. Now, run make.sh with the desired version number to generate POM
      files and copy jar files to the correct places:
