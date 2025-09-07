@@ -11,16 +11,30 @@ system over to Maven), these scripts take an archive of already-released
 jar files and produce renamed jar files and POM files as output, ready
 for deployment to the repository.
 
-These instructions assume that you know how to set up a PGP agent [0].
+These instructions assume that you know how
+to use [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html#Invoking-GPG)
+and set up the [GPG-Agent](https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html#Invoking-GPG_002dAGENT),
+since we utilize the [gpg:sign-and-deploy-file](https://maven.apache.org/plugins/maven-gpg-plugin/sign-and-deploy-file-mojo.html)
+deployment method.
 
 In order to get packages onto Maven Central, it's necessary to have an
 account on one of the large Java "forges". The most-used one seems to be
-Sonatype. See the repository usage guide [1] for details on getting an
-account.
+Sonatype. See [Sonatype's Publisher Portal Guide](https://central.sonatype.org/publish/publish-portal-guide/)
+for details on [register to publish](https://central.sonatype.org/register/central-portal/).
+To handle the [Portal OSSRH Staging API](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/),
+we use a [OSSRH Staging API (swagger)](https://ossrh-staging-api.central.sonatype.com/swagger-ui/) derived
+[shell script functions](sonatype_api.sh).
+
+We also publish via [wagon-ssh-external](https://maven.apache.org/wagon/wagon-providers/wagon-ssh-external/index.html)
+on our [jogamp mirror](https://jogamp.org/deployment/maven/).
 
 ## Prerequisites
 
-Close `maven-wagon` branch [wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
+To also publish via [wagon-ssh-external](https://maven.apache.org/wagon/wagon-providers/wagon-ssh-external/index.html)
+on our [jogamp mirror](https://jogamp.org/deployment/maven/) we require a patched
+[maven-wagon](https://maven.apache.org/wagon/) module.
+
+Clone `maven-wagon` branch [wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
 and install locally via
 
 ```
@@ -40,14 +54,18 @@ as this version contains a required patch to allow processing relative file name
      use 2.3.0. Unpack the 7z file to the 'input' subdirectory,
      creating it if it doesn't exist:
 
+```
     $ mkdir input
     $ cd input
     $ wget http://jogamp.org/deployment/v2.3.0/archive/jogamp-all-platforms.7z
     $ 7z x jogamp-all-platforms.7z
+```
 
   2. Switch back to the old directory:
 
+```
     $ cd ..
+```
 
   3. Maven [$HOME/.m2/settings.xml](settings.jogamp.xml) excerpt
 
@@ -75,7 +93,7 @@ as this version contains a required patch to allow processing relative file name
              <repository>
                <id>jogamp-sonatype</id>
                <name>jogamp sonatype</name>
-               <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+               <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
                <layout>default</layout>
              </repository>
            </repositories>
@@ -115,7 +133,9 @@ as this version contains a required patch to allow processing relative file name
   5. Now, run make.sh with the desired version number to generate POM
      files and copy jar files to the correct places:
 
+```
       $ ./make.sh 2.3.0
+```
 
   6. The scripts will have created an 'output' directory, containing
      all the prepared releases. It's now necessary to deploy the releases,
@@ -123,42 +143,43 @@ as this version contains a required patch to allow processing relative file name
      and our password is `********`, we need to edit settings.xml
      to tell Maven to use them both, see `server` id `jogamp-sonatype` above.
 
-  6. Now we can deploy an individual project to the staging repository:
+  6. Now we can deploy...
 
+     To deploy an individual project to repositories other than Sonatype's OSSRH:
+
+```
+      $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
+      $ export REPOSITORY_ID="jogamp-mirror"
       $ ./make-deploy-one.sh gluegen-rt-main 2.3.0
+```
 
-     Or deploy all of the projects defined in make-projects.txt:
+     To deploy all of the projects listed in the folder `projects` to repositories other than Sonatype's OSSRH:
 
+```
+      $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
+      $ export REPOSITORY_ID="jogamp-mirror"
       $ ./make-deploy.sh 2.3.0
+```
 
      The scripts will upload all necessary jars, poms, signatures, etc.
 
-  7. Now, we need to tell the Sonatype repository that we wish to actually
-     promote the uploaded ("staged") files to a release. This step (unfortunately)
-     doesn't seem to be possible from the command line.
+     To manage the staging upload on [Sonatype's Portal OSSRH Staging](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/),
+     we injext [API command](sonatype_api.sh) within [make-deploy-sonatype.sh](make-deploy-sonatype.sh).
+     Thereofor, to deploy on Sonatype's OSSRH use:
 
-     Log in to https://oss.sonatype.org using the 'jogamp:********' username
-     and password.
+```
+      $ ./make-deploy-sonatype.sh 2.3.0
+```
 
-     Click 'Staging repositories' in the left navigation bar.
+     This shall upload to staging, release taging to central namespace and also
+     bring the validated packages into `publishing` state. The latter may take time,
+     but eventually move into state `published`.
 
-     In the main pane, there should now be a table of repositories. Because
-     we've just uploaded a set of files, there should be one entry (staging
-     repositories are automatically created when files are uploaded).
 
-     Click the checkbox to the left of the repository name. This will open
-     a 'repository browser' below the main view, showing a tree of files.
-     Inspect the tree of files to be sure that all of the necessary files are
-     present.
+  7. To manage the Sonatype repository, e.g. see the `publishing`, `published` or `failed`
+     packages we shall log-in to https://central.sonatype.com/account.
 
-     If all files are there, and assuming that the checkbox is still selected
-     from the previous step, click the 'Close' button above the repository
-     browser - this will 'close' the staging repository (meaning no new files
-     can be added). Then click 'Release' when you absolutely positively want
-     to commit. The release will be made official and the files synced to
-     the Central repository within two hours.
-
-     If there are still more projects to release, return to step 6.
+     Click 'Publish' in the top navigation bar, now you should see the successfully
 
 ## Projects
 
@@ -249,16 +270,22 @@ above:
 
   1. Generate project files for the tests:
 
+```
     $ ./make-tests.sh 2.3.0
+```
 
   2. Deploy packages to a local directory for the unit tests
      to use:
 
+```
      $ ./make-tests-deploy.sh 2.3.0
+```
 
   3. Run the tests.
 
+```
     $ ./make-tests-run.sh
+```
 
 ## Notes
 
@@ -268,17 +295,21 @@ files are required unconditionally, but may be empty in the case
 that there aren't sources or javadoc. It'd be nice to provide real
 sources and javadoc one day.
 
-## Footnotes
+## References
 
-[0] [Invoking GPG](http://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html)
-
-[1] [Sonatype OSS Maven Repo Guide](https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide)
-
-[2] Sonatype seems to have the restriction that it's only possible to
-    deploy one 'artifactId' at a time - that translates to deploying one
-    jogamp project at a time.
-
-[3] [Maven Deploy Plugin](https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html)
-
-[4] `maven-wagon` branch [wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
+- [GnuPG](https://www.gnupg.org/documentation/manuals/gnupg/index.html)
+  - [Invoking GPG](https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html#Invoking-GPG)
+  - [Invoking GPG-Agent](https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG_002dAGENT.html#Invoking-GPG_002dAGENT)
+- [Sonatype: Publisher Portal Guide](https://central.sonatype.org/publish/publish-portal-guide/)
+  - [Register to Publish](https://central.sonatype.org/register/central-portal/)
+  - [Publishing By Using the Portal OSSRH Staging API](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/)
+  - [OSSRH Staging API (swagger)](https://ossrh-staging-api.central.sonatype.com/swagger-ui/)
+- [Apache Maven](https://maven.apache.org/index.html)
+  - [Deploy Plugin](https://maven.apache.org/plugins/maven-deploy-plugin/)
+  - [Deploy an artifact with classifier](https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html)
+  - [gpg:sign-and-deploy-file](https://maven.apache.org/plugins/maven-gpg-plugin/sign-and-deploy-file-mojo.html)
+  - [maven-wagon](https://maven.apache.org/wagon/)
+    - [wagon-ssh-external](https://maven.apache.org/wagon/wagon-providers/wagon-ssh-external/index.html)
+    - [source](https://github.com/apache/maven-wagon)
+      - [patched branch wagon-3.x](https://github.com/sgothel/maven-wagon/tree/wagon-3.x)
 

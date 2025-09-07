@@ -17,7 +17,7 @@ VERSION="$1"
 shift
 
 if [ -z "${REPOSITORY_URL}" -o -z "${REPOSITORY_ID}" ] ; then
-  REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+  REPOSITORY_URL="https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
   REPOSITORY_ID="jogamp-sonatype"
   # REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
   # REPOSITORY_ID="jogamp-mirror"
@@ -73,4 +73,9 @@ mvn gpg:sign-and-deploy-file            \
   "-Dtypes=${DEPLOY_TYPES}"             \
   "-Durl=${REPOSITORY_URL}"             \
   "-DrepositoryId=${REPOSITORY_ID}"
+
+if [ $? -ne 0 ] ; then
+  echo "Failure: gpg:sign-and-deploy-file" >&2
+  exit 1
+fi
 

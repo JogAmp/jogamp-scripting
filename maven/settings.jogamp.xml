@@ -45,7 +45,7 @@
         <repository>
           <id>jogamp-sonatype</id>
           <name>jogamp sonatype</name>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+          <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
           <layout>default</layout>
         </repository>
       </repositories>
