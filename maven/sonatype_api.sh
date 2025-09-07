@@ -2,21 +2,43 @@
 
 sdir_0=`dirname $0`
 sdir=`readlink -f $sdir_0`
-. $sdir/sonatype_api_token.txt
+
+# Using variables: api_user, api_password, repository_key
+if [ -e $sdir/sonatype_api_token.txt ] ; then
+    . $sdir/sonatype_api_token.txt
+fi
 
 # set -x
 
+CURL_OPTS="--silent --fail-with-body --show-error"
+
+handle_result() {
+    err=$1
+    res="$2"
+    if [ ${err} -eq 0 ] ; then
+        echo "${res}" | grep -e '^{\"error\":' 2>&1 > /dev/null && err=1
+    fi
+    if [ ${err} -eq 0 ] ; then
+        echo "reply: OK: ${res}"
+    else
+        echo "reply: ERROR: ${res}"
+    fi
+    return ${err}
+}
+
 sonatype_search_repos() {
-    curl -u ${api_user}:${api_password} --anyauth --request GET \
+    res=`curl ${CURL_OPTS} -u ${api_user}:${api_password} --anyauth --request GET \
         --header "accept: application/json" \
-        "https://ossrh-staging-api.central.sonatype.com/manual/search/repositories?ip=any"
+        "https://ossrh-staging-api.central.sonatype.com/manual/search/repositories?ip=any"`
+    handle_result $? "${res}"
     return $?
 }
 sonatype_set_default_repo() {
-    curl -u ${api_user}:${api_password} --anyauth --request POST \
+    res=`curl ${CURL_OPTS} -u ${api_user}:${api_password} --anyauth --request POST \
         --header 'accept: */*' \
         -d '' \
-        "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.jogamp?publishing_type=automatic"
+        "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/org.jogamp?publishing_type=automatic"`
+    handle_result $? "${res}"
     return $?
 }
 sonatype_upload_staging() {
@@ -25,10 +47,11 @@ sonatype_upload_staging() {
         echo "repository_key is empty"
         exit 1
     fi
-    curl -u ${api_user}:${api_password} --anyauth --request POST \
+    res=`curl ${CURL_OPTS} -u ${api_user}:${api_password} --anyauth --request POST \
         --header 'accept: */*' \
         -d '' \
-        "https://ossrh-staging-api.central.sonatype.com/manual/upload/repository/${repository_key}?publishing_type=automatic"
+        "https://ossrh-staging-api.central.sonatype.com/manual/upload/repository/${repository_key}?publishing_type=automatic"`
+    handle_result $? "${res}"
     return $?
 }
 sonatype_drop_staging() {
@@ -37,9 +60,10 @@ sonatype_drop_staging() {
         echo "repository_key is empty"
         exit 1
     fi
-    curl -u ${api_user}:${api_password} --anyauth --request DELETE \
+    res=`curl ${CURL_OPTS} -u ${api_user}:${api_password} --anyauth --request DELETE \
         --header 'accept: */*' \
-        "https://ossrh-staging-api.central.sonatype.com/manual/drop/repository/${repository_key}"
+        "https://ossrh-staging-api.central.sonatype.com/manual/drop/repository/${repository_key}"`
+    handle_result $? "${res}"
     return $?
 }
 
