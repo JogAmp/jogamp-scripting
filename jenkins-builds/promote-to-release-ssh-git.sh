@@ -38,11 +38,15 @@ scp sha512sum.txt.sig jogamp@jogamp.org:$rootdir/$sdir/$version/
 #"
 
 scp jogamp@jogamp.org:$rootdir/$sdir/$version/archive/jogamp-all-platforms.7z ../maven
-echo "#!/bin/sh" > deploy_maven.sh
-echo "cd ../maven" >> deploy_maven.sh
-echo "./make-all-jogamp.sh jogamp-all-platforms.7z ${plain_version}" >> deploy_maven.sh
-echo "./make-deploy-sonatype.sh ${plain_version}" >> deploy_maven.sh
-echo "deploy_maven.sh generated, consider using it"
+
+cat <<EOF > deploy_maven.sh
+#!/bin/sh
+cd ../maven
+./make-all-jogamp.sh jogamp-all-platforms.7z ${plain_version}
+./make-deploy-sonatype.sh ${plain_version}
+EOF
+
+deploy_maven.sh generated, consider using it"
 cat deploy_maven.sh
 
 }
