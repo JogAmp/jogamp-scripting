@@ -47,154 +47,161 @@ as this version contains a required patch to allow processing relative file name
 - [patch](https://github.com/sgothel/maven-wagon/commit/e8ffd1535177b3aa00c4f726d92d957aa29cab31)
 - [merge request](https://github.com/apache/maven-wagon/pull/817)
 
-## Instructions (deploying a release to Central)
+## Instructions
 
-  1. Obtain the jogamp-all-platforms.7z release for the version
-     of jogamp you wish to deploy to Central. As an example, we'll
-     use 2.3.0. Unpack the 7z file to the 'input' subdirectory,
-     creating it if it doesn't exist:
+### Prepare input Source Files
+Obtain the jogamp-all-platforms.7z release for the version
+of jogamp you wish to deploy to Central. As an example, we'll
+use 2.3.0. Unpack the 7z file to the 'input' subdirectory,
+creating it if it doesn't exist:
 
-    ```
-    $ mkdir input
-    $ cd input
-    $ wget http://jogamp.org/deployment/v2.3.0/archive/jogamp-all-platforms.7z
-    $ 7z x jogamp-all-platforms.7z
-    ```
+```
+$ mkdir input
+$ cd input
+$ wget http://jogamp.org/deployment/v2.3.0/archive/jogamp-all-platforms.7z
+$ 7z x jogamp-all-platforms.7z
+```
 
-  2. Switch back to the old directory:
+Switch back to the old directory:
 
-    ```
-    $ cd ..
-    ```
+```
+$ cd ..
+```
 
-  3. Maven [$HOME/.m2/settings.xml](settings.jogamp.xml) excerpt
+### Prepare Maven User Settings
 
-    ```
-     <?xml version="1.0" encoding="UTF-8"?>
-     <settings
-       xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-       ... >
-       <profiles>
-         <profile>
+Excerpt from our [$HOME/.m2/settings.xml](settings.jogamp.xml):
+
+```
+ <?xml version="1.0" encoding="UTF-8"?>
+ <settings
+   xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+   ... >
+   <profiles>
+     <profile>
+       <id>jogamp-sonatype</id>
+       <activation>
+         <activeByDefault>false</activeByDefault> <!-- change this to false, if you don't like to have it on per default -->
+         <property>
+           <name>repositoryId</name>
+           <value>jogamp-sonatype</value>
+         </property>
+       </activation>
+       <properties>
+         <gpg.useagent>true</gpg.useagent>
+         <gpg.keyname>JogAmp Maven Deployment</gpg.keyname>
+         <gpg.bestPractices>true</gpg.bestPractices>
+       </properties>
+       <repositories>
+         <repository>
            <id>jogamp-sonatype</id>
-           <activation>
-             <activeByDefault>false</activeByDefault> <!-- change this to false, if you don't like to have it on per default -->
-             <property>
-               <name>repositoryId</name>
-               <value>jogamp-sonatype</value>
-             </property>
-           </activation>
-           <properties>
-             <gpg.useagent>true</gpg.useagent>
-             <gpg.keyname>JogAmp Maven Deployment</gpg.keyname>
-             <gpg.bestPractices>true</gpg.bestPractices>
-           </properties>
-           <repositories>
-             <repository>
-               <id>jogamp-sonatype</id>
-               <name>jogamp sonatype</name>
-               <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
-               <layout>default</layout>
-             </repository>
-           </repositories>
-         </profile>
-       </profiles>
-       <servers>
-         <server>
-           <id>jogamp-sonatype</id>
-           <username>USERNAME</username>
-           <password>PASSWORD</password>
-         </server>
-       </servers>
+           <name>jogamp sonatype</name>
+           <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
+           <layout>default</layout>
+         </repository>
+       </repositories>
+     </profile>
+   </profiles>
+   <servers>
+     <server>
+       <id>jogamp-sonatype</id>
+       <username>USERNAME</username>
+       <password>PASSWORD</password>
+     </server>
+   </servers>
 
-     </settings>
-    ```
+ </settings>
+```
 
+The Central repository requires PGP signatures on all files
+deployed to the repository. Because we'll be signing a lot
+of files, we need this to occur in the most automated manner
+possible. Therefore, we need to tell Maven which PGP key to
+use and also to tell it to use any running PGP agent we have.
+To do this, we have to add a profile to [$HOME/.m2/settings.xml](settings.jogamp.xml)
+that sets various properties that tell the PGP plugin what
+to do.
 
-  4. The Central repository requires PGP signatures on all files
-     deployed to the repository. Because we'll be signing a lot
-     of files, we need this to occur in the most automated manner
-     possible. Therefore, we need to tell Maven which PGP key to
-     use and also to tell it to use any running PGP agent we have.
-     To do this, we have to add a profile to [$HOME/.m2/settings.xml](settings.jogamp.xml)
-     that sets various properties that tell the PGP plugin what
-     to do.
+We have defined a new profile called `jogamp-sonatype`,
+which is enabled if the `repositoryId` equals `jogamp-sonatype`.
 
-     I've defined a new profile called `jogamp-sonatype`,
-     which is enabled if the `repositoryId` equals `jogamp-sonatype`.
+This profile enables the use of a PGP agent, and uses the string
+`JogAmp Maven Deployment` to tell PGP which key to use.
+You can obviously use the fingerprint of the key here too
+(or anything else that uniquely identifies it).
 
-     This profile enables the use of a PGP agent, and uses the string
-     `JogAmp Maven Deployment` to tell PGP which key to use.
-     You can obviously use the fingerprint of the key here too
-     (or anything else that uniquely identifies it).
+See: http://www.sonatype.com/books/mvnref-book/reference/profiles.html
 
-     See: http://www.sonatype.com/books/mvnref-book/reference/profiles.html
+### Prepare output Upload Files
 
-  5. Now, run make.sh with the desired version number to generate POM
-     files and copy jar files to the correct places:
+Now, run make.sh with the desired version number to generate POM
+files and copy jar files to the correct places:
 
-    ```
-      $ ./make.sh 2.3.0
-    ```
+```
+  $ ./make.sh 2.3.0
+```
 
-  6. The scripts will have created an 'output' directory, containing
-     all the prepared releases. It's now necessary to deploy the releases,
-     one at a time [2]. Assuming that our Sonatype username is 'jogamp'
-     and our password is `********`, we need to edit settings.xml
-     to tell Maven to use them both, see `server` id `jogamp-sonatype` above.
+The scripts will have created an 'output' directory, containing
+all the prepared releases. It's now necessary to deploy the releases,
+one at a time [2]. Assuming that our Sonatype username is 'jogamp'
+and our password is `********`, we need to edit settings.xml
+to tell Maven to use them both, see `server` id `jogamp-sonatype` above.
 
-  7. Now we can deploy...
+### Deployment
 
-     To deploy an individual project to repositories other than Sonatype's OSSRH:
+#### Deployment to repositories other than Sonatype's OSSRH
 
-    ```
-      $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
-      $ export REPOSITORY_ID="jogamp-mirror"
-      $ ./make-deploy-one.sh gluegen-rt-main 2.3.0
-    ```
+To deploy an individual project to repositories other than Sonatype's OSSRH:
 
-     To deploy all of the projects listed in the folder `projects` to repositories other than Sonatype's OSSRH:
+```
+  $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
+  $ export REPOSITORY_ID="jogamp-mirror"
+  $ ./make-deploy-one.sh gluegen-rt-main 2.3.0
+```
 
-    ```
-      $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
-      $ export REPOSITORY_ID="jogamp-mirror"
-      $ ./make-deploy.sh 2.3.0
-    ```
+To deploy all of the projects listed in the folder `projects` to repositories other than Sonatype's OSSRH:
 
+```
+  $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
+  $ export REPOSITORY_ID="jogamp-mirror"
+  $ ./make-deploy.sh 2.3.0
+```
 
-     The scripts will upload all necessary jars, poms, signatures, etc.
+The scripts will upload all necessary jars, poms, signatures, etc.
 
-     To manage the staging upload on [Sonatype's Portal OSSRH Staging](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/),
-     we injext [API command](sonatype_api.sh) within [make-deploy-sonatype.sh](make-deploy-sonatype.sh).
-     Thereofor, to deploy on Sonatype's OSSRH use:
+#### Deployment to Sonatype's OSSRH
 
-    ```
-      $ ./make-deploy-sonatype.sh 2.3.0
-    ```
+To manage the staging upload on [Sonatype's Portal OSSRH Staging](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/),
+we injext [API command](sonatype_api.sh) within [make-deploy-sonatype.sh](make-deploy-sonatype.sh).
+Thereofor, to deploy on Sonatype's OSSRH use:
 
-     This shall upload to staging, release taging to central namespace and also
-     bring the validated packages into `publishing` state. The latter may take time,
-     but eventually move into state `published`.
+```
+  $ ./make-deploy-sonatype.sh 2.3.0
+```
+
+This shall upload to staging, release taging to central namespace and also
+bring the validated packages into `publishing` state. The latter may take time,
+but eventually move into state `published`.
 
 
-  8. To manage the Sonatype repository, e.g. see the `publishing`, `published` or `failed`
-     packages we shall log-in to https://central.sonatype.com/account.
+To manage the Sonatype repository, e.g. see the `publishing`, `published` or `failed`
+packages we shall log-in to https://central.sonatype.com/account.
 
-     Click 'Publish' in the top navigation bar, now you should see the successfully
+Click 'Publish' in the top navigation bar, now you should see the successfully
 
 ## Projects
 
 The way that Maven works demanded a certain structure to the projects
 produced. The requirements were:
 
-  1. The end-user of the jogamp projects released to the repository
-     must not have to do anything beyond adding one or two dependencies
-     to their own projects. Everything must work using only the basic
-     dependency resolution mechanism that Maven supports and must not
-     require anything complex in the way of build scripts.
+- The end-user of the jogamp projects released to the repository
+  must not have to do anything beyond adding one or two dependencies
+  to their own projects. Everything must work using only the basic
+  dependency resolution mechanism that Maven supports and must not
+  require anything complex in the way of build scripts.
 
-  2. The way that jogamp projects locate their own jar files must
-     work as it always had.
+- The way that jogamp projects locate their own jar files must
+  work as it always had.
 
 The first requirement was reasonably easy to satisfy (and the details
 of which will be covered shortly). The second requirement was complicated
@@ -215,10 +222,10 @@ was created. Then, using the "classifiers" [3], each of the native jar
 files were deployed along with the main jar file for each project. Using
 'gluegen-rt' as an example:
 
-  The main jar file as part of jogamp is "gluegen-rt.jar". When
+- The main jar file as part of jogamp is "gluegen-rt.jar". When
   "deployed" by Maven, this becomes "gluegen-rt-${VERSION}.jar".
 
-  Each native jar file associated with gluegen-rt is named
+- Each native jar file associated with gluegen-rt is named
   "gluegen-rt-natives-${OS}-${ARCH}.jar". We use "classifiers" to
   get Maven to "deploy" jar files with the correct names:
 
@@ -233,12 +240,12 @@ files were deployed along with the main jar file for each project. Using
     done
 ```
 
-  Assuming version 2.3.0, this results in:
+Assuming version 2.3.0, this results in:
 
-  - gluegen-rt-2.3.0.jar
-  - gluegen-rt-2.3.0-natives-linux-amd64.jar
-  - gluegen-rt-2.3.0-natives-linux-i586.jar
-  - ...
+- gluegen-rt-2.3.0.jar
+- gluegen-rt-2.3.0-natives-linux-amd64.jar
+- gluegen-rt-2.3.0-natives-linux-i586.jar
+- ...
 
 This results in a project with a main jar and a set of native jar
 files, each with the correct name and version. As the native jar
