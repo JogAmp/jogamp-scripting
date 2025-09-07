@@ -54,22 +54,22 @@ as this version contains a required patch to allow processing relative file name
      use 2.3.0. Unpack the 7z file to the 'input' subdirectory,
      creating it if it doesn't exist:
 
-```
+    ```
     $ mkdir input
     $ cd input
     $ wget http://jogamp.org/deployment/v2.3.0/archive/jogamp-all-platforms.7z
     $ 7z x jogamp-all-platforms.7z
-```
+    ```
 
   2. Switch back to the old directory:
 
-```
+    ```
     $ cd ..
-```
+    ```
 
   3. Maven [$HOME/.m2/settings.xml](settings.jogamp.xml) excerpt
 
-```
+    ```
      <?xml version="1.0" encoding="UTF-8"?>
      <settings
        xmlns="http://maven.apache.org/SETTINGS/1.0.0"
@@ -108,7 +108,7 @@ as this version contains a required patch to allow processing relative file name
        </servers>
 
      </settings>
-```
+    ```
 
 
   4. The Central repository requires PGP signatures on all files
@@ -133,9 +133,9 @@ as this version contains a required patch to allow processing relative file name
   5. Now, run make.sh with the desired version number to generate POM
      files and copy jar files to the correct places:
 
-```
+    ```
       $ ./make.sh 2.3.0
-```
+    ```
 
   6. The scripts will have created an 'output' directory, containing
      all the prepared releases. It's now necessary to deploy the releases,
@@ -143,23 +143,24 @@ as this version contains a required patch to allow processing relative file name
      and our password is `********`, we need to edit settings.xml
      to tell Maven to use them both, see `server` id `jogamp-sonatype` above.
 
-  6. Now we can deploy...
+  7. Now we can deploy...
 
      To deploy an individual project to repositories other than Sonatype's OSSRH:
 
-```
+    ```
       $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
       $ export REPOSITORY_ID="jogamp-mirror"
       $ ./make-deploy-one.sh gluegen-rt-main 2.3.0
-```
+    ```
 
      To deploy all of the projects listed in the folder `projects` to repositories other than Sonatype's OSSRH:
 
-```
+    ```
       $ export REPOSITORY_URL="scpexe://jogamp.org/srv/www/jogamp.org/deployment/maven/"
       $ export REPOSITORY_ID="jogamp-mirror"
       $ ./make-deploy.sh 2.3.0
-```
+    ```
+
 
      The scripts will upload all necessary jars, poms, signatures, etc.
 
@@ -167,16 +168,16 @@ as this version contains a required patch to allow processing relative file name
      we injext [API command](sonatype_api.sh) within [make-deploy-sonatype.sh](make-deploy-sonatype.sh).
      Thereofor, to deploy on Sonatype's OSSRH use:
 
-```
+    ```
       $ ./make-deploy-sonatype.sh 2.3.0
-```
+    ```
 
      This shall upload to staging, release taging to central namespace and also
      bring the validated packages into `publishing` state. The latter may take time,
      but eventually move into state `published`.
 
 
-  7. To manage the Sonatype repository, e.g. see the `publishing`, `published` or `failed`
+  8. To manage the Sonatype repository, e.g. see the `publishing`, `published` or `failed`
      packages we shall log-in to https://central.sonatype.com/account.
 
      Click 'Publish' in the top navigation bar, now you should see the successfully
