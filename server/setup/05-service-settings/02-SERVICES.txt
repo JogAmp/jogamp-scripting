@@ -55,8 +55,15 @@ Debian 12.00
 
         - MariaDB + ZFS Performance
           - zfs create -o mountpoint=/var/lib/mysql -o recordsize=16K jogamp_org/mysql
-          - /etc/mysql/my.cnf
+          - /etc/mysql/my.cnf -> /etc/mysql/mariadb.cnf
             [mysqld]
+            # sz 2GiB, max 5GiB
+            # innodb_buffer_pool_size = 2147484000
+            # innodb_buffer_pool_size_max = 5368709000
+            # sz 1GiB, max 2GiB
+            innodb_buffer_pool_size = 1073742000
+            innodb_buffer_pool_size_max = 2147484000
+
             #
             # * InnoDB on ZFS
             #   https://shatteredsilicon.net/mysql-mariadb-innodb-on-zfs/
@@ -210,7 +217,15 @@ Debian 12.00
 
     - https://www.bugzilla.org/download/#stable
 
-11.2.1 bugzilla upgrade
+11.2.1 bugzilla using mod_perl + mpm_prefork
+    Turns out mod_perl saves us lots of CPU + Memory!
+    - a2dismod mpm_event
+    - a2enmod mpm_prefork
+    - place into vhost config INSTEAD of <Directory /srv/www/jogamp.org/bugzilla>...
+        PerlSwitches -w -T
+        PerlConfigRequire /srv/www/jogamp.org/bugzilla/mod_perl.pl
+
+11.2.2 bugzilla upgrade
     - prep bugzilla
       - set parameters shutdown
       - backup database
