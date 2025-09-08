@@ -1,9 +1,7 @@
 # Maven deployment scripts
 
 The purpose of these scripts is to produce a set of PGP-signed jars and
-POM files for deployment to Maven Central.
-
-  http://search.maven.org
+POM files for [deployment to Maven Central](http://search.maven.org).
 
 Because the jogamp projects do not use Maven to manage their own builds
 (and it would be too much work for very little gain to convert the build
@@ -24,6 +22,10 @@ for details on [register to publish](https://central.sonatype.org/register/centr
 To handle the [Portal OSSRH Staging API](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/),
 we use a [OSSRH Staging API (swagger)](https://ossrh-staging-api.central.sonatype.com/swagger-ui/) derived
 [shell script functions](sonatype_api.sh).
+
+You may also want to read [Publishing on Sonatype’s Central Maven Repo](https://jausoft.com/blog/2025/09/07/publishing-on-sonatypes-central-maven-repo/)
+detailing the [Portal OSSRH Staging API](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/)
+within the regular Maven deployment process via [gpg:sign-and-deploy-file](https://maven.apache.org/plugins/maven-gpg-plugin/sign-and-deploy-file-mojo.html).
 
 We also publish via [wagon-ssh-external](https://maven.apache.org/wagon/wagon-providers/wagon-ssh-external/index.html)
 on our [jogamp mirror](https://jogamp.org/deployment/maven/).
@@ -312,6 +314,7 @@ sources and javadoc one day.
   - [Register to Publish](https://central.sonatype.org/register/central-portal/)
   - [Publishing By Using the Portal OSSRH Staging API](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/)
   - [OSSRH Staging API (swagger)](https://ossrh-staging-api.central.sonatype.com/swagger-ui/)
+  - [Publishing on Sonatype’s Central Maven Repo](https://jausoft.com/blog/2025/09/07/publishing-on-sonatypes-central-maven-repo/)
 - [Apache Maven](https://maven.apache.org/index.html)
   - [Deploy Plugin](https://maven.apache.org/plugins/maven-deploy-plugin/)
   - [Deploy an artifact with classifier](https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploying-with-classifiers.html)
