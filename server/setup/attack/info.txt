@@ -1,9 +1,13 @@
 
-watch 'netstat -tuna | wc'
+watch 'netstat -tuna | wc -l'
 
 Number of open connections per ip
 - netstat -ntu | tail -n +3 | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n
 - netstat -ntu | awk -F"[ :]+" 'NR>2{print $6}'|sort|uniq -c|sort -nr
+
+SYN flood
+- netstat -n | grep -e :443 -e SYN a |wc -l
+- watch 'netstat -n | grep -e :443 -e SYN | wc -l'
 
 +++
 
@@ -11,6 +15,10 @@ sysctl -w net.ipv4.tcp_max_syn_backlog=5000
 /etc/sysctl.conf
     net.ipv4.tcp_syncookies=1
     net.ipv4.tcp_max_syn_backlog=5000
+    net.ipv4.tcp_sack = 0
+    # maybe, defaults: kernel.msgmnb=8192 and kernel.msgmax=16384
+    kernel.msgmnb=16384
+    kernel.msgmax=65536
 
 /etc/apache2/apache2.conf
     ListenBackLog 5000
@@ -19,8 +27,8 @@ tail -f /var/log/messages /var/log/syslog /var/log/daemon.log
 
 +++
 
-# a2dismod mpm_prefork
-# a2enmod mpm_event
+a2dismod mpm_prefork
+a2enmod mpm_event
 
 a2enmod http2
 
@@ -34,6 +42,8 @@ sites-enabled/001-jausoft_com-ssl.conf
 +++
 
 11.2.1 bugzilla using mod_perl + mpm_prefork
+    This doesn't solve the bugzilla request and overall server performance :(
+
     Turns out mod_perl saves us lots of CPU + Memory!
     - a2dismod mpm_event
     - a2enmod mpm_prefork
