@@ -17,7 +17,7 @@ Debian 12.00
     - logrotate
       /etc/logrotate.conf: compress, 48 weeks
       /etc/logrotate.d/rsyslog: Add /var/log/firewall and /var/log/dovecot.log
-      
+
 03 move all users
     - mv /data/backup/home/* /home/
     - for all groups: groupadd -g GID groupname
@@ -34,7 +34,7 @@ Debian 12.00
         - old server: backup DB
           - run backup-mysql.sh on old server, result is e.g. backup-mysqldb-20130605162509.sql
           - !!! strip all system-DB's (schema's) from the backup,
-            i.e. all which are not created for applications, e.g.: 
+            i.e. all which are not created for applications, e.g.:
             - mysql
             - users
             - test
@@ -162,7 +162,7 @@ Debian 12.00
         - add TXT dns entry _dmarc.jogamp.org IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@jogamp.org; adkim=r; aspf=r; pct=100; rf=afrf; sp=none"
 
     /etc/init.d/sendmail start
-    
+
 10 GIT
     xinetd for git
         apt-get install xinetd
@@ -176,87 +176,109 @@ Debian 12.00
 
 11 Apache2 / Webservices
 
+We setup the regular apache2 server (master)
+using mpm_event worker connecting to
+a second apache2-bugzille using mpm_prefork + mod_perl.
+
+11.0 system attack mitigation
+  - /etc/sysctl.conf
+    net.ipv4.tcp_syncookies=1
+    net.ipv4.tcp_max_syn_backlog=5000
+    net.ipv4.tcp_sack = 0
+    # maybe, defaults: kernel.msgmnb=8192 and kernel.msgmax=16384
+    kernel.msgmnb=16384
+    kernel.msgmax=65536
+
 11.1 generic
     - apache2 and build ..
-        apt-get install apache2 mysql-server build-essential 
+        apt-get install apache2 mysql-server build-essential
 
     - php 8.2
       - apt install php8.2 php8.2-apcu php8.2-bcmath php8.2-bz2 php8.2-cgi php8.2-cli php8.2-common php8.2-curl php8.2-gd php8.2-gmp php8.2-imagick php8.2-intl php8.2-ldap php8.2-mbstring php8.2-mysql php8.2-opcache php8.2-phpdbg php8.2-readline php8.2-xml php8.2-zip
 
-    - Using mpm_event
-      - a2dismod mpm_prefork (or whatever worker is used in default)
-      - a2enmod mpm_event
+    - /etc/apache2
+        - DocumentRoot /srv/www/jogamp.org
+        - Port 80, 443
 
-    - http2
-      - a2enmod http2
-      - mods-enabled/http2.conf
-         H2Push          off
+        - Using mpm_event
+          - a2dismod mpm_prefork (or whatever worker is used in default)
+          - a2enmod mpm_event
 
-      - sites-enabled/001-jausoft_com-ssl.conf
-         <VirtualHost *:443>
-         Protocols h2 http/1.1
+        - for bugzilla etc
+          - a2enmod rewrite
+          - a2enmod expires
 
-    - attack
-      - /etc/apache2/apache2.conf
-        #Timeout 60 (default)
-        Timeout 10
-        KeepAlive On
-        MaxKeepAliveRequests 100 (default)
-        KeepAliveTimeout 5
-        #KeepAliveTimeout 10 (maybe OK)
-        ListenBackLog 5000
+        - http2
+          - a2enmod http2
+          - mods-enabled/http2.conf
+             H2Push          off
 
-      - /etc/sysctl.conf
-        net.ipv4.tcp_syncookies=1
-        net.ipv4.tcp_max_syn_backlog=5000
-        net.ipv4.tcp_sack = 0
-        # maybe, defaults: kernel.msgmnb=8192 and kernel.msgmax=16384
-        kernel.msgmnb=16384
-        kernel.msgmax=65536
+          - ln -s /etc/apache2/sites-available/jogamp_org-ssl-bugzilla_redir.conf /etc/apache2/sites-enabled/001-jogamp_org-ssl.conf
+          - /etc/apache2/sites-enabled/001-jogamp_org-ssl.conf
+             <VirtualHost *:443>
+             Protocols h2 http/1.1
+
+        - attack
+          - /etc/apache2/apache2.conf
+            #Timeout 60 (default)
+            Timeout 10
+            KeepAlive On
+            MaxKeepAliveRequests 100 (default)
+            KeepAliveTimeout 5
+            #KeepAliveTimeout 10 (maybe OK)
+            ListenBackLog 5000
+
+    - /etc/apache2-bugzilla
+        - DocumentRoot /srv/www/bugzilla.jogamp.org
+        - Port 8081
+
+        - copy instance
+          - cp -a etc/apache2-bugzilla /etc/apache2-bugzilla
+
+        - Using mpm_prefork (do the tasks manually w/o a2* commands)
+          - a2dismod mpm_event (or whatever worker is used in default)
+          - a2enmod mpm_prefork
+
+        - http2 (do the tasks manually w/o a2* commands)
+          - a2enmod http2
+          - mods-enabled/http2.conf
+             H2Push          off
+
+          - ln -s /etc/apache2-bugzilla/sites-available/jogamp_org.conf /etc/apache2-bugzilla/sites-enabled/001-jausoft_com-ssl.conf
+          - sites-enabled/001-jausoft_com-ssl.conf
+             <VirtualHost *:443>
+             Protocols h2 http/1.1
+
+        - attack (see above)
+
+        - enable for systemd
+          - cp scripts/apache2-bugzilla.service /usr/lib/systemd/system/apache2-bugzilla.service
+          - systemctl enable apache2-bugzilla
+          - systemctl start apache2-bugzilla
 
 11.2 bugzilla
     - Debian 12
 
-      Install
+    - System prepare
         apt-get install libapache2-mod-perl2-dev libapache2-mod-perl2
         apt-get install libmariadb-dev-compat mariadb-server mariadb-client
         apt-get install libgd-dev libgd3
         apt install libgdbm-dev libgdbm6
 
-    - As User: misc for perl/bugzilla
-        - Perl: redo init (find closest mirror ..)
-            - perl -MCPAN -e shell
-                - o conf init
-
-      a2enmod rewrite
-      a2enmod expires
-
-      As User:
-      See https://bugzilla.readthedocs.org/en/5.0/installing/linux.html#perl-modules
-      ./checksetup.pl --check-modules
-      rm -rf lib
-      /usr/bin/perl install-module.pl --all
-      #/usr/bin/perl install-module.pl --upgrade-all
-      ./checksetup.pl --check-modules
-      ./checksetup.pl
-
-      # bugzilla folder must be owned by webrunner (suexec)
-      chown -R webrunner:webrunner .
-
-      systemctl restart apache2
-      /etc/init.d/apache2 restart
-
-    - https://www.bugzilla.org/download/#stable
-
-11.2.1 bugzilla using mod_perl + mpm_prefork
-    This doesn't solve the bugzilla request and overall server performance :(
-
-    Turns out mod_perl saves us lots of CPU + Memory!
-    - a2dismod mpm_event
-    - a2enmod mpm_prefork
-    - place into vhost config INSTEAD of <Directory /srv/www/jogamp.org/bugzilla>...
-        PerlSwitches -w -T
-        PerlConfigRequire /srv/www/jogamp.org/bugzilla/mod_perl.pl
+11.2.1 bugzilla source install
+    - cd /srv/www/bugzilla.jogamp.org
+    - chown -R user:user .
+    - as user
+      - git clone https://github.com/bugzilla/bugzilla bugzilla-git
+      - git checkout --track -b release-5.2-stable origin/release-5.2-stable
+      - ./checksetup.pl
+      - rm -rf lib
+      - /usr/bin/perl install-module.pl --all
+      - #/usr/bin/perl install-module.pl --upgrade-all
+      - ./checksetup.pl --check-modules
+      - ./checksetup.pl
+    - chown -R webrunner:webrunner .
+    - systemctl restart apache2-bugzilla
 
 11.2.2 bugzilla upgrade
     - prep bugzilla
@@ -360,7 +382,7 @@ Debian 12.00
         - php maintenance/runScript.php maintenance/update.php
         - chown -R webrunner:webrunner .
 
-      ... 
+      ...
 
       - Upgrade to 1.44
         - git checkout --track -b REL1_44 origin/REL1_44
@@ -407,7 +429,7 @@ Debian 12.00
                 cp -a BACKUP etc/logrotate.d/httpd-prerotate /etc/logrotate.d/
                     this kicks off /home/jogamp_web/awstats/awstats-start.sh before the logrotate
 
-            Populate /etc/GeoIP .. 
+            Populate /etc/GeoIP ..
 
 13 jabot
     As user jabot:

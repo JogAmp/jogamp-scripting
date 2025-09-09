@@ -1,0 +1,21 @@
+[Unit]
+Description=The Apache HTTP Server (bugzilla)
+After=network.target remote-fs.target nss-lookup.target
+Documentation=https://httpd.apache.org/docs/2.4/
+Documentation=https://www.linuxbash.sh/post/running-multiple-apache-instances
+
+[Service]
+Type=forking
+Environment=APACHE_STARTED_BY_SYSTEMD=true
+Environment=APACHE_CONFDIR=/etc/apache2-bugzilla
+Environment=APACHE_PID_FILE=/var/run/apache2-bugzilla.pid
+ExecStart=/usr/sbin/apachectl start
+ExecStop=/usr/sbin/apachectl graceful-stop
+ExecReload=/usr/sbin/apachectl graceful
+KillMode=mixed
+PrivateTmp=true
+Restart=on-abort
+OOMPolicy=continue
+
+[Install]
+WantedBy=multi-user.target
