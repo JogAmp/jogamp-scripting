@@ -94,8 +94,72 @@ copy /etc/procmailrc
   - rm nope
 
 ## Spamassassin
+
+### Install
+```
+apt install spamassassin
+```
+
+### Config
+/etc/default/spamassassin
+
+```
+OPTIONS="--create-prefs --max-children 5 --helper-home-dir=/var/lib/spamassassin -u debian-spamd --syslog=/var/log/spamassassin/spamd.log"
+PIDFILE="/run/spamd.pid"
+NICE="--nicelevel 15"
+CRON=1
+```
+
+/etc/default/spamd
+```
+OPTIONS="--create-prefs --max-children 5 --helper-home-dir=/var/lib/spamassassin -u debian-spamd --syslog=/var/log/spamassassin/spamd.log"
+PIDFILE="/run/spamd.pid"
+NICE="--nicelevel 15"
+```
+
+
+/etc/spamassassin/local.cf
+
+```
+ok_locales all
+
+# internal_networks 10.1.0.2/16 192.168.0.2/24 fefe:0:0:1100::2/64 fefe:0:0:1101::2/64
+dns_available yes
+lock_method flock
+
+required_score 9.0
+
+use_bayes 1
+bayes_path /var/lib/spamassassin/bayesdb/bayes
+bayes_ignore_header X-Bogosity
+bayes_ignore_header X-Spam-Flag
+bayes_ignore_header X-Spam-Status
+
+ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
+```
+
+#### Folder Permissions
 Using `spamd` of under the `debian-spamd` (Debian 13)
 and ensuring to use a global common home-dir under `debian-spamd` ownership.
+~~~~~
+mkdir /var/log/spamassassin/
+mkdir /var/lib/spamassassin/bayesdb/
+chown -R debian-spamd:debian-spamd /var/lib/spamassassin
+
+drwxr-xr-x  8 debian-spamd debian-spamd /var/lib/spamassassin/
+~~~~
+
+#### Procmail
+
+/etc/procmailrc
+```
+SPAMC="/usr/bin/spamc"
+
+# filter mail through bogofilter, tagging it as Ham, Spam, or Unsure,
+# and updating the wordlist
+:0fw
+| $SPAMC
+```
 
 ### Install and stop
 ```
@@ -275,7 +339,7 @@ PHP 8.2 is required by wikimedia through Apache2.
 No need to to force php8.2 to php on commandline (alternative)
 as we utilize matching runner scripts.
 
-#### Add SURY to repo 
+#### Add SURY to repo
 See [Debian Additional PHP Versions using SURY](https://wiki.debian.org/AdditionalPHPVersions)
 
 ```
