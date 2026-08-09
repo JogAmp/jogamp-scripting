@@ -8,6 +8,23 @@ favicon=/SocialCoding/logo_symbol_finals/website_final_blue_favicon_symbol_16x16
 
 logo-link=https://jogamp.org
 
+# log-level=0
+log-level=50
+#log-level=75
+
+#cache-lock-timeout=1000
+cache-lock-timeout=4000
+#cache-lock-fail=200
+#cache-lock-fail=503
+cache-lock-fail=429
+#cache-lock-retry=30
+cache-lock-retry=42
+
+# client-io-idle-timeout=20
+client-io-idle-timeout=5
+# client-io-min-rate=500
+client-io-min-rate=1000
+
 # Following lines work with the above Apache config
 #css=/cgit-css/cgit.css
 #logo=/cgit-css/cgit.png
@@ -18,7 +35,7 @@ enable-http-clone=1
 # if you do not want that webcrawler (like google) index your site
 #robots=noindex, nofollow
 
-source-filter=/srv/www/cgit/filters/syntax-highlighting.sh
+source-filter=/srv/www/cgit/filters/syntax-highlighting3.sh
 
 # Format markdown, restructuredtext, manpages, text files, and html files
 # through the right converters
@@ -27,8 +44,18 @@ about-filter=/srv/www/cgit/filters/about-formatting.sh
 # if cgit messes up links, use a virtual-root. For example, cgit.example.org/ has this value:
 virtual-root=/cgit/
 
-# Enable caching of up to 1000 output entries
-cache-size=1000
+# Enable caching of up to n output entries
+#cache-size=100000
+# FFFFFFFF 4294M
+#cache-size=4294967295
+#  FFFFFFF  268M
+#cache-size=268435455
+#   FFFFFF   16M
+#cache-size=16777215
+#    FFFFF    1M
+#cache-size=1048575
+#    3FFFF
+cache-size=262143
 
 # Specify some default clone urls using macro expansion
 # clone-url=https://jogamp.org/cgit/$CGIT_REPO_URL git://jogamp.org/srv/scm/$CGIT_REPO_URL
