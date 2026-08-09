@@ -51,6 +51,24 @@ elif [ "$action" = "stop" ] ; then
         $IPTABLES -P INPUT   ACCEPT
         $IPTABLES -P FORWARD ACCEPT
 
+        /sbin/rmmod ipt_MASQUERADE
+        /sbin/rmmod ipt_NETMAP
+        /sbin/rmmod ipt_REDIRECT
+        /sbin/rmmod nf_conntrack_ipv4
+        /sbin/rmmod nf_conntrack_sane
+        /sbin/rmmod nf_conntrack_sip
+        /sbin/rmmod nf_conntrack_snmp
+        /sbin/rmmod nf_conntrack_tftp
+        /sbin/rmmod nf_nat_ftp
+        /sbin/rmmod nf_nat_h323
+        /sbin/rmmod nf_nat_irc
+        /sbin/rmmod nf_nat
+        /sbin/rmmod nf_nat_pptp
+        /sbin/rmmod nf_nat_sip
+        /sbin/rmmod nf_nat_snmp_basic
+        /sbin/rmmod nf_nat_tftp
+        /sbin/rmmod iptable_nat
+
 elif [ "$action" = "start" ] ; then
 
         echo "IPTABLES rules up" 
@@ -66,27 +84,27 @@ elif [ "$action" = "start" ] ; then
 
         /sbin/modprobe iptable_filter
         /sbin/modprobe iptable_mangle
-        /sbin/modprobe iptable_nat
+        #/sbin/modprobe iptable_nat
         /sbin/modprobe ip_tables
         /sbin/modprobe ipt_LOG
-        /sbin/modprobe ipt_MASQUERADE
-        /sbin/modprobe ipt_NETMAP
-        /sbin/modprobe ipt_REDIRECT
+        #/sbin/modprobe ipt_MASQUERADE
+        #/sbin/modprobe ipt_NETMAP
+        #/sbin/modprobe ipt_REDIRECT
         /sbin/modprobe ipt_REJECT
         /sbin/modprobe ipt_ULOG
-        /sbin/modprobe nf_conntrack_ipv4
-        /sbin/modprobe nf_conntrack_sane
-        /sbin/modprobe nf_conntrack_sip
-        /sbin/modprobe nf_conntrack_snmp
-        /sbin/modprobe nf_conntrack_tftp
-        /sbin/modprobe nf_nat_ftp
-        /sbin/modprobe nf_nat_h323
-        /sbin/modprobe nf_nat_irc
-        /sbin/modprobe nf_nat
-        /sbin/modprobe nf_nat_pptp
-        /sbin/modprobe nf_nat_sip
-        /sbin/modprobe nf_nat_snmp_basic
-        /sbin/modprobe nf_nat_tftp
+        #/sbin/modprobe nf_conntrack_ipv4
+        #/sbin/modprobe nf_conntrack_sane
+        #/sbin/modprobe nf_conntrack_sip
+        #/sbin/modprobe nf_conntrack_snmp
+        #/sbin/modprobe nf_conntrack_tftp
+        #/sbin/modprobe nf_nat_ftp
+        #/sbin/modprobe nf_nat_h323
+        #/sbin/modprobe nf_nat_irc
+        #/sbin/modprobe nf_nat
+        #/sbin/modprobe nf_nat_pptp
+        #/sbin/modprobe nf_nat_sip
+        #/sbin/modprobe nf_nat_snmp_basic
+        #/sbin/modprobe nf_nat_tftp
 
         $IPTABLES -P INPUT   DROP
         $IPTABLES -P FORWARD DROP
