@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 #plain_version=2.6.0-rc-20250827
 plain_version=2.6.0
@@ -46,7 +46,7 @@ cd ../maven
 ./make-deploy-sonatype.sh ${plain_version}
 EOF
 
-deploy_maven.sh generated, consider using it"
+echo "deploy_maven.sh generated, consider using it"
 cat deploy_maven.sh
 
 }
