@@ -19,6 +19,7 @@ function connect_2 {
   export LANG=en_US.UTF-8
 
   export LIBGL_ALWAYS_SOFTWARE=true
+  export RUSTICL_ENABLE=llvmpipe
 
   export JOGAMP_JAR_CODEBASE="Codebase: *.jogamp.org"
 

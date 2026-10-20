@@ -7,7 +7,16 @@ set SEVENZIP=C:\Program Files\7-Zip
 set CMAKE_PATH=C:\cmake-3.25.1-windows-x86_64
 set CMAKE_C_COMPILER=c:\mingw64\bin\gcc
 
-set PATH=%J2RE_HOME%\bin;%JAVA_HOME%\bin;%ANT_PATH%\bin;c:\mingw64\bin;%CMAKE_PATH%\bin;%GIT_PATH%;%SEVENZIP%;%PATH%
+REM set LIBGL_DEBUG=verbose
+REM set MESA_DEBUG=true
+set LIBGL_ALWAYS_SOFTWARE=true
+REM set INTEL_DEBUG="buf bat"
+REM set INTEL_STRICT_CONFORMANCE=1
+
+set MESA3D_LIB=C:\Mesa3D\x64
+
+set PATH=%J2RE_HOME%\bin;%JAVA_HOME%\bin;%ANT_PATH%\bin;%MESA3D_LIB%;c:\mingw64\bin;%CMAKE_PATH%\bin;%GIT_PATH%;%SEVENZIP%;%PATH%
+REM set PATH=%J2RE_HOME%\bin;%JAVA_HOME%\bin;%ANT_PATH%\bin;c:\mingw64\bin;%CMAKE_PATH%\bin;%GIT_PATH%;%SEVENZIP%;%PATH%
 
 set JOGAMP_JAR_CODEBASE=Codebase: *.jogamp.org
 
